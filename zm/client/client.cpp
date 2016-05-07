@@ -5,6 +5,7 @@
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
   Gtk::Window window;
+  window.set_default_size(1024, 768);
 
   MyArea area;
   window.add(area);
@@ -31,15 +32,16 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   xc = width / 2;
   yc = height / 2;
 
+  int radius = 35;
+
   cr->set_line_width(10.0);
 
-  // draw red lines out from the center of the window
-  cr->set_source_rgb(0.8, 0.0, 0.0);
-  cr->move_to(0, 0);
-  cr->line_to(xc, yc);
-  cr->line_to(0, height);
-  cr->move_to(xc, yc);
-  cr->line_to(width, yc);
+  // Dibujo de un circulo
+  cr->save();
+  cr->arc(xc, height - radius - 5, radius, 0.0, 2.0 * M_PI); // Un circulo
+  cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
+  cr->fill_preserve();
+  cr->restore();  // Vuelvo a un negro opaco
   cr->stroke();
 
   return true;
