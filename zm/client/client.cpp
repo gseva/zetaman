@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-Client::Client() : serverProxy(this) {
+Client::Client() {
 
 }
 

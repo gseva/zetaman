@@ -2,20 +2,20 @@
 #define __SERVER_PROXY_H__
 
 #include "game_protocol.h"
+#include "server/server.h"
 
 class Client;
 
 class ServerProxy {
 
-// Server s_;
-Client* c_;
+Server s_;
 
 public:
-  ServerProxy(Client* c);
+  ServerProxy();
 
   void jump();
 
-  void setState(GameState state);
+  GameState getState();
 
 };
 
