@@ -13,11 +13,22 @@ public:
 
 };
 
-class MyArea : public Gtk::DrawingArea
+class Window : public Gtk::Window {
+
+Client* c_;
+public:
+  Window(Client* c);
+
+private:
+  bool keyReleased(GdkEventKey* event);
+
+};
+
+class Area : public Gtk::DrawingArea
 {
 public:
-  MyArea();
-  virtual ~MyArea();
+  Area();
+  virtual ~Area();
 
 protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;

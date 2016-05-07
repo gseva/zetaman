@@ -1,13 +1,14 @@
 
 #include "client.h"
-
+#include "../game_protocol.h"
+#include <iostream>
 
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
-  Gtk::Window window;
+  Window window(this);
   window.set_default_size(1024, 768);
 
-  MyArea area;
+  Area area;
   window.add(area);
   area.show();
 
@@ -15,14 +16,26 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
 }
 
-
-MyArea::MyArea() {
+Window::Window(Client* c) : c_(c) {
+  signal_key_release_event().connect(
+    sigc::mem_fun(*this, &Window::keyReleased));
 }
 
-MyArea::~MyArea() {
+bool Window::keyReleased(GdkEventKey* event) {
+  if(event->keyval == GDK_KEY_space) {
+    std::cout << "espacio presionado" << std::endl;
+  }
+  return false;
 }
 
-bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
+
+Area::Area() {
+}
+
+Area::~Area() {
+}
+
+bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   Gtk::Allocation allocation = get_allocation();
   const int width = allocation.get_width();
   const int height = allocation.get_height();
