@@ -52,10 +52,7 @@ bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   int radius = 35;
 
-  GameState gs;
-  gs.x = width / 2;
-  gs.y = height - radius - 5;
-
+  GameState gs = c_->serverProxy.getState();
 
   cr->set_line_width(10.0);
 
@@ -77,7 +74,6 @@ bool Area::on_timeout() {
       Gdk::Rectangle r(0, 0, get_allocation().get_width(),
               get_allocation().get_height());
       win->invalidate_rect(r, false);
-      std::cout << "aloja\n";
   }
   return true;
 }
