@@ -4,7 +4,7 @@
 
 #include "client.h"
 
-Client::Client() : serverProxy(this) {
+Client::Client() {
 
 }
 
