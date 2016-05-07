@@ -14,5 +14,5 @@ void ServerProxy::jump() {
 }
 
 GameState ServerProxy::getState() {
-  s_.getState();
+  return s_.getState();
 }
