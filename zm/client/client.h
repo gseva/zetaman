@@ -32,14 +32,17 @@ private:
 
 };
 
-class Area : public Gtk::DrawingArea
-{
+class Area : public Gtk::DrawingArea {
+
+Client* c_;
+
 public:
-  Area();
+  Area(Client* c);
   virtual ~Area();
 
 protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
+  bool on_timeout();
 };
 
 
