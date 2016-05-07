@@ -3,16 +3,16 @@
 
 #include <iostream>
 
-#include "client/client.h"
+#include "server/server.h"
 
-ServerProxy::ServerProxy(Client* c) : c_(c) {
+ServerProxy::ServerProxy() : s_(*this){
 };
 
 void ServerProxy::jump() {
-  // s_.jump()
+  s_.jump();
   std::cout << "hola\n";
 }
 
-void ServerProxy::setState(GameState state) {
-  c_->draw(state);
+GameState ServerProxy::getState() {
+  return s_.getState();
 }
