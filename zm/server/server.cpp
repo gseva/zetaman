@@ -3,7 +3,7 @@
 
 
 Server::Server(ServerProxy& sp) : serverProxy(sp) {
-	this->player.setPosition(1024/2, 768/2-40);
+	this->player.setPosition(1024/2, 768-40);
 }
 
 Server::~Server(){}
@@ -14,6 +14,8 @@ void Server::jump(){
 
 GameState Server::getState(){
 	player.nextPosition();
-	state_.x=player.x_;
-	state_.y=player.y_;
+  GameState gs;
+  gs.x = player.x_;
+  gs.y = player.y_;
+  return gs;
 }
