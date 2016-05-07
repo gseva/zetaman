@@ -5,11 +5,19 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/window.h>
 
+#include "../game_protocol.h"
+#include "../server_proxy.h"
+
 
 class Client {
 
 public:
+  ServerProxy serverProxy;
+
+  Client();
   void run(Glib::RefPtr<Gtk::Application> app);
+
+  void draw(GameState state);
 
 };
 

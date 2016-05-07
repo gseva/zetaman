@@ -1,7 +1,11 @@
 
 #include "client.h"
-#include "../game_protocol.h"
 #include <iostream>
+
+
+Client::Client() : serverProxy(this) {
+
+}
 
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
@@ -16,6 +20,11 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
 }
 
+void Client::draw(GameState state) {
+
+};
+
+
 Window::Window(Client* c) : c_(c) {
   signal_key_release_event().connect(
     sigc::mem_fun(*this, &Window::keyReleased));
@@ -23,11 +32,10 @@ Window::Window(Client* c) : c_(c) {
 
 bool Window::keyReleased(GdkEventKey* event) {
   if(event->keyval == GDK_KEY_space) {
-    std::cout << "espacio presionado" << std::endl;
+    c_->serverProxy.jump();
   }
   return false;
 }
-
 
 Area::Area() {
 }
