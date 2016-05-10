@@ -4,11 +4,14 @@
 #define VY_MIN_LIM -10
 #define VY_MAX_LIM 10
 
-Player::Player(){}
+Player::Player() : vx_(0), vy_(0), idle(true) {}
 Player::~Player(){}
 
 void Player::jump(){
-	vy_ = VY_MAX_LIM;
+  if (idle) {
+  	vy_ = VY_MAX_LIM;
+    idle = false;
+  }
 }
 
 void Player::setPosition(int x, int y){
@@ -17,6 +20,10 @@ void Player::setPosition(int x, int y){
 }
 
 void Player::nextPosition(){
-	y_ = y_ - vy_*T;
-	if ( vy_ > 0  && vy_ > VY_MIN_LIM) vy_--;
+	y_ = y_ - vy_ * T;
+	if (vy_ > VY_MIN_LIM && !idle) vy_ -= 2;
+  else if (vy_ == VY_MIN_LIM) {
+    vy_ = 0;
+    idle = true;
+  }
 }

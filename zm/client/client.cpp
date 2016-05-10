@@ -39,7 +39,7 @@ bool Window::keyReleased(GdkEventKey* event) {
 
 Area::Area(Client* c) : c_(c) {
   Glib::signal_timeout().connect(
-    sigc::mem_fun(*this, &Area::on_timeout), 1000);
+    sigc::mem_fun(*this, &Area::on_timeout), 100);
 }
 
 Area::~Area() {

@@ -13,6 +13,7 @@ public:
 private:
 	int vx_, vy_;
 	int g_;
+  bool idle;
 };
 
 #endif
