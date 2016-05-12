@@ -1,0 +1,7 @@
+before_script:
+  - apt-get update -qq && apt-get install -y -qq build-essential gtkmm3 libgtkmm-3.0-dev
+ 
+zmake:
+  script:
+    - make
+    - ls build/zm
