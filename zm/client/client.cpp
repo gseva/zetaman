@@ -5,11 +5,9 @@
 #include "zm/client/client.h"
 
 Client::Client() {
-
 }
 
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
-
   Window window(this);
   window.set_default_size(1024, 768);
 
@@ -18,11 +16,10 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   area.show();
 
   app->run(window);
-
 }
 
 void Client::draw(GameState state) {
-};
+}
 
 
 Window::Window(Client* c) : c_(c) {
@@ -31,7 +28,7 @@ Window::Window(Client* c) : c_(c) {
 }
 
 bool Window::keyReleased(GdkEventKey* event) {
-  if(event->keyval == GDK_KEY_space) {
+  if (event->keyval == GDK_KEY_space) {
     c_->serverProxy.jump();
   }
   return false;

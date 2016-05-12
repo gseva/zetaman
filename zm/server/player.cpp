@@ -21,8 +21,9 @@ void Player::setPosition(int x, int y){
 
 void Player::nextPosition(){
 	y_ = y_ - vy_ * T;
-	if (vy_ > VY_MIN_LIM && !idle) vy_ -= 2;
-  else if (vy_ == VY_MIN_LIM) {
+	if (vy_ > VY_MIN_LIM && !idle) {
+    vy_ -= 2;
+  } else if (vy_ == VY_MIN_LIM) {
     vy_ = 0;
     idle = true;
   }

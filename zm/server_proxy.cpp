@@ -4,7 +4,7 @@
 #include <iostream>
 
 ServerProxy::ServerProxy() : s_(*this){
-};
+}
 
 void ServerProxy::jump() {
   s_.jump();
