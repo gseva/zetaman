@@ -8,6 +8,7 @@
 
 # Extensión de los archivos a compilar (c para C, cpp o cc o cxx para C++).
 extension = cpp
+header_extension = h
 
 # Si usa funciones de math.h, descomentar (quitar el '#' a) la siguiente línea.
 # math = si
@@ -29,13 +30,13 @@ verbose = si
 ###########################
 
 # Opciones para el compilador C/C++ para tratamiento de errores y warnings.
-CFLAGS = -Wall -Werror -pedantic -pedantic-errors
+CFLAGS = -Wall -Werror -pedantic -pedantic-errors -ansi
 
 # Para optimizar el binario resultante lo mejor posible
 CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
-CFLAGS += -ggdb -DDEBUG -fno-inline
+# CFLAGS += -ggdb -DDEBUG -fno-inline
 
 # Opciones del enlazador.
 #LDFLAGS =
@@ -44,7 +45,8 @@ CFLAGS += -ggdb -DDEBUG -fno-inline
 # CSTD = c99
 
 # Estandar de C++ a usar
-CXXSTD = c++11
+# CXXSTD = c++11
+CXXSTD = gnu++11
 
 # Si se quiere compilar estáticamente, descomentar la siguiente línea
 #static = si
@@ -130,6 +132,7 @@ client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources)
+all_headers = $(wildcard $(zm_dir)**/*.$(extension))
 
 server_target = $(build_dir)server
 client_target = $(build_dir)zm
@@ -141,14 +144,17 @@ o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 
+lint_extensions = --extensions=$(header_extension),$(extension)
+lint_filters =  --filter=`cat lint/filter_options`
+lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
 
 # REGLAS
 #########
 
-.PHONY: all clean
+.PHONY: all clean lint
 
 
-all: client
+all: lint client
 
 $(o_all_files): $(obj_dir)/%.o : %.$(extension)
 	$(LD) $(CXXFLAGS) -c $< -o $@
@@ -185,6 +191,9 @@ server: $(o_server_only_files)
 		false; \
 	fi >&2
 	$(LD) $(o_server_only_files) -o $(server_target) $(LDFLAGS)
+
+lint:
+	$(lint_command) $(all_sources) $(all_headers)
 
 clean:
 	@$(RM) -fv $(o_client_only_files) $(o_server_only_files) $(o_common_files) \
