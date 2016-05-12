@@ -1,10 +1,10 @@
-#include "player.h"
+#include "zm/server/player.h"
 
 #define T 10
 #define VY_MIN_LIM -10
 #define VY_MAX_LIM 10
 
-Player::Player() : vx_(0), vy_(0), idle(true) {}
+Player::Player() : vy_(0), idle(true) {}
 Player::~Player(){}
 
 void Player::jump(){

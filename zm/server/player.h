@@ -11,8 +11,7 @@ public:
 	void jump();
 	int x_,y_;
 private:
-	int vx_, vy_;
-	int g_;
+	int vy_;
   bool idle;
 };
 

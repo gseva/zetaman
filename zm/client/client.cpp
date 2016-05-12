@@ -2,7 +2,7 @@
 #include <iostream>
 #include <glibmm/main.h>
 
-#include "client.h"
+#include "zm/client/client.h"
 
 Client::Client() {
 
@@ -46,9 +46,9 @@ Area::~Area() {
 }
 
 bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-  Gtk::Allocation allocation = get_allocation();
-  const int width = allocation.get_width();
-  const int height = allocation.get_height();
+  // Gtk::Allocation allocation = get_allocation();
+  // const int width = allocation.get_width();
+  // const int height = allocation.get_height();
 
   int radius = 35;
 
