@@ -1,18 +1,38 @@
 #include <gtkmm.h>
 #include <iostream>
+#include "editor.h"
 
 int main(int argc, char **argv)
 {
+  Editor editor;
+
   auto app = Gtk::Application::create(argc, argv, "");
-  Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("probando.glade");
-  Gtk::Button * psomeButton;
+  Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("editor.glade");
+  Gtk::Button * pBtnCrearTerreno;
+  Gtk::Button * pBtnCrearEnemigo;
+  Gtk::Button * pBtnCrearJugador;
   Gtk::Window * pwindow;
-  Gtk::Label * plabel;
-  Gtk::Image * pimage;
-  builder->get_widget("button1", psomeButton);
+  builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
+  builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
+  builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("applicationwindow1", pwindow);
-  builder->get_widget("label1", plabel);
-  builder->get_widget("image1", pimage);
+
+  pwindow->set_default_size(1024, 768);
+
+  if(pBtnCrearJugador)
+  {
+    pBtnCrearJugador->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearJugador_clicked) );
+  }
+
+  if(pBtnCrearTerreno)
+  {
+    pBtnCrearTerreno->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearTerreno_clicked) );
+  }
+
+  if(pBtnCrearEnemigo)
+  {
+    pBtnCrearEnemigo->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearEnemigo_clicked) );
+  }
 
   app->run(*pwindow);
 
