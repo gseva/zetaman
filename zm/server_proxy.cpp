@@ -14,3 +14,7 @@ void ServerProxy::jump() {
 GameState ServerProxy::getState() {
   return s_.getState();
 }
+
+void ServerProxy::updateState(GameState gs) {
+  updateHandler.signal_game_update().emit(gs);
+}
