@@ -1,6 +1,6 @@
 #include <gtkmm/application.h>
 
-#include "client/client.h"
+#include "zm/client/client.h"
 
 int main(int argc, char *argv[])
 {

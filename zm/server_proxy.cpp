@@ -1,12 +1,10 @@
 
-#include "server_proxy.h"
+#include "zm/server_proxy.h"
 
 #include <iostream>
 
-#include "server/server.h"
-
 ServerProxy::ServerProxy() : s_(*this){
-};
+}
 
 void ServerProxy::jump() {
   s_.jump();

@@ -2,8 +2,8 @@
 #define __SERVER_H__
 
 #include <vector>
-#include "player.h"
-#include "../game_protocol.h"
+#include "zm/game_protocol.h"
+#include "zm/server/player.h"
 class ServerProxy;
 
 class Server{
@@ -13,9 +13,9 @@ public:
 	void jump();
 	GameState getState();
 private:
-	GameState state_;
+	// GameState state_;
 	//vector<Player> players;
-	ServerProxy& serverProxy;
+	// ServerProxy& serverProxy;
 	Player player;
 };
 

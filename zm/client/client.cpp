@@ -2,14 +2,12 @@
 #include <iostream>
 #include <glibmm/main.h>
 
-#include "client.h"
+#include "zm/client/client.h"
 
 Client::Client() {
-
 }
 
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
-
   Window window(this);
   window.set_default_size(1024, 768);
 
@@ -18,11 +16,10 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   area.show();
 
   app->run(window);
-
 }
 
 void Client::draw(GameState state) {
-};
+}
 
 
 Window::Window(Client* c) : c_(c) {
@@ -31,7 +28,7 @@ Window::Window(Client* c) : c_(c) {
 }
 
 bool Window::keyReleased(GdkEventKey* event) {
-  if(event->keyval == GDK_KEY_space) {
+  if (event->keyval == GDK_KEY_space) {
     c_->serverProxy.jump();
   }
   return false;
@@ -46,9 +43,9 @@ Area::~Area() {
 }
 
 bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-  Gtk::Allocation allocation = get_allocation();
-  const int width = allocation.get_width();
-  const int height = allocation.get_height();
+  // Gtk::Allocation allocation = get_allocation();
+  // const int width = allocation.get_width();
+  // const int height = allocation.get_height();
 
   int radius = 35;
 

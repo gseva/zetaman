@@ -1,8 +1,9 @@
-#include "server.h"
+#include "zm/server/server.h"
 
 
 
-Server::Server(ServerProxy& sp) : serverProxy(sp) {
+Server::Server(ServerProxy& sp) //: serverProxy(sp)
+{
 	this->player.setPosition(1024/2, 768-40);
 }
 

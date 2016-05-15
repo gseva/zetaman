@@ -5,8 +5,8 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/window.h>
 
-#include "../game_protocol.h"
-#include "../server_proxy.h"
+#include "zm/game_protocol.h"
+#include "zm/server_proxy.h"
 
 
 class Client {

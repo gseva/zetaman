@@ -1,10 +1,10 @@
-#include "player.h"
+#include "zm/server/player.h"
 
 #define T 10
 #define VY_MIN_LIM -10
 #define VY_MAX_LIM 10
 
-Player::Player() : vx_(0), vy_(0), idle(true) {}
+Player::Player() : vy_(0), idle(true) {}
 Player::~Player(){}
 
 void Player::jump(){
@@ -21,8 +21,9 @@ void Player::setPosition(int x, int y){
 
 void Player::nextPosition(){
 	y_ = y_ - vy_ * T;
-	if (vy_ > VY_MIN_LIM && !idle) vy_ -= 2;
-  else if (vy_ == VY_MIN_LIM) {
+	if (vy_ > VY_MIN_LIM && !idle) {
+    vy_ -= 2;
+  } else if (vy_ == VY_MIN_LIM) {
     vy_ = 0;
     idle = true;
   }
