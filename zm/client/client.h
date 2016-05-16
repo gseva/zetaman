@@ -39,6 +39,7 @@ class Area : public Gtk::DrawingArea {
 
 Client* c_;
 GameState gs_;
+Glib::RefPtr<Gdk::Pixbuf> m_image;
 
 public:
   Area(Client* c);

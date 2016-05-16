@@ -1,6 +1,8 @@
 
 #include <iostream>
+#include <giomm/resource.h>
 #include <glibmm/main.h>
+#include <gdkmm/general.h>
 
 #include "zm/client/client.h"
 
@@ -40,19 +42,22 @@ bool Window::keyReleased(GdkEventKey* event) {
 Area::Area(Client* c) : c_(c) {
   Glib::signal_timeout().connect(
     sigc::mem_fun(*this, &Area::on_timeout), 100);
+  m_image = Gdk::Pixbuf::create_from_resource("/assets/images/grass.png");
 }
 
 Area::~Area() {
 }
 
 bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
-  // Gtk::Allocation allocation = get_allocation();
-  // const int width = allocation.get_width();
-  // const int height = allocation.get_height();
+  Gtk::Allocation allocation = get_allocation();
+  const int width = allocation.get_width();
+  const int height = allocation.get_height();
 
   int radius = 35;
 
-
+  Gdk::Cairo::set_source_pixbuf(cr, m_image,
+   (width - m_image->get_width())/2, (height - m_image->get_height())/2);
+  cr->paint();
   cr->set_line_width(10.0);
 
   // Dibujo de un circulo
