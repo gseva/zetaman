@@ -5,6 +5,7 @@
 #include <gtkmm/drawingarea.h>
 
 #include "zm/game_protocol.h"
+#include "zm/client/map.h"
 
 
 namespace zm {
@@ -15,7 +16,7 @@ class Canvas : public Gtk::DrawingArea {
 
 Client* c_;
 GameState gs_;
-Glib::RefPtr<Gdk::Pixbuf> m_image;
+Map map_;
 
 public:
   Canvas(Client* c);
