@@ -15,6 +15,9 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   window.add(area);
   area.show();
 
+  serverProxy.updateHandler.signal_game_update().connect(
+      sigc::mem_fun(area, &Area::updateGameState) );
+
   app->run(window);
 }
 
@@ -49,13 +52,12 @@ bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   int radius = 35;
 
-  GameState gs = c_->serverProxy.getState();
 
   cr->set_line_width(10.0);
 
   // Dibujo de un circulo
   cr->save();
-  cr->arc(gs.x, gs.y, radius, 0.0, 2.0 * M_PI); // Un circulo
+  cr->arc(gs_.x, gs_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
   cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
   cr->fill_preserve();
   cr->restore();  // Vuelvo a un negro opaco
@@ -64,7 +66,12 @@ bool Area::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   return true;
 }
 
-bool Area::on_timeout() {
+void Area::updateGameState(GameState gs) {
+  gs_ = gs;
+  redraw();
+}
+
+void Area::redraw() {
   Glib::RefPtr<Gdk::Window> win = get_window();
   if (win)
   {
@@ -72,6 +79,10 @@ bool Area::on_timeout() {
               get_allocation().get_height());
       win->invalidate_rect(r, false);
   }
+}
+
+bool Area::on_timeout() {
+  c_->serverProxy.updateState(c_->serverProxy.getState());
   return true;
 }
 
