@@ -9,7 +9,9 @@
 
 #include "zm/game_protocol.h"
 #include "zm/server_proxy.h"
+#include "zm/client/canvas.h"
 
+namespace zm {
 
 class Client {
 
@@ -35,24 +37,7 @@ private:
 
 };
 
-class Area : public Gtk::DrawingArea {
-
-Client* c_;
-GameState gs_;
-Glib::RefPtr<Gdk::Pixbuf> m_image;
-
-public:
-  Area(Client* c);
-  virtual ~Area();
-
-  void updateGameState(GameState gs);
-
-protected:
-  void redraw();
-
-  bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-  bool on_timeout();
-};
+} // zm
 
 
 #endif
