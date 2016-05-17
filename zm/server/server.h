@@ -4,6 +4,7 @@
 #include <vector>
 #include "zm/game_protocol.h"
 #include "zm/server/player.h"
+#include <Box2D/Box2D.h>
 class ServerProxy;
 
 class Server{
@@ -13,10 +14,12 @@ public:
 	void jump();
 	GameState getState();
 private:
-	// GameState state_;
-	//vector<Player> players;
-	// ServerProxy& serverProxy;
 	Player player;
+  b2World* world;
+  b2Vec2* gravity;
+
+  b2BodyDef groundBodyDef;
+  b2Body* groundBody;
 };
 
 #endif
