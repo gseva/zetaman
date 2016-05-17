@@ -137,7 +137,7 @@ client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources)
-all_headers = $(wildcard $(zm_dir)**/*.$(extension))
+all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
 resources_source = $(resources_dir)resources.c
@@ -196,7 +196,7 @@ create_dirs:
 client: create_dirs assets $(o_client_all_files)
 	@if [ -z "$(o_client_all_files)" ]; \
 	then \
-		echo "No hay archivos de entrada para el cliente (archivos client*.$(extension))."; \
+		echo "No hay archivos de entrada para el cliente (archivos zm/cient/*.$(extension))."; \
 		false; \
 	fi >&2
 	$(LD) $(o_client_all_files) $(o_resources) -o $(client_target) $(LDFLAGS)
@@ -204,7 +204,7 @@ client: create_dirs assets $(o_client_all_files)
 server: $(o_server_only_files)
 	@if [ -z "$(o_server_only_files)" ]; \
 	then \
-		echo "No hay archivos de entrada para el servidor (archivos server*.$(extension))."; \
+		echo "No hay archivos de entrada para el servidor (archivos zm/server/*.$(extension))."; \
 		false; \
 	fi >&2
 	$(LD) $(o_server_only_files) -o $(server_target) $(LDFLAGS)

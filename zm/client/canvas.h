@@ -13,13 +13,12 @@ namespace zm {
 class Client;
 
 class Canvas : public Gtk::DrawingArea {
-
 Client* c_;
 GameState gs_;
 Map map_;
 
 public:
-  Canvas(Client* c);
+  explicit Canvas(Client* c);
   virtual ~Canvas();
 
   void updateGameState(GameState gs);

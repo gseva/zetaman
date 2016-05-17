@@ -14,27 +14,22 @@
 namespace zm {
 
 class Client {
-
 public:
   ServerProxy serverProxy;
-
 
   Client();
   void run(Glib::RefPtr<Gtk::Application> app);
 
   void draw(GameState state);
-
 };
 
 class Window : public Gtk::Window {
-
 Client* c_;
 public:
-  Window(Client* c);
+  explicit Window(Client* c);
 
 private:
-  bool keyReleased(GdkEventKey* event);
-
+  bool on_key_press_event(GdkEventKey* event) override;
 };
 
 } // zm

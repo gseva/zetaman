@@ -8,8 +8,8 @@
 #include <gdkmm/general.h> // set_source_pixbuf()
 #include <cairomm/context.h>
 
-
 namespace zm {
+
 
 Canvas::Canvas(Client* c) : c_(c) {
   Glib::signal_timeout().connect(

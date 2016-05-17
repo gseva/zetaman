@@ -7,15 +7,30 @@
 
 static const char* image_names[] = {
   "grass.png",
+  "ladder_mid.png",
   "grass_half.png",
-  "grass_mid.png",
-  "ladder_mid.png"
+  "grass_mid.png"
 };
 
 namespace zm {
 
 Map::Map() {
   loadImages();
+  // images_ v = {"grass.png", "ladder_mid.png"};
+  tiles_ = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  };
 }
 
 void Map::loadImages() {
@@ -30,20 +45,19 @@ void Map::loadImages() {
 void Map::draw(const Cairo::RefPtr<Cairo::Context>& context) {
   context->save();
 
+  // om.tercio // 2
+
+  int largo = 20;
+
   for (int i = 0; i < 16; ++i) {
     for (int j = 0; j < 12; ++j) {
-      if (j == 0) {
-        auto image = images_[0];
-        Gdk::Cairo::set_source_pixbuf(context, image,
-         image->get_width() * i, 768 - image->get_height());
-        context->paint();
-      }
-      if (i == 10 && j > 1) {
-        auto image = images_[3];
-        Gdk::Cairo::set_source_pixbuf(context, image,
-         image->get_width() * i, (768 - image->get_height() * j));
-        context->paint();
-      }
+      int tilePos = largo * (12 - j) + i;
+      int imageNum = tiles_[tilePos];
+      if (imageNum == 0) continue;
+      auto image = images_[imageNum - 1];
+      Gdk::Cairo::set_source_pixbuf(context, image,
+       image->get_width() * i, 768 - (image->get_height() * j));
+      context->paint();
     }
   }
 

@@ -28,15 +28,18 @@ void Client::draw(GameState state) {
 
 
 Window::Window(Client* c) : c_(c) {
-  signal_key_release_event().connect(
-    sigc::mem_fun(*this, &Window::keyReleased));
+  // signal_key_press_event().connect(
+  //   sigc::mem_fun(*this, &Window::keyReleased));
+  add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 }
 
-bool Window::keyReleased(GdkEventKey* event) {
+
+bool Window::on_key_press_event(GdkEventKey* event) {
   if (event->keyval == GDK_KEY_space) {
     c_->serverProxy.jump();
   }
-  return false;
+
+  return Gtk::Window::on_key_press_event(event);
 }
 
 } // zm
