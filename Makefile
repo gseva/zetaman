@@ -25,6 +25,10 @@ gtkmm = si
 # Descomentar si se quiere ver como se invoca al compilador
 verbose = si
 
+# Si se usa box2d
+box2d = si
+
+
 
 # CONFIGURACION "AVANZADA"
 ###########################
@@ -85,6 +89,10 @@ endif
 # Linkeo con pthreads de ser necesario.
 ifdef pthreads
 LDFLAGS += -lpthread -pthread
+endif
+
+ifdef box2d
+LDFLAGS +=  -lBox2D
 endif
 
 ifdef static
