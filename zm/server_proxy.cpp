@@ -1,12 +1,10 @@
 
-#include "server_proxy.h"
+#include "zm/server_proxy.h"
 
 #include <iostream>
 
-#include "server/server.h"
-
 ServerProxy::ServerProxy() : s_(*this){
-};
+}
 
 void ServerProxy::jump() {
   s_.jump();
@@ -15,4 +13,8 @@ void ServerProxy::jump() {
 
 GameState ServerProxy::getState() {
   return s_.getState();
+}
+
+void ServerProxy::updateState(GameState gs) {
+  updateHandler.signal_game_update().emit(gs);
 }
