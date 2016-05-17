@@ -1,3 +1,4 @@
+#include <gtkmm.h>
 
 class Editor {
   
@@ -10,4 +11,5 @@ class Editor {
     void on_buttonCrearJugador_clicked();
     void on_buttonCrearTerreno_clicked();
     void on_buttonCrearEnemigo_clicked();
+    bool on_eventbox_button_press(GdkEventButton*);
 };

@@ -12,10 +12,12 @@ int main(int argc, char **argv)
   Gtk::Button * pBtnCrearEnemigo;
   Gtk::Button * pBtnCrearJugador;
   Gtk::Window * pwindow;
+  Gtk::EventBox* pEventBox;
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("applicationwindow1", pwindow);
+  builder->get_widget("eventbox2", pEventBox);
 
   pwindow->set_default_size(1024, 768);
 
@@ -32,6 +34,12 @@ int main(int argc, char **argv)
   if(pBtnCrearEnemigo)
   {
     pBtnCrearEnemigo->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearEnemigo_clicked) );
+  }
+
+  if(pEventBox)
+  {
+    pEventBox->set_events(Gdk::BUTTON_PRESS_MASK);
+    pEventBox->signal_button_press_event().connect (sigc::mem_fun(editor,&Editor::on_eventbox_button_press));
   }
 
   app->run(*pwindow);
