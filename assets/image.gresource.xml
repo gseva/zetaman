@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/assets/">
+    <file>images/grass.png</file>
+    <file>images/grass_half.png</file>
+    <file>images/grass_mid.png</file>
+    <file>images/ladder_mid.png</file>
+  </gresource>
+</gresources>

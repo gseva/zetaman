@@ -4,7 +4,7 @@
 
 Server::Server(ServerProxy& sp) //: serverProxy(sp)
 {
-	this->player.setPosition(1024/2, 768-40);
+	this->player.setPosition(1024/2, 768-40-64);
 }
 
 Server::~Server(){}

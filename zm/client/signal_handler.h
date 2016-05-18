@@ -7,10 +7,7 @@
 #include "zm/game_protocol.h"
 
 class GameUpdateHandler {
-
-
 public:
-
   typedef sigc::signal<void, GameState> type_signal_game_update;
   type_signal_game_update signal_game_update();
 

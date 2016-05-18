@@ -9,49 +9,30 @@
 
 #include "zm/game_protocol.h"
 #include "zm/server_proxy.h"
+#include "zm/client/canvas.h"
 
+namespace zm {
 
 class Client {
-
 public:
   ServerProxy serverProxy;
-
 
   Client();
   void run(Glib::RefPtr<Gtk::Application> app);
 
   void draw(GameState state);
-
 };
 
 class Window : public Gtk::Window {
-
 Client* c_;
 public:
-  Window(Client* c);
+  explicit Window(Client* c);
 
 private:
-  bool keyReleased(GdkEventKey* event);
-
+  bool on_key_press_event(GdkEventKey* event) override;
 };
 
-class Area : public Gtk::DrawingArea {
-
-Client* c_;
-GameState gs_;
-
-public:
-  Area(Client* c);
-  virtual ~Area();
-
-  void updateGameState(GameState gs);
-
-protected:
-  void redraw();
-
-  bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-  bool on_timeout();
-};
+} // zm
 
 
 #endif
