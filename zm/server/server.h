@@ -13,6 +13,10 @@ public:
 	~Server();
 	void jump();
 	GameState getState();
+  void right();
+  void left();
+  void stopHorizontalMove();
+
 private:
 	Player player;
   b2World* world;

@@ -9,11 +9,13 @@ public:
 	~Player();
 	void setPosition(int x, int y);
   void createBody(b2World* world);
-	//void right();
+  void right();
+	void left();
+  void stopHorizontalMove();
 	void jump();
-	int x_,y_;
-  b2Body* body;
+  b2Vec2 getPosition();
 private:
+  b2Body* body;
   int vy_;
   bool idle;
   b2BodyDef playerBodyDef;

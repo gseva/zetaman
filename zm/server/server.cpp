@@ -25,9 +25,18 @@ void Server::jump(){
 	player.jump();
 }
 
-/*void Server::right(){
-  player.right();
-}*/
+
+void Server::right(){
+  player.right();  
+}
+void Server::left(){
+  player.right();  
+}
+
+void Server::stopHorizontalMove(){
+  player.stopHorizontalMove();  
+}
+
 
 GameState Server::getState(){
   float32 timeStep = 1.0f / 60.0f; //60Hz
@@ -35,7 +44,7 @@ GameState Server::getState(){
   int32 positionIterations = 3; 
   world->Step(timeStep, velocityIterations, positionIterations);
 
-  b2Vec2 position = player.body->GetPosition();
+  b2Vec2 position = player.getPosition();
 
   GameState gs;
   gs.x = position.x*100;

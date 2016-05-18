@@ -35,12 +35,27 @@ void Player::jump(){
 }
 
 void Player::setPosition(int x, int y){
-	x_ = x;
-	y_ = y;
+  palyerBody->SetTransform(b2Vec2(x,y),palyerBody->GetAngle());
 }
 
-/*void Player::right(){
+void Player::right(){
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 10;
   body->SetLinearVelocity(vel);
-}*/
+}
+
+void Player::left(){
+  b2Vec2 vel = body->GetLinearVelocity();
+  vel.x = -10;
+  body->SetLinearVelocity(vel);
+}
+
+void Player::stopHorizontalMove(){
+  b2Vec2 vel = body->GetLinearVelocity();
+  vel.x = 0;
+  body->SetLinearVelocity(vel); 
+}
+
+b2Vec2 Player::getPosition(){
+  return body->GetPosition();
+}
