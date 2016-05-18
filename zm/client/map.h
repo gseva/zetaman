@@ -12,7 +12,6 @@
 namespace zm {
 
 class Map {
-std::vector<int> tiles_;
 Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
 
 void loadImages();
