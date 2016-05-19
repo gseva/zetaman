@@ -114,6 +114,8 @@ CXXFLAGS += -std=$(CXXSTD)
 LD = $(CXX)
 endif
 
+GLIB_COMPILE_RESOURCES = glib-compile-resources
+
 occ := $(CC)
 ocxx := $(CXX)
 orm := $(RM)
@@ -135,12 +137,18 @@ zm_dir = zm/
 client_dir = $(zm_dir)client/
 server_dir = $(zm_dir)server/
 
+assets_dir = assets/
+assets_config = $(assets_dir)image.gresource.xml
+
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources)
-all_headers = $(wildcard $(zm_dir)**/*.$(extension))
+all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
+
+resources_dir = $(build_dir)resources/
+resources_source = $(resources_dir)resources.c
 
 server_target = $(build_dir)server
 client_target = $(build_dir)zm
@@ -152,6 +160,8 @@ o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 
+o_resources = $(resources_dir)resources.o
+
 lint_extensions = --extensions=$(header_extension),$(extension)
 lint_filters =  --filter=`cat lint/filter_options`
 lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
@@ -159,13 +169,19 @@ lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
 # REGLAS
 #########
 
-.PHONY: all clean lint
+.PHONY: all clean lint assets
 
 
 all: lint client
 
 $(o_all_files): $(obj_dir)/%.o : %.$(extension)
 	$(LD) $(CXXFLAGS) -c $< -o $@
+
+$(resources_source): $(assets_config)
+	@$(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(dir $<) --generate-source $<
+
+$(o_resources): $(resources_source)
+	cc $(shell pkg-config --cflags gtk+-3.0) -c $< -o $@
 
 # $(o_all_files)/%.o: %.(extension)
 # 	$(LD) $(CXXFLAGS) -c $< -o $@
@@ -183,19 +199,20 @@ $(o_all_files): $(obj_dir)/%.o : %.$(extension)
 
 create_dirs:
 	@$(foreach file, $(o_client_all_files), mkdir -p $(dir $(file));)
+	@mkdir -p $(resources_dir)
 
-client: create_dirs $(o_client_all_files)
+client: create_dirs assets $(o_client_all_files)
 	@if [ -z "$(o_client_all_files)" ]; \
 	then \
-		echo "No hay archivos de entrada para el cliente (archivos client*.$(extension))."; \
+		echo "No hay archivos de entrada para el cliente (archivos zm/cient/*.$(extension))."; \
 		false; \
 	fi >&2
-	$(LD) $(o_client_all_files) -o $(client_target) $(LDFLAGS)
+	$(LD) $(o_client_all_files) $(o_resources) -o $(client_target) $(LDFLAGS)
 
 server: $(o_server_only_files)
 	@if [ -z "$(o_server_only_files)" ]; \
 	then \
-		echo "No hay archivos de entrada para el servidor (archivos server*.$(extension))."; \
+		echo "No hay archivos de entrada para el servidor (archivos zm/server/*.$(extension))."; \
 		false; \
 	fi >&2
 	$(LD) $(o_server_only_files) -o $(server_target) $(LDFLAGS)
@@ -203,7 +220,13 @@ server: $(o_server_only_files)
 lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
-clean:
+
+assets: $(resources_source) $(o_resources)
+
+clean_resources:
+	@$(RM) -fv $(o_resources)
+
+clean: clean_resources
 	@$(RM) -fv $(o_client_only_files) $(o_server_only_files) $(o_common_files) \
 						 $(client_target) $(server_target)
 
