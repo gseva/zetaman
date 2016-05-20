@@ -38,8 +38,14 @@ void Map::loadImages() {
   std::string prefix = "/assets/images/";
   for (int i = 0; i < N_IMAGES; ++i) {
     std::string resource_name = prefix + image_names[i];
-    images_[i] = Gdk::Pixbuf::create_from_resource(resource_name)
-                        ->scale_simple(64, 64, Gdk::INTERP_BILINEAR);
+
+    // create_from_resource es de gtk 3.12, y en ubuntu 14.04 la version de gtk
+    // es 3.10
+    // images_[i] = Gdk::Pixbuf::create_from_resource(resource_name)
+    //                     ->scale_simple(64, 64, Gdk::INTERP_BILINEAR);
+
+    images_[i] = Glib::wrap(gdk_pixbuf_new_from_resource_at_scale(
+                              resource_name.c_str(), 64, 64, TRUE, 0));
   }
 }
 

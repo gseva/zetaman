@@ -2,6 +2,7 @@
 #include <string>
 
 class Editor {
+  
   private:
     std::string imagenSeleccionada;
 
