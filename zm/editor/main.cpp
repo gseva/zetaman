@@ -2,6 +2,9 @@
 #include <iostream>
 #include "editor.h"
 
+#define ALTO 12
+#define ANCHO 9
+
 int main(int argc, char **argv)
 {
   Editor editor;
@@ -22,8 +25,8 @@ int main(int argc, char **argv)
 
   pwindow->set_default_size(1024, 768);
 
-  Gtk::EventBox eventBoxMatrix[2][2];
-  Gtk::Image imageMatrix[2][2];
+  Gtk::EventBox eventBoxMatrix[ALTO][ANCHO];
+  Gtk::Image imageMatrix[ALTO][ANCHO];
 
   if(pBtnCrearJugador)
   {
@@ -41,36 +44,36 @@ int main(int argc, char **argv)
   }
 
   /*Agrego los event box a la grid*/
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < ALTO; i++)
   {
-      for (int j = 0; j < 2; j++)
+      for (int j = 0; j < ANCHO; j++)
       {
           pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
       }
   }
 
   /*Agrego las imagenes a los event box*/
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < ALTO; i++)
   {
-      for (int j = 0; j < 2; j++)
+      for (int j = 0; j < ANCHO; j++)
       {
           eventBoxMatrix[i][j].add(imageMatrix[i][j]);
       }
   }
 
   /*Seteo las imagenes*/
-  for (int i = 0; i < 2; i++)
+  for (int i = 0; i < ALTO; i++)
   {
-      for (int j = 0; j < 2; j++)
+      for (int j = 0; j < ANCHO; j++)
       {
-          imageMatrix[i][j].set("houseGrayAlt2.png");
+          imageMatrix[i][j].set("vacio.png");
       }
   }
 
   /*Seteo el evento en los event box*/
-  for(int i=0; i<2; i++)
+  for(int i=0; i<ALTO; i++)
   {
-    for(int j=0; j<2; j++)
+    for(int j=0; j<ANCHO; j++)
     {
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
       eventBoxMatrix[i][j].signal_button_press_event().connect (sigc::bind<Gtk::Image*>(sigc::mem_fun(editor,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));

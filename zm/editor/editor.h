@@ -1,10 +1,9 @@
 #include <gtkmm.h>
+#include <string>
 
 class Editor {
   private:
-    bool crearJugador = false;
-    bool crearTerreno = false;
-    bool crearEnemigo = false;
+    std::string imagenSeleccionada;
 
   public:
     void on_buttonCrearJugador_clicked();
