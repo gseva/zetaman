@@ -16,6 +16,9 @@ public:
   ServerProxy();
 
   void jump();
+  void moveRight();
+  void moveLeft();
+  void stopHorizontalMove();
 
   GameState getState();
 

@@ -13,7 +13,7 @@ namespace zm {
 
 Canvas::Canvas(Client* c) : c_(c) {
   Glib::signal_timeout().connect(
-    sigc::mem_fun(*this, &Canvas::on_timeout), 100);
+    sigc::mem_fun(*this, &Canvas::on_timeout), 40);
 }
 
 Canvas::~Canvas() {
