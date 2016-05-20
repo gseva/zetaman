@@ -12,18 +12,18 @@ int main(int argc, char **argv)
   Gtk::Button * pBtnCrearEnemigo;
   Gtk::Button * pBtnCrearJugador;
   Gtk::Window * pwindow;
-  Gtk::EventBox* pEventBox;
-  Gtk::Image* pImage;
-  Gtk::Image* pImage2;
+  Gtk::Grid* pGrid;
+
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("applicationwindow1", pwindow);
-  builder->get_widget("eventbox2", pEventBox);
-  builder->get_widget("image1", pImage);
-  builder->get_widget("image2",pImage2);
+  builder->get_widget("grid1", pGrid);
 
   pwindow->set_default_size(1024, 768);
+
+  Gtk::EventBox eventBoxMatrix[2][2];
+  Gtk::Image imageMatrix[2][2];
 
   if(pBtnCrearJugador)
   {
@@ -40,15 +40,44 @@ int main(int argc, char **argv)
     pBtnCrearEnemigo->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearEnemigo_clicked) );
   }
 
-  if(pEventBox)
+  /*Agrego los event box a la grid*/
+  for (int i = 0; i < 2; i++)
   {
-    pEventBox->set_events(Gdk::BUTTON_PRESS_MASK);
-    pEventBox->signal_button_press_event().connect (sigc::mem_fun(editor,&Editor::on_eventbox_button_press));
+      for (int j = 0; j < 2; j++)
+      {
+          pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
+      }
   }
 
-  pImage->set("vacio.jpg");
+  /*Agrego las imagenes a los event box*/
+  for (int i = 0; i < 2; i++)
+  {
+      for (int j = 0; j < 2; j++)
+      {
+          eventBoxMatrix[i][j].add(imageMatrix[i][j]);
+      }
+  }
 
-  pImage2->set("vacio.jpg");
+  /*Seteo las imagenes*/
+  for (int i = 0; i < 2; i++)
+  {
+      for (int j = 0; j < 2; j++)
+      {
+          imageMatrix[i][j].set("houseGrayAlt2.png");
+      }
+  }
+
+  /*Seteo el evento en los event box*/
+  for(int i=0; i<2; i++)
+  {
+    for(int j=0; j<2; j++)
+    {
+      eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
+      eventBoxMatrix[i][j].signal_button_press_event().connect (sigc::bind<Gtk::Image*>(sigc::mem_fun(editor,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));
+    }
+  }
+ 
+  pGrid->show_all_children();
 
   app->run(*pwindow);
 

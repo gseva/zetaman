@@ -25,8 +25,9 @@ void Editor::on_buttonCrearEnemigo_clicked()
   bool crearEnemigo = true;
 }
 
-bool Editor::on_eventbox_button_press(GdkEventButton*)
+bool Editor::on_eventbox_button_press(GdkEventButton* eventButton, Gtk::Image* imagen)
 {
+  imagen->set("boxItem_disabled.png");
   std::cout << "Clickeo en division" << std::endl;
   return true;
 }
