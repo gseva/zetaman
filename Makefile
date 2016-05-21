@@ -136,6 +136,7 @@ obj_dir = $(build_dir)objs
 zm_dir = zm/
 client_dir = $(zm_dir)client/
 server_dir = $(zm_dir)server/
+json_dir = $(zm_dir)json/
 
 assets_dir = assets/
 assets_config = $(assets_dir)image.gresource.xml
@@ -144,7 +145,8 @@ assets_config = $(assets_dir)image.gresource.xml
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
-all_sources = $(client_sources) $(server_sources) $(common_sources)
+json_sources ?= $(wildcard $(json_dir)*.$(extension))
+all_sources = $(client_sources) $(server_sources) $(common_sources) $(json_sources)
 all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
@@ -156,9 +158,10 @@ client_target = $(build_dir)zm
 o_common_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(common_sources))
 o_server_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(server_sources))
 o_client_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(client_sources))
+o_json_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(json_sources))
 o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
-o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files)
+o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_json_only_files)
 
 o_resources = $(resources_dir)resources.o
 

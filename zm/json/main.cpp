@@ -2,6 +2,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <vector>
 #include "jsonserializer.h"
 // for convenience
 using json = nlohmann::json;
@@ -12,7 +13,7 @@ int main(int argc, char** argv)
 
   std::vector<int> v = serializer.importarMapa("ejemplo.json");
 
-  for(unsigned int i=0; i<v.size();i++)
+  for (unsigned int i=0; i<v.size(); i++)
   {
     std::cout << v.at(i) << std::endl;
   }
