@@ -10,7 +10,8 @@ int main(int argc, char **argv)
   Editor editor;
 
   auto app = Gtk::Application::create(argc, argv, "");
-  Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("editor.glade");
+  Glib::RefPtr<Gtk::Builder> builder =
+      Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
   Gtk::Button * pBtnCrearTerreno;
   Gtk::Button * pBtnCrearEnemigo;
   Gtk::Button * pBtnCrearJugador;
@@ -28,19 +29,22 @@ int main(int argc, char **argv)
   Gtk::EventBox eventBoxMatrix[ALTO][ANCHO];
   Gtk::Image imageMatrix[ALTO][ANCHO];
 
-  if(pBtnCrearJugador)
+  if (pBtnCrearJugador)
   {
-    pBtnCrearJugador->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearJugador_clicked) );
+    pBtnCrearJugador->signal_clicked().connect(
+        sigc::mem_fun(editor,&Editor::on_buttonCrearJugador_clicked) );
   }
 
-  if(pBtnCrearTerreno)
+  if (pBtnCrearTerreno)
   {
-    pBtnCrearTerreno->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearTerreno_clicked) );
+    pBtnCrearTerreno->signal_clicked().connect(
+        sigc::mem_fun(editor,&Editor::on_buttonCrearTerreno_clicked));
   }
 
-  if(pBtnCrearEnemigo)
+  if (pBtnCrearEnemigo)
   {
-    pBtnCrearEnemigo->signal_clicked().connect( sigc::mem_fun(editor,&Editor::on_buttonCrearEnemigo_clicked) );
+    pBtnCrearEnemigo->signal_clicked().connect(
+        sigc::mem_fun(editor,&Editor::on_buttonCrearEnemigo_clicked));
   }
 
   /*Agrego los event box a la grid*/
@@ -66,20 +70,22 @@ int main(int argc, char **argv)
   {
       for (int j = 0; j < ANCHO; j++)
       {
-          imageMatrix[i][j].set("vacio.png");
+          imageMatrix[i][j].set("/zm/editor/images/void.png");
       }
   }
 
   /*Seteo el evento en los event box*/
-  for(int i=0; i<ALTO; i++)
+  for (int i=0; i<ALTO; i++)
   {
-    for(int j=0; j<ANCHO; j++)
+    for (int j=0; j<ANCHO; j++)
     {
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
-      eventBoxMatrix[i][j].signal_button_press_event().connect (sigc::bind<Gtk::Image*>(sigc::mem_fun(editor,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));
+      eventBoxMatrix[i][j].signal_button_press_event().connect(
+        sigc::bind<Gtk::Image*>(sigc::mem_fun(
+            editor,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));
     }
   }
- 
+
   pGrid->show_all_children();
 
   app->run(*pwindow);

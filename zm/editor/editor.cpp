@@ -23,7 +23,8 @@ void Editor::on_buttonCrearEnemigo_clicked()
   imagenSeleccionada = IMAGEN_ENEMIGO;
 }
 
-bool Editor::on_eventbox_button_press(GdkEventButton* eventButton, Gtk::Image* imagen)
+bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
+                                      Gtk::Image* imagen)
 {
   imagen->set(imagenSeleccionada);
   std::cout << "Clickeo en division" << std::endl;
