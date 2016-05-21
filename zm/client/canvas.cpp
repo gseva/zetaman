@@ -13,7 +13,7 @@ namespace zm {
 
 Canvas::Canvas(Client* c) : c_(c) {
   Glib::signal_timeout().connect(
-    sigc::mem_fun(*this, &Canvas::on_timeout), 100);
+    sigc::mem_fun(*this, &Canvas::on_timeout), 40);
 }
 
 Canvas::~Canvas() {
@@ -32,7 +32,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   // Dibujo de un circulo
   cr->save();
-  cr->arc(gs_.x, gs_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
+  cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
   cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
   cr->fill_preserve();
   cr->restore();  // Vuelvo a un negro opaco
@@ -41,8 +41,8 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   return true;
 }
 
-void Canvas::updateGameState(GameState gs) {
-  gs_ = gs;
+void Canvas::updateGameState(Game game) {
+  game_ = game;
   redraw();
 }
 
