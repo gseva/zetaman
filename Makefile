@@ -115,6 +115,8 @@ LD = $(CXX)
 endif
 
 GLIB_COMPILE_RESOURCES = glib-compile-resources
+compile_res = @$(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(dir $<) --generate-source $<
+link_res = cc $(shell pkg-config --cflags gtk+-3.0) -c $< -o $@
 
 occ := $(CC)
 ocxx := $(CXX)
@@ -136,31 +138,39 @@ obj_dir = $(build_dir)objs
 zm_dir = zm/
 client_dir = $(zm_dir)client/
 server_dir = $(zm_dir)server/
+editor_dir = $(zm_dir)editor/
 
 assets_dir = assets/
-assets_config = $(assets_dir)image.gresource.xml
+images_config = $(assets_dir)image.gresource.xml
+editor_config = $(assets_dir)editor.gresource.xml
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
-all_sources = $(client_sources) $(server_sources) $(common_sources)
+editor_sources ?= $(wildcard $(editor_dir)*.$(extension))
+all_sources = $(client_sources) $(server_sources) $(common_sources) $(editor_sources)
 all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
-resources_source = $(resources_dir)resources.c
+client_resources = $(resources_dir)client_resources.c
+editor_resources = $(resources_dir)editor_resources.c
 
 server_target = $(build_dir)server
 client_target = $(build_dir)zm
+editor_target = $(build_dir)editor
 
 o_common_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(common_sources))
 o_server_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(server_sources))
 o_client_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(client_sources))
+o_editor_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(editor_sources))
 o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
-o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files)
+o_editor_all_files = $(o_editor_only_files)
+o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files)
 
-o_resources = $(resources_dir)resources.o
+o_client_resources = $(resources_dir)client_resources.o
+o_editor_resources = $(resources_dir)editor_resources.o
 
 lint_extensions = --extensions=$(header_extension),$(extension)
 lint_filters =  --filter=`cat lint/filter_options`
@@ -171,17 +181,22 @@ lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
 
 .PHONY: all clean lint assets
 
-
-all: lint client
+all: lint client editor
 
 $(o_all_files): $(obj_dir)/%.o : %.$(extension)
 	$(LD) $(CXXFLAGS) -c $< -o $@
 
-$(resources_source): $(assets_config)
-	@$(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(dir $<) --generate-source $<
+$(client_resources): $(images_config)
+	$(compile_res)
 
-$(o_resources): $(resources_source)
-	cc $(shell pkg-config --cflags gtk+-3.0) -c $< -o $@
+$(editor_resources): $(editor_config)
+	$(compile_res)
+
+$(o_client_resources): $(client_resources)
+	$(link_res)
+
+$(o_editor_resources): $(editor_resources)
+	$(link_res)
 
 # $(o_all_files)/%.o: %.(extension)
 # 	$(LD) $(CXXFLAGS) -c $< -o $@
@@ -198,16 +213,16 @@ $(o_resources): $(resources_source)
 #     $(CC) $(FLAGS) $< -o $@
 
 create_dirs:
-	@$(foreach file, $(o_client_all_files), mkdir -p $(dir $(file));)
+	@$(foreach file, $(o_all_files) $(resources_dir) , mkdir -p $(dir $(file));)
 	@mkdir -p $(resources_dir)
 
-client: create_dirs assets $(o_client_all_files)
+client: create_dirs client_assets $(o_client_all_files)
 	@if [ -z "$(o_client_all_files)" ]; \
 	then \
 		echo "No hay archivos de entrada para el cliente (archivos zm/cient/*.$(extension))."; \
 		false; \
 	fi >&2
-	$(LD) $(o_client_all_files) $(o_resources) -o $(client_target) $(LDFLAGS)
+	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(LDFLAGS)
 
 server: $(o_server_only_files)
 	@if [ -z "$(o_server_only_files)" ]; \
@@ -217,16 +232,25 @@ server: $(o_server_only_files)
 	fi >&2
 	$(LD) $(o_server_only_files) -o $(server_target) $(LDFLAGS)
 
+editor: create_dirs editor_assets $(o_editor_all_files)
+	@if [ -z "$(o_editor_all_files)" ]; \
+	then \
+		echo "No hay archivos de entrada para el servidor (archivos zm/editor/*.$(extension))."; \
+		false; \
+	fi >&2
+	$(LD) $(o_editor_all_files) $(o_editor_resources) -o $(editor_target) $(LDFLAGS)
+
 lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
+client_assets: $(client_resources) $(o_client_resources)
 
-assets: $(resources_source) $(o_resources)
+editor_assets: $(editor_resources) $(o_editor_resources)
 
 clean_resources:
-	@$(RM) -fv $(o_resources)
+	@$(RM) -fv $(o_client_resources) $(o_editor_resources)
 
 clean: clean_resources
 	@$(RM) -fv $(o_client_only_files) $(o_server_only_files) $(o_common_files) \
-						 $(client_target) $(server_target)
+						 $(o_editor_only_files) $(client_target) $(server_target) $(editor_target)
 
