@@ -14,14 +14,14 @@ class Client;
 
 class Canvas : public Gtk::DrawingArea {
 Client* c_;
-GameState gs_;
+Game game_;
 Map map_;
 
 public:
   explicit Canvas(Client* c);
   virtual ~Canvas();
 
-  void updateGameState(GameState gs);
+  void updateGameState(Game gs);
 
 protected:
   void redraw();

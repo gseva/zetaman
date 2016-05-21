@@ -23,7 +23,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   app->run(window);
 }
 
-void Client::draw(GameState state) {
+void Client::draw(Game game) {
 }
 
 
@@ -37,9 +37,23 @@ Window::Window(Client* c) : c_(c) {
 bool Window::on_key_press_event(GdkEventKey* event) {
   if (event->keyval == GDK_KEY_space) {
     c_->serverProxy.jump();
+  } else if (event->keyval == GDK_KEY_Right) {
+    c_->serverProxy.moveRight();
+  } else if (event->keyval == GDK_KEY_Left) {
+    c_->serverProxy.moveLeft();
   }
 
   return Gtk::Window::on_key_press_event(event);
+}
+
+bool Window::on_key_release_event(GdkEventKey* event) {
+  if (event->keyval == GDK_KEY_Right) {
+    c_->serverProxy.stopHorizontalMove();
+  } else if (event->keyval == GDK_KEY_Left) {
+    c_->serverProxy.stopHorizontalMove();
+  }
+
+  return Gtk::Window::on_key_release_event(event);
 }
 
 } // zm

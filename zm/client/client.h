@@ -20,7 +20,7 @@ public:
   Client();
   void run(Glib::RefPtr<Gtk::Application> app);
 
-  void draw(GameState state);
+  void draw(Game game);
 };
 
 class Window : public Gtk::Window {
@@ -30,6 +30,7 @@ public:
 
 private:
   bool on_key_press_event(GdkEventKey* event) override;
+  bool on_key_release_event(GdkEventKey* event) override;
 };
 
 } // zm

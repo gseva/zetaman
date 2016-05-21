@@ -12,7 +12,7 @@ Server::Server(ServerProxy& sp){
   b2PolygonShape groundBox;
   groundBox.SetAsBox(50.0f, 10.0f);
   groundBody->CreateFixture(&groundBox, 0.0f);
-  
+
   this->player.createBody(world);
 }
 
@@ -27,26 +27,26 @@ void Server::jump(){
 
 
 void Server::right(){
-  player.right();  
+  player.right();
 }
 void Server::left(){
-  player.right();  
+  player.left();
 }
 
 void Server::stopHorizontalMove(){
-  player.stopHorizontalMove();  
+  player.stopHorizontalMove();
 }
 
 
-GameState Server::getState(){
+zm::Game Server::getState(){
   float32 timeStep = 1.0f / 60.0f; //60Hz
   int32 velocityIterations = 8; //valores sugeridos
-  int32 positionIterations = 3; 
+  int32 positionIterations = 3;
   world->Step(timeStep, velocityIterations, positionIterations);
 
   b2Vec2 position = player.getPosition();
 
-  GameState gs;
+  zm::Game gs;
   gs.x = position.x*100;
   gs.y = position.y*(-100)+400;
   return gs;

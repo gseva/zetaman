@@ -16,10 +16,13 @@ public:
   ServerProxy();
 
   void jump();
+  void moveRight();
+  void moveLeft();
+  void stopHorizontalMove();
 
-  GameState getState();
+  zm::Game getState();
 
-  void updateState(GameState gs);
+  void updateState(zm::Game g);
 
 
 };
