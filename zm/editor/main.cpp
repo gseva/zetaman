@@ -3,7 +3,9 @@
 
 int main(int argc, char **argv)
 {
-  Editor editor(argc, argv);
+  auto appl = Gtk::Application::create(argc, argv, "");
+
+  Editor editor(appl);
 
   editor.runEditor();
 

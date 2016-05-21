@@ -31,7 +31,7 @@ class Editor {
     void on_buttonCrearEnemigo_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen);
-    Editor(int argc, char **argv);
+    explicit Editor(Glib::RefPtr<Gtk::Application> appl);
     void connectButtonsWithSignals();
     void createEmptyGrid();
     void runEditor();

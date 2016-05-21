@@ -31,9 +31,9 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
   return true;
 }
 
-Editor::Editor(int argc, char **argv)
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
 {
-  app = Gtk::Application::create(argc, argv, "");
+  app = appl;
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
