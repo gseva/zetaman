@@ -25,7 +25,7 @@ void Editor::on_buttonCrearEnemigo_clicked()
   bool crearEnemigo = true;
 }
 
-bool Editor::on_eventbox_button_press(GdkEventButton*)
+bool Editor::on_eventbox_button_press(GdkEventButton* btn)
 {
   std::cout << "Clickeo en division" << std::endl;
   return true;
