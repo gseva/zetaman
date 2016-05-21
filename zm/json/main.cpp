@@ -11,18 +11,18 @@ int main(int argc, char** argv)
 {
   JsonSerializer serializer;
 
-  std::vector<int> v = serializer.importarMapa("ejemplo.json");
+  Map m = serializer.importMap("ejemplo.json");
 
-  for (unsigned int i=0; i<v.size(); i++)
+  for (unsigned int i=0; i<m.imageNumbers.size(); i++)
   {
-    std::cout << v.at(i) << std::endl;
+    std::cout << m.imageNumbers.at(i) << std::endl;
   }
-  
-  serializer.exportarMapa("conClase.json", v);
 
-  std::map<std::string, int> caracteristicasBichito;
+  serializer.exportMap("exportando.json", m);
 
-  caracteristicasBichito = serializer.importarEnte("ente.json");
+  /*std::map<std::string, int> caracteristicasBichito;
+
+  caracteristicasBichito = serializer.importarEnte("ente.json");*/
 
   return 0;
 }

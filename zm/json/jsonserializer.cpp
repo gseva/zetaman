@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-std::vector<int> JsonSerializer::importarMapa(std::string path)
+Map JsonSerializer::importMap(std::string path)
 {
   std::fstream fs;
 
@@ -21,21 +21,25 @@ std::vector<int> JsonSerializer::importarMapa(std::string path)
   fs.close();
 
   //Carga en el vector todo lo contenido de "tiles"
-  std::vector<int> tilesVector = j["tiles"]; 
+  std::vector<int> imageNumbersVector = j["tiles"];
+  std::vector<std::string> imageNamesVector = j["images"];
+  std::vector<std::string> physicsVector = j["physics"];
 
-  return tilesVector;  
+  Map mapa;
+
+  mapa.imageNumbers = imageNumbersVector;
+  mapa.imageNames = imageNamesVector;
+  mapa.physics = physicsVector;
+
+  return mapa;  
 }
 
-void JsonSerializer::exportarMapa(std::string path, std::vector<int> tiles)
+void JsonSerializer::exportMap(std::string path, Map m)
 {
-  std::map<std::string, std::vector<int>> tilesParaGuardar;
-  
-  // Crea el mapa para guardarlo con el nombre "tiles" y no solo el vector
-  tilesParaGuardar.insert(std::pair<std::string,std::vector<int>>("tiles",
-                                                                  tiles));  
+  json exportable;
 
-  // Transformo el mapa en un json
-  json exportable(tilesParaGuardar); 
+  exportable= {{"tiles",m.imageNumbers},{"images",m.imageNames},
+                {"physics",m.physics}}; 
 
   std::fstream newFile;
 
