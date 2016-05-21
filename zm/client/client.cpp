@@ -23,7 +23,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   app->run(window);
 }
 
-void Client::draw(GameState state) {
+void Client::draw(Game game) {
 }
 
 

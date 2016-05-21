@@ -38,7 +38,7 @@ void Server::stopHorizontalMove(){
 }
 
 
-GameState Server::getState(){
+zm::Game Server::getState(){
   float32 timeStep = 1.0f / 60.0f; //60Hz
   int32 velocityIterations = 8; //valores sugeridos
   int32 positionIterations = 3;
@@ -46,7 +46,7 @@ GameState Server::getState(){
 
   b2Vec2 position = player.getPosition();
 
-  GameState gs;
+  zm::Game gs;
   gs.x = position.x*100;
   gs.y = position.y*(-100)+400;
   return gs;
