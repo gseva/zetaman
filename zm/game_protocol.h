@@ -54,7 +54,6 @@ public:
 enum GameState { playing, won, lost };
 
 class Game {
-
 public:
   int x, y;
 
@@ -70,7 +69,6 @@ public:
   std::vector<Enemy> enemies;
   std::vector<Proyectile> proyectiles;
   std::vector<PowerUp> powerUps;
-
 };
 
 } // zm

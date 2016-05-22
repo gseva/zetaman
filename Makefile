@@ -150,7 +150,7 @@ server_sources ?= $(wildcard $(server_dir)*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 editor_sources ?= $(wildcard $(editor_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources) $(editor_sources)
-all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
+all_headers = $(wildcard $(zm_dir)**/*.$(header_extension) $(zm_dir)*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
 client_resources = $(resources_dir)client_resources.c
