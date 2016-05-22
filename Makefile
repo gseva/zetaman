@@ -170,7 +170,7 @@ o_json_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(json_sources))
 o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 o_editor_all_files = $(o_editor_only_files)
-o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_json_only_files)
+o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files) $(o_json_only_files)
 
 o_client_resources = $(resources_dir)client_resources.o
 o_editor_resources = $(resources_dir)editor_resources.o
