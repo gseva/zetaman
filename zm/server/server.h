@@ -15,7 +15,7 @@ public:
 	explicit Server(ServerProxy& sp);
 	~Server();
 	void jump();
-	GameState getState();
+	zm::Game getState();
   void right();
   void left();
   void stopHorizontalMove();

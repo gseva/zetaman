@@ -8,7 +8,7 @@
 
 class GameUpdateHandler {
 public:
-  typedef sigc::signal<void, GameState> type_signal_game_update;
+  typedef sigc::signal<void, zm::Game> type_signal_game_update;
   type_signal_game_update signal_game_update();
 
 protected:

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/zm/editor">
+    <file preprocess="xml-stripblanks">editor.glade</file>
+    <file>images/grass_mid.png</file>
+    <file>images/player.png</file>
+    <file>images/enemy.png</file>
+    <file>images/void.png</file>
+  </gresource>
+</gresources>
