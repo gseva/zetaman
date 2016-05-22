@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-Map JsonSerializer::importMap(std::string path)
+JsonMap JsonSerializer::importMap(std::string path)
 {
   std::fstream fs;
 
@@ -25,7 +25,7 @@ Map JsonSerializer::importMap(std::string path)
   std::vector<std::string> imageNamesVector = j["images"];
   std::vector<std::string> physicsVector = j["physics"];
 
-  Map mapa;
+  JsonMap mapa;
 
   mapa.imageNumbers = imageNumbersVector;
   mapa.imageNames = imageNamesVector;
@@ -34,7 +34,7 @@ Map JsonSerializer::importMap(std::string path)
   return mapa;  
 }
 
-void JsonSerializer::exportMap(std::string path, Map m)
+void JsonSerializer::exportMap(std::string path, JsonMap m)
 {
   json exportable;
 

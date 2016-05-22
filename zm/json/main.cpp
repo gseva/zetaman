@@ -11,7 +11,7 @@ int main(int argc, char** argv)
 {
   JsonSerializer serializer;
 
-  Map m = serializer.importMap("ejemplo.json");
+  JsonMap m = serializer.importMap("ejemplo.json");
 
   for (unsigned int i=0; i<m.imageNumbers.size(); i++)
   {

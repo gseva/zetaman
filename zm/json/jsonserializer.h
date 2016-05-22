@@ -4,17 +4,17 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
-typedef struct Map
+typedef struct JsonMap
 {
   std::vector<int> imageNumbers;
   std::vector<std::string> imageNames;
   std::vector<std::string> physics;
-} Map;
+} JsonMap;
 
 class JsonSerializer
 {
   public:
-  Map importMap(std::string path);
-  void exportMap(std::string path, Map m);
+  JsonMap importMap(std::string path);
+  void exportMap(std::string path, JsonMap m);
   std::map<std::string,int> importarEnte(std::string path);
 };
