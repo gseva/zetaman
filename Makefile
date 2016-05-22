@@ -138,6 +138,7 @@ obj_dir = $(build_dir)objs
 zm_dir = zm/
 client_dir = $(zm_dir)client/
 server_dir = $(zm_dir)server/
+json_dir = $(zm_dir)json/
 editor_dir = $(zm_dir)editor/
 
 assets_dir = assets/
@@ -149,7 +150,8 @@ client_sources ?= $(wildcard $(client_dir)*.$(extension))
 server_sources ?= $(wildcard $(server_dir)*.$(extension)) $(wildcard $(server_dir)**/*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 editor_sources ?= $(wildcard $(editor_dir)*.$(extension))
-all_sources = $(client_sources) $(server_sources) $(common_sources) $(editor_sources)
+json_sources ?= $(wildcard $(json_dir)*.$(extension))
+all_sources = $(client_sources) $(server_sources) $(common_sources) $(json_sources) $(editor_sources)
 all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
@@ -164,10 +166,11 @@ o_common_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(common_sources))
 o_server_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(server_sources))
 o_client_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(client_sources))
 o_editor_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(editor_sources))
+o_json_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(json_sources))
 o_server_all_files = $(o_server_only_files) $(o_common_files)
 o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
 o_editor_all_files = $(o_editor_only_files)
-o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files)
+o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files) $(o_json_only_files)
 
 o_client_resources = $(resources_dir)client_resources.o
 o_editor_resources = $(resources_dir)editor_resources.o
