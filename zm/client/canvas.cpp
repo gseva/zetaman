@@ -12,8 +12,6 @@ namespace zm {
 
 
 Canvas::Canvas(Client* c) : c_(c) {
-  Glib::signal_timeout().connect(
-    sigc::mem_fun(*this, &Canvas::on_timeout), 40);
 }
 
 Canvas::~Canvas() {
@@ -54,11 +52,6 @@ void Canvas::redraw() {
               get_allocation().get_height());
       win->invalidate_rect(r, false);
   }
-}
-
-bool Canvas::on_timeout() {
-  c_->serverProxy.updateState(c_->serverProxy.getState());
-  return true;
 }
 
 } // zm

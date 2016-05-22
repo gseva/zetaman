@@ -7,7 +7,7 @@
 #define VY_MIN_LIM -10
 #define VY_MAX_LIM 10
 
-Player::Player(Physics& physics) : physics(physics), body(physics){}
+Player::Player(Physics& physics) : body(physics){}
 
 Player::~Player(){}
 

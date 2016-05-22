@@ -15,7 +15,6 @@ public:
 	void jump();
   b2Vec2 getPosition();
 private:
-  Physics& physics;
   PlayerBody body;
 };
 
