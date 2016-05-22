@@ -146,7 +146,7 @@ editor_config = $(assets_dir)editor.gresource.xml
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
-server_sources ?= $(wildcard $(server_dir)*.$(extension))
+server_sources ?= $(wildcard $(server_dir)*.$(extension)) $(wildcard $(server_dir)**/*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 editor_sources ?= $(wildcard $(editor_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources) $(editor_sources)
