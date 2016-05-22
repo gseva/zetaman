@@ -5,6 +5,9 @@
 #include "zm/game_protocol.h"
 #include "zm/server/player.h"
 #include <Box2D/Box2D.h>
+#include <zm/thread.h>
+#include "zm/server/physical/physical.h"
+#include "zm/server/timer.h"
 class ServerProxy;
 
 class Server{
@@ -18,12 +21,16 @@ public:
   void stopHorizontalMove();
 
 private:
-	Player player;
-  b2World* world;
+  //World world;
+  Physical physical;
+  Timer timer;
+  Player player;
+  /*b2World* world;
   b2Vec2* gravity;
 
   b2BodyDef groundBodyDef;
   b2Body* groundBody;
+*/
 };
 
 #endif

@@ -142,7 +142,7 @@ assets_config = $(assets_dir)image.gresource.xml
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
-server_sources ?= $(wildcard $(server_dir)*.$(extension))
+server_sources ?= $(wildcard $(server_dir)*.$(extension)) $(wildcard $(server_dir)**/*.$(extension))
 common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources)
 all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
