@@ -6,7 +6,7 @@
 #include "zm/server/player.h"
 #include <Box2D/Box2D.h>
 #include <zm/thread.h>
-#include "zm/server/physical/physical.h"
+#include "zm/server/physics/physics.h"
 #include "zm/server/timer.h"
 class ServerProxy;
 
@@ -22,7 +22,7 @@ public:
 
 private:
   //World world;
-  Physical physical;
+  Physics physics;
   Timer timer;
   Player player;
   /*b2World* world;

@@ -1,9 +1,9 @@
 #include "zm/server/server.h"
 #include <Box2D/Box2D.h>
-#include "zm/server/physical/physical.h"
+#include "zm/server/physics/physics.h"
 #include <iostream>
-Server::Server(ServerProxy& sp) : timer(physical, sp),
-  player(physical){
+Server::Server(ServerProxy& sp) : timer(physics, sp),
+  player(physics){
   timer.start();
 }
 

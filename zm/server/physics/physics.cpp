@@ -1,18 +1,18 @@
-#define DEFAULT_GRAVITY_X 0.0f
-#define DEFAULT_GRAVITY_Y -10.0f
-#include "zm/server/physical/physical.h"
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include "zm/server/physics/physics.h"
+#define DEFAULT_GRAVITY_X 0.0f
+#define DEFAULT_GRAVITY_Y -10.0f
 
-Physical::Physical() : gorund(world){}
+Physics::Physics() : ground(world){}
 
-Physical::~Physical(){}
+Physics::~Physics(){}
 
-void Physical::step(){
+void Physics::step(){
   world.step();
 }
 
-b2Body* Physical::createBody(const b2BodyDef& bodyDef){
+b2Body* Physics::createBody(const b2BodyDef& bodyDef){
   return world.createBody(bodyDef);
 }
 
@@ -36,7 +36,6 @@ void World::step(){
   int32 velocityIterations = 8; //valores sugeridos
   int32 positionIterations = 3; 
   world->Step(timeStep, velocityIterations, positionIterations);
-  //sleep(1/timeStep);
 }
 
 Ground::Ground(World& world) : world(world){
@@ -49,10 +48,10 @@ Ground::Ground(World& world) : world(world){
 
 Ground::~Ground(){}
 
-PlayerBody::PlayerBody(Physical& physical) : physical(physical){
+PlayerBody::PlayerBody(Physics& physics) : physics(physics){
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(2.0f, 4.0f);
-  body = physical.createBody(bodyDef);
+  body = this->physics.createBody(bodyDef);
   b2CircleShape dynamicCircle;
   dynamicCircle.m_p.Set(2.0f, 3.0f);
   dynamicCircle.m_radius = 0.5f;
@@ -65,16 +64,15 @@ PlayerBody::PlayerBody(Physical& physical) : physical(physical){
 PlayerBody::~PlayerBody(){}
 
 b2Vec2 PlayerBody::getPosition(){
-  std::cout << body->GetPosition().y<<"\n--- "<< body->GetLinearVelocity().y;
   return body->GetPosition();
+}
+
+void PlayerBody::setPosition(int x, int y){
+  body->SetTransform(b2Vec2(x,y), body->GetAngle());
 }
 
 void PlayerBody::jump(){
   b2Vec2 vel = body->GetLinearVelocity();
-  std::cout << "velocidad del jugador" << vel.y << "\n";
-  b2Vec2 pos = body->GetPosition();
-  std::cout << "velocidad del jugador" << pos.y << "\n";
-
   if ( vel.y == 0 ) {
     vel.y += 10;
     body->SetLinearVelocity(vel);
