@@ -1,17 +1,17 @@
 
 #include "zm/client/canvas.h"
-#include "zm/client/client.h"
+#include "zm/client/drawable.h"
 
 #include <glibmm/main.h>
 #include <glibmm/fileutils.h>
 #include <giomm/resource.h>
 #include <gdkmm/general.h> // set_source_pixbuf()
-#include <cairomm/context.h>
+
 
 namespace zm {
 
 
-Canvas::Canvas(Client* c) : c_(c) {
+Canvas::Canvas() {
 }
 
 Canvas::~Canvas() {
@@ -22,19 +22,26 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   // const int width = allocation.get_width();
   // const int height = allocation.get_height();
 
-  int radius = 35;
+  // int radius = 35;
 
   map_.draw(cr);
 
-  cr->set_line_width(10.0);
+  Player p;
+  p.pos.x = game_.x;
+  p.pos.y = game_.y;
+
+  drawing::Player dp(p);
+  dp.draw(cr, buff_);
+
+  // cr->set_line_width(10.0);
 
   // Dibujo de un circulo
-  cr->save();
-  cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
-  cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
-  cr->fill_preserve();
-  cr->restore();  // Vuelvo a un negro opaco
-  cr->stroke();
+  // cr->save();
+  // cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
+  // cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
+  // cr->fill_preserve();
+  // cr->restore();  // Vuelvo a un negro opaco
+  // cr->stroke();
 
   return true;
 }

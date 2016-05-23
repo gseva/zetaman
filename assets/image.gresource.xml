@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/assets/">
-    <file>images/grass.png</file>
-    <file>images/grass_half.png</file>
-    <file>images/grass_mid.png</file>
-    <file>images/ladder_mid.png</file>
+  <gresource prefix="/zm">
+    <file>images/tiles/grass.png</file>
+    <file>images/tiles/grass_half.png</file>
+    <file>images/tiles/grass_mid.png</file>
+    <file>images/tiles/ladder_mid.png</file>
+
+    <file>images/player/megaman.png</file>
+    <file>images/player/megaman_running.png</file>
+    <file>images/player/megaman_jumping.png</file>
+
+    <file>images/enemies/bumpy/1.png</file>
+    <file>images/enemies/bumpy/2.png</file>
+    <file>images/enemies/met/guarded.png</file>
+    <file>images/enemies/met/unguarded.png</file>
+    <file>images/enemies/sniper/guarded.png</file>
+    <file>images/enemies/sniper/unguarded.png</file>
+    <file>images/enemies/sniper/jumping.png</file>
+
+
   </gresource>
 </gresources>
