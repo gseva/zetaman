@@ -20,9 +20,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
   serverProxy.updateHandler.signal_game_update().connect(
       sigc::mem_fun(area, &Canvas::updateGameState) );
-
   app->run(window);
-
 }
 
 void Client::draw(Game game) {

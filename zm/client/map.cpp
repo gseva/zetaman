@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "zm/client/map.h"
-
+#include <vector>
 #include <gdkmm/general.h> // set_source_pixbuf()
 
 // static const char* image_names[] = {
@@ -27,7 +27,6 @@
 //   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 // };
 
-
 namespace zm {
 
 Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
@@ -38,7 +37,7 @@ Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
 
 void Map::loadImages() {
   std::string prefix = "/assets/images/";
-  for (int i = 0; i < imageNames_.size(); ++i) {
+  for (unsigned int i = 0; i < imageNames_.size(); ++i) {
     std::string resource_name = prefix + imageNames_[i];
 
     // create_from_resource es de gtk 3.12, y en ubuntu 14.04 la version de gtk

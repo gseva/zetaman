@@ -37,10 +37,10 @@ box2d = si
 CFLAGS = -Wall -Werror -pedantic -pedantic-errors -ansi
 
 # Para optimizar el binario resultante lo mejor posible
-CFLAGS += -O3 -DNDEBUG
+#CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
-# CFLAGS += -ggdb -DDEBUG -fno-inline
+ CFLAGS += -ggdb -DDEBUG -fno-inline
 
 # Opciones del enlazador.
 #LDFLAGS =

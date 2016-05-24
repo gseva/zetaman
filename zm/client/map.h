@@ -2,6 +2,7 @@
 #define __CLIENT_MAP_H
 
 #include <vector>
+#include <string>
 
 #include <gdkmm/pixbuf.h>
 #include <glibmm/refptr.h>

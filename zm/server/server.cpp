@@ -1,10 +1,12 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include <string>
+#include <vector>
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "build/maps/mapita.json"
+#define DEFAULT_PATH "assets/maps/mapita.json"
 
 Server::Server(ServerProxy& sp) : timer(physics, sp),
   player(physics) {
@@ -46,7 +48,7 @@ zm::Game Server::getState(){
   return gs;
 }
 
-std::vector<std::string> Server::getImageNames() {
+std::vector<std::string> Server::getImageNames(){
   return jm.imageNames;
 }
 
