@@ -37,5 +37,43 @@ zm::Position& Player::getPosition() {
 }
 
 
+Enemy::Enemy(zm::Enemy e) : e_(e), imageName_("enemies/bumpy/1.png") {
+}
+
+std::string& Enemy::getImageName() {
+  return imageName_;
+}
+
+zm::Position& Enemy::getPosition() {
+  return e_.pos;
+}
+
+
+Proyectile::Proyectile(zm::Proyectile p) : p_(p),
+    imageName_("proyectiles/normal.png") {
+}
+
+std::string& Proyectile::getImageName() {
+  return imageName_;
+}
+
+zm::Position& Proyectile::getPosition() {
+  return p_.pos;
+}
+
+
+PowerUp::PowerUp(zm::PowerUp p) : p_(p), imageName_("powerups/life.png") {
+}
+
+std::string& PowerUp::getImageName() {
+  return imageName_;
+}
+
+zm::Position& PowerUp::getPosition() {
+  return p_.pos;
+}
+
+
+
 } // draw
 } // zm

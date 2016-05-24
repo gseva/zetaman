@@ -18,6 +18,13 @@
     <file>images/enemies/sniper/unguarded.png</file>
     <file>images/enemies/sniper/jumping.png</file>
 
+    <file>images/proyectiles/normal.png</file>
+
+    <file>images/powerups/life.png</file>
+    <file>images/powerups/energy.png</file>
+    <file>images/powerups/bigplasma.png</file>
+    <file>images/powerups/plasma.png</file>
+
 
   </gresource>
 </gresources>

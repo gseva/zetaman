@@ -48,6 +48,7 @@ enum PowerUpType { Life, SmallEnergy, LargeEnergy, SmallPlasma, LargePlasma };
 class PowerUp {
 public:
   Position pos;
+  PowerUpType type;
 };
 
 

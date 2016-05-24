@@ -34,6 +34,43 @@ public:
 };
 
 
+class Enemy : public Drawable {
+zm::Enemy e_;
+std::string imageName_;
+
+public:
+  explicit Enemy(zm::Enemy e);
+
+  virtual std::string& getImageName() override;
+  virtual zm::Position& getPosition() override;
+};
+
+
+class Proyectile : public Drawable {
+zm::Proyectile p_;
+std::string imageName_;
+
+public:
+  explicit Proyectile(zm::Proyectile p);
+
+  virtual std::string& getImageName() override;
+  virtual zm::Position& getPosition() override;
+};
+
+
+class PowerUp : public Drawable {
+zm::PowerUp p_;
+std::string imageName_;
+
+public:
+  explicit PowerUp(zm::PowerUp p);
+
+  virtual std::string& getImageName() override;
+  virtual zm::Position& getPosition() override;
+};
+
+
+
 } // draw
 } // zm
 

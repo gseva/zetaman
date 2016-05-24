@@ -29,9 +29,40 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   Player p;
   p.pos.x = game_.x;
   p.pos.y = game_.y;
+  game_.players.push_back(p);
 
-  drawing::Player dp(p);
-  dp.draw(cr, buff_);
+  Enemy e;
+  e.pos.x = game_.x + 35;
+  e.pos.y = game_.y + 35;
+  game_.enemies.push_back(e);
+
+  Proyectile pr;
+  pr.pos.x = game_.x - 35;
+  pr.pos.y = game_.y - 35;
+  game_.proyectiles.push_back(pr);
+
+  PowerUp pu;
+  pu.pos.x = game_.x - 55;
+  pu.pos.y = game_.y - 55;
+  game_.powerUps.push_back(pu);
+
+
+  for(auto&& player : game_.players) {
+    drawing::Player dp(player);
+    dp.draw(cr, buff_);
+  }
+  for(auto&& enemy : game_.enemies) {
+    drawing::Enemy dp(enemy);
+    dp.draw(cr, buff_);
+  }
+  for(auto&& proy : game_.proyectiles) {
+    drawing::Proyectile dp(proy);
+    dp.draw(cr, buff_);
+  }
+  for(auto&& powerUp : game_.powerUps) {
+    drawing::PowerUp dp(powerUp);
+    dp.draw(cr, buff_);
+  }
 
   // cr->set_line_width(10.0);
 
