@@ -47,19 +47,19 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   game_.powerUps.push_back(pu);
 
 
-  for(auto&& player : game_.players) {
+  for (auto&& player : game_.players) {
     drawing::Player dp(player);
     dp.draw(cr, buff_);
   }
-  for(auto&& enemy : game_.enemies) {
+  for (auto&& enemy : game_.enemies) {
     drawing::Enemy dp(enemy);
     dp.draw(cr, buff_);
   }
-  for(auto&& proy : game_.proyectiles) {
+  for (auto&& proy : game_.proyectiles) {
     drawing::Proyectile dp(proy);
     dp.draw(cr, buff_);
   }
-  for(auto&& powerUp : game_.powerUps) {
+  for (auto&& powerUp : game_.powerUps) {
     drawing::PowerUp dp(powerUp);
     dp.draw(cr, buff_);
   }
