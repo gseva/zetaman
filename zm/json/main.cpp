@@ -7,7 +7,7 @@
 // for convenience
 using json = nlohmann::json;
 
-int main(int argc, char** argv)
+int main1(int argc, char** argv)
 {
   JsonSerializer serializer;
 

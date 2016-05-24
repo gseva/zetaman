@@ -1,12 +1,40 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include <vector>
 #include "zm/server/physics/physics.h"
+#include "zm/json/jsonserializer.h"
+
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
+#define ALTO_TOTAL 9
+#define ANCHO_TOTAL 12
+#define AIRE 0
+#define PISO 1
 
-Physics::Physics() : ground(world){}
+
+Physics::Physics() {}//: ground(world){}
 
 Physics::~Physics(){}
+
+void Physics::setMap(JsonMap jm){
+  std::vector<int> matriz = jm.imageNumbers;
+  for ( int j = 0; j < ALTO_TOTAL; ++j ) {
+    for ( int i = 0; i < ANCHO_TOTAL; ++i ) {
+      switch ( matriz[i + j*ANCHO_TOTAL] ){
+        case PISO:
+          b2BodyDef blockBodyDef;// = new b2BodyDef();
+          b2Body* blockBody;
+          b2PolygonShape blockBox;// = new b2PolygonShape();
+          blockBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
+          blockBody = world.createBody(blockBodyDef);
+          blockBox.SetAsBox(0.5f, 0.5f);
+          blockBody->CreateFixture(&blockBox, 0.0f);
+          break;
+      }
+    }
+  }
+}
+
 
 void Physics::step(){
   world.step();
@@ -38,22 +66,22 @@ void World::step(){
   world->Step(timeStep, velocityIterations, positionIterations);
 }
 
-Ground::Ground(World& world) : world(world){
+/*Ground::Ground(World& world) : world(world){
   //debe leer el JSON y crear el piso correspondiente
   groundBodyDef.position.Set(0.0f, -10.0f); //centro
   groundBody = world.createBody(groundBodyDef);
   groundBox.SetAsBox(50.0f, 10.0f);
   groundBody->CreateFixture(&groundBox, 0.0f);
-}
+}*/
 
-Ground::~Ground(){}
+//Ground::~Ground(){}
 
-PlayerBody::PlayerBody(Physics& physics) : physics(physics){
+Body::Body(Physics& physics) : physics(physics){
   bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(2.0f, 4.0f);
+  //bodyDef.position.Set(0.5f, 1.5f);
   body = this->physics.createBody(bodyDef);
   b2CircleShape dynamicCircle;
-  dynamicCircle.m_p.Set(2.0f, 3.0f);
+  dynamicCircle.m_p.Set(0.5f, 3.5f);
   dynamicCircle.m_radius = 0.5f;
   fixtureDef.shape = &dynamicCircle;
   fixtureDef.density = 1.0f;
@@ -61,15 +89,18 @@ PlayerBody::PlayerBody(Physics& physics) : physics(physics){
   body->CreateFixture(&fixtureDef);
 }
 
-PlayerBody::~PlayerBody(){}
+Body::~Body(){}
 
-b2Vec2 PlayerBody::getPosition(){
+b2Vec2 Body::getPosition(){
   return body->GetPosition();
 }
 
-void PlayerBody::setPosition(int x, int y){
+void Body::setPosition(int x, int y){
   body->SetTransform(b2Vec2(x,y), body->GetAngle());
 }
+
+PlayerBody::PlayerBody(Physics& physics) : Body(physics){}
+PlayerBody::~PlayerBody(){}
 
 void PlayerBody::jump(){
   b2Vec2 vel = body->GetLinearVelocity();

@@ -21,16 +21,9 @@ public:
   void stopHorizontalMove();
 
 private:
-  //World world;
   Physics physics;
   Timer timer;
   Player player;
-  /*b2World* world;
-  b2Vec2* gravity;
-
-  b2BodyDef groundBodyDef;
-  b2Body* groundBody;
-*/
 };
 
 #endif

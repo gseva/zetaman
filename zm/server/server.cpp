@@ -1,9 +1,16 @@
-#include "zm/server/server.h"
 #include <Box2D/Box2D.h>
-#include "zm/server/physics/physics.h"
 #include <iostream>
+#include "zm/server/server.h"
+#include "zm/server/physics/physics.h"
+#include "zm/json/jsonserializer.h"
+
+#define DEFAULT_PATH "zm/mapita.json"
+
 Server::Server(ServerProxy& sp) : timer(physics, sp),
   player(physics){
+  JsonSerializer js;
+  JsonMap jm = js.importMap(DEFAULT_PATH);
+  physics.setMap(jm);
   timer.start();
 }
 

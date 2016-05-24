@@ -1,7 +1,7 @@
 #ifndef __PHYSICS_H___
 #define __PHYSICS_H___
 #include <Box2D/Box2D.h>
-
+#include "zm/json/jsonserializer.h"
 
 class World{
 public:
@@ -14,7 +14,7 @@ private:
   b2Vec2* gravity;
 };
 
-class Ground{
+/*class Ground{
 public:
   explicit Ground(World& world);
   ~Ground();
@@ -23,36 +23,44 @@ private:
   b2Body* groundBody;
   b2PolygonShape groundBox;
   World& world;
-};
+};*/
 
 
 class Physics{
 public:
   Physics();
   ~Physics();
+  void setMap(JsonMap jm);
   void step();
   b2Body* createBody(const b2BodyDef& bodyDef);
 private:
   World world;
-  Ground ground;
+//  Ground ground;
 };
 
-class PlayerBody{
+class Body{
+public:
+  explicit Body(Physics& physics);
+  virtual ~Body();
+  void setPosition(int x, int y);
+  b2Vec2 getPosition();
+protected:
+  Physics physics;
+  b2Body* body;
+  b2BodyDef bodyDef;
+  b2FixtureDef fixtureDef;
+};
+
+class PlayerBody : public Body{
 public:
   explicit PlayerBody(Physics& physics);
-  ~PlayerBody();
-  b2Vec2 getPosition();
-  void setPosition(int x, int y);
+  virtual ~PlayerBody();
   void jump();
   void right();
   void left();
   void stopHorizontalMove();
 private:
-  Physics physics;
   bool idle;
-  b2Body* body;
-  b2BodyDef bodyDef;
-  b2FixtureDef fixtureDef;
 };
 
 #endif
