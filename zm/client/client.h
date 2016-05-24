@@ -20,7 +20,7 @@ public:
   Client();
   void run(Glib::RefPtr<Gtk::Application> app);
 
-  void draw(Game game);
+  void draw(proto::Game game);
 };
 
 class Window : public Gtk::Window {

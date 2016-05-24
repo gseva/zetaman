@@ -4,6 +4,7 @@
 #include <vector>
 
 namespace zm {
+namespace proto {
 
 
 class Position {
@@ -72,6 +73,7 @@ public:
   std::vector<PowerUp> powerUps;
 };
 
+} // p
 } // zm
 
 #endif

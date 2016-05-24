@@ -17,11 +17,11 @@ void ServerProxy::jump() {
   std::cout << "hola\n";
 }
 
-zm::Game ServerProxy::getState() {
+zm::proto::Game ServerProxy::getState() {
   return s_.getState();
 }
 
-void ServerProxy::updateState(zm::Game gs) {
+void ServerProxy::updateState(zm::proto::Game gs) {
   updateHandler.signal_game_update().emit(gs);
 }
 

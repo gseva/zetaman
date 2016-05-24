@@ -26,7 +26,7 @@ private:
 };*/
 
 
-class Physics{
+class Physics {
 public:
   Physics();
   ~Physics();
@@ -38,20 +38,20 @@ private:
 //  Ground ground;
 };
 
-class Body{
+class Body {
 public:
   explicit Body(Physics& physics);
   virtual ~Body();
   void setPosition(int x, int y);
   b2Vec2 getPosition();
 protected:
-  Physics physics;
+  Physics& physics;
   b2Body* body;
   b2BodyDef bodyDef;
   b2FixtureDef fixtureDef;
 };
 
-class PlayerBody : public Body{
+class PlayerBody : public Body {
 public:
   explicit PlayerBody(Physics& physics);
   virtual ~PlayerBody();

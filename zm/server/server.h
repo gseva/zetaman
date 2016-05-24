@@ -22,7 +22,7 @@ public:
   void startTimer();
 
 	void jump();
-	zm::Game getState();
+	zm::proto::Game getState();
   void right();
   void left();
   void stopHorizontalMove();

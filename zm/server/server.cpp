@@ -8,6 +8,8 @@
 
 #define DEFAULT_PATH "assets/maps/mapita.json"
 
+#define PPM 64
+
 Server::Server(ServerProxy& sp) : timer(physics, sp),
   player(physics) {
   JsonSerializer js;
@@ -39,12 +41,12 @@ void Server::stopHorizontalMove(){
   player.stopHorizontalMove();
 }
 
-zm::Game Server::getState(){
+zm::proto::Game Server::getState(){
   b2Vec2 position = player.getPosition();
 
-  zm::Game gs;
-  gs.x = position.x*100;
-  gs.y = position.y*(-100)+400;
+  zm::proto::Game gs;
+  gs.x = position.x * PPM;
+  gs.y = position.y * -PPM + 768;
   return gs;
 }
 

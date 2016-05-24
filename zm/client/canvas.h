@@ -13,7 +13,7 @@
 namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
-Game game_;
+proto::Game game_;
 Map map_;
 ImageBuffer buff_;
 
@@ -21,7 +21,7 @@ public:
   explicit Canvas(ServerProxy& sp);
   virtual ~Canvas();
 
-  void updateGameState(Game gs);
+  void updateGameState(proto::Game gs);
 
 protected:
   void redraw();

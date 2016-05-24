@@ -24,9 +24,9 @@ public:
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();
 
-  zm::Game getState();
+  zm::proto::Game getState();
 
-  void updateState(zm::Game g);
+  void updateState(zm::proto::Game g);
 };
 
 #endif

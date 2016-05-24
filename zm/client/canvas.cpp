@@ -26,22 +26,22 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   map_.draw(cr);
 
-  Player p;
+  proto::Player p;
   p.pos.x = game_.x;
   p.pos.y = game_.y;
   game_.players.push_back(p);
 
-  Enemy e;
+  proto::Enemy e;
   e.pos.x = game_.x + 35;
   e.pos.y = game_.y + 35;
   game_.enemies.push_back(e);
 
-  Proyectile pr;
+  proto::Proyectile pr;
   pr.pos.x = game_.x - 35;
   pr.pos.y = game_.y - 35;
   game_.proyectiles.push_back(pr);
 
-  PowerUp pu;
+  proto::PowerUp pu;
   pu.pos.x = game_.x - 55;
   pu.pos.y = game_.y - 55;
   game_.powerUps.push_back(pu);
@@ -77,7 +77,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   return true;
 }
 
-void Canvas::updateGameState(Game game) {
+void Canvas::updateGameState(proto::Game game) {
   game_ = game;
   redraw();
 }

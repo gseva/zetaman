@@ -14,7 +14,7 @@
 
 Physics::Physics() {}//: ground(world){}
 
-Physics::~Physics(){}
+Physics::~Physics() {}
 
 void Physics::setMap(const JsonMap& jm){
   std::vector<int> matriz = jm.imageNumbers;
@@ -78,12 +78,11 @@ void World::step(){
 
 Body::Body(Physics& physics) : physics(physics){
   bodyDef.type = b2_dynamicBody;
-  //bodyDef.position.Set(0.5f, 1.5f);
+  bodyDef.position.Set(2.5f, 1.5f);
   body = this->physics.createBody(bodyDef);
-  b2CircleShape dynamicCircle;
-  dynamicCircle.m_p.Set(0.5f, 3.5f);
-  dynamicCircle.m_radius = 0.5f;
-  fixtureDef.shape = &dynamicCircle;
+  b2PolygonShape shape;
+  shape.SetAsBox(0.5f, 0.5f);
+  fixtureDef.shape = &shape;
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 0.0f;
   body->CreateFixture(&fixtureDef);

@@ -16,40 +16,44 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 
   Glib::RefPtr<Gdk::Pixbuf> image = buff.getImage(getImageName());
 
-  zm::Position pos = getPosition();
+  int width = image->get_width();
+  int height = image->get_height();
 
-  Gdk::Cairo::set_source_pixbuf(context, image, pos.x, pos.y);
+  zm::proto::Position pos = getPosition();
+
+  Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
+                                pos.y - height / 2);
   context->paint();
 
   context->restore();
 }
 
 
-Player::Player(zm::Player p) : p_(p), imageName_("player/megaman.png") {
+Player::Player(zm::proto::Player p) : p_(p), imageName_("player/megaman.png") {
 }
 
 std::string& Player::getImageName() {
   return imageName_;
 }
 
-zm::Position& Player::getPosition() {
+zm::proto::Position& Player::getPosition() {
   return p_.pos;
 }
 
 
-Enemy::Enemy(zm::Enemy e) : e_(e), imageName_("enemies/bumpy/1.png") {
+Enemy::Enemy(zm::proto::Enemy e) : e_(e), imageName_("enemies/bumpy/1.png") {
 }
 
 std::string& Enemy::getImageName() {
   return imageName_;
 }
 
-zm::Position& Enemy::getPosition() {
+zm::proto::Position& Enemy::getPosition() {
   return e_.pos;
 }
 
 
-Proyectile::Proyectile(zm::Proyectile p) : p_(p),
+Proyectile::Proyectile(zm::proto::Proyectile p) : p_(p),
     imageName_("proyectiles/normal.png") {
 }
 
@@ -57,19 +61,20 @@ std::string& Proyectile::getImageName() {
   return imageName_;
 }
 
-zm::Position& Proyectile::getPosition() {
+zm::proto::Position& Proyectile::getPosition() {
   return p_.pos;
 }
 
 
-PowerUp::PowerUp(zm::PowerUp p) : p_(p), imageName_("powerups/life.png") {
+PowerUp::PowerUp(zm::proto::PowerUp p) : p_(p),
+  imageName_("powerups/life.png") {
 }
 
 std::string& PowerUp::getImageName() {
   return imageName_;
 }
 
-zm::Position& PowerUp::getPosition() {
+zm::proto::Position& PowerUp::getPosition() {
   return p_.pos;
 }
 
