@@ -1,5 +1,5 @@
-#ifndef __CLIENT_MAP_H
-#define __CLIENT_MAP_H
+#ifndef __ZM_CLIENT_MAP_H__
+#define __ZM_CLIENT_MAP_H__
 
 #include <vector>
 

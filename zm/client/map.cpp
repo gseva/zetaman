@@ -35,7 +35,7 @@ Map::Map() {
 }
 
 void Map::loadImages() {
-  std::string prefix = "/assets/images/";
+  std::string prefix = "/zm/images/tiles/";
   for (int i = 0; i < N_IMAGES; ++i) {
     std::string resource_name = prefix + image_names[i];
 
