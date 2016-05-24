@@ -67,7 +67,7 @@ public:
   // la idea es en vez de cambiar x e y del GameState, cambiar los de cada
   // player
   std::vector<Player> players;
-  std::vector<Enemy*> enemies;
+  std::vector<Enemy> enemies;
   std::vector<Proyectile> proyectiles;
   std::vector<PowerUp> powerUps;
 

@@ -38,18 +38,18 @@ zm::Game Server::getState(){
   gs.y = position.y*(-100)+400;
   if (gs.enemies.size()==0)
   {
-    zm::Enemy* enemigo = new zm::Enemy();
-    enemigo->pos.x = enemyPosition.x*100;
-    enemigo->pos.y = enemyPosition.y*(-100)+400;
+    zm::Enemy enemigo;
+    enemigo.pos.x = enemyPosition.x*100;
+    enemigo.pos.y = enemyPosition.y*(-100)+400;
     gs.enemies.push_back(enemigo);  
   } else {
-    gs.enemies.at(0)->pos.x = enemyPosition.x;
-    gs.enemies.at(0)->pos.y = enemyPosition.y;
+    gs.enemies.at(0).pos.x = enemyPosition.x;
+    gs.enemies.at(0).pos.y = enemyPosition.y;
   }
   
 
-  std::cout << "Enemigo x:" << gs.enemies.at(0)->pos.x << std::endl;
-  std::cout << "Enemigo y:" << gs.enemies.at(0)->pos.y << std::endl;
+  std::cout << "Enemigo x:" << gs.enemies.at(0).pos.x << std::endl;
+  std::cout << "Enemigo y:" << gs.enemies.at(0).pos.y << std::endl;
   std::cout << "Jugador x:" << gs.x << std::endl;
   std::cout << "Jugador y:" << gs.y << std::endl;
 
