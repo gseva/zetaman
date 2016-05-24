@@ -15,10 +15,15 @@ public:
 
   ServerProxy();
 
+  void startTimer();
+
   void jump();
   void moveRight();
   void moveLeft();
   void stopHorizontalMove();
+
+  std::vector<std::string> getImageNames();
+  std::vector<int> getImages();
 
   zm::Game getState();
 

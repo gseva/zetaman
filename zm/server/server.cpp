@@ -4,13 +4,16 @@
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "zm/mapita.json"
+#define DEFAULT_PATH "build/maps/mapita.json"
 
 Server::Server(ServerProxy& sp) : timer(physics, sp),
-  player(physics){
+  player(physics) {
   JsonSerializer js;
-  JsonMap jm = js.importMap(DEFAULT_PATH);
+  jm = js.importMap(DEFAULT_PATH);
   physics.setMap(jm);
+}
+
+void Server::startTimer() {
   timer.start();
 }
 
@@ -41,4 +44,12 @@ zm::Game Server::getState(){
   gs.x = position.x*100;
   gs.y = position.y*(-100)+400;
   return gs;
+}
+
+std::vector<std::string> Server::getImageNames() {
+  return jm.imageNames;
+}
+
+std::vector<int> Server::getImages() {
+  return jm.imageNumbers;
 }

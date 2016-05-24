@@ -12,12 +12,14 @@
 namespace zm {
 
 class Map {
+std::vector<int> tiles_;
+std::vector<std::string> imageNames_;
 Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
 
 void loadImages();
 
 public:
-  Map();
+  Map(std::vector<int> tiles, std::vector<std::string> imageNames);
 
   void draw(const Cairo::RefPtr<Cairo::Context>& context);
 };

@@ -11,7 +11,7 @@
 namespace zm {
 
 
-Canvas::Canvas(Client* c) : c_(c) {
+Canvas::Canvas(ServerProxy& sp) : map_(sp.getImages(), sp.getImageNames()) {
 }
 
 Canvas::~Canvas() {

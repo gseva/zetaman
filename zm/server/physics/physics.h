@@ -30,7 +30,7 @@ class Physics{
 public:
   Physics();
   ~Physics();
-  void setMap(JsonMap jm);
+  void setMap(const JsonMap& jm);
   void step();
   b2Body* createBody(const b2BodyDef& bodyDef);
 private:

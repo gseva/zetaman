@@ -6,18 +6,17 @@
 #include <map>
 #include <string>
 
+
+
 JsonMap JsonSerializer::importMap(std::string path)
 {
-  std::fstream fs;
-
-  std::map<std::string, int> tiles;
-
-  fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
+  std::ifstream fs(path);
 
   json j;
 
   fs >> j; //Carga el json en memoria
 
+  std::cout << j << std::endl;
   fs.close();
 
   //Carga en el vector todo lo contenido de "tiles"
@@ -31,7 +30,7 @@ JsonMap JsonSerializer::importMap(std::string path)
   mapa.imageNames = imageNamesVector;
   mapa.physics = physicsVector;
 
-  return mapa;  
+  return mapa;
 }
 
 void JsonSerializer::exportMap(std::string path, JsonMap m)
@@ -39,7 +38,7 @@ void JsonSerializer::exportMap(std::string path, JsonMap m)
   json exportable;
 
   exportable= {{"tiles",m.imageNumbers},{"images",m.imageNames},
-                {"physics",m.physics}}; 
+                {"physics",m.physics}};
 
   std::fstream newFile;
 
@@ -65,7 +64,7 @@ std::map<std::string,int> JsonSerializer::importarEnte(std::string path)
 
   for (json::iterator it = j.begin(); it != j.end(); ++it)
   {
-    caracteristicasEnte.insert(std::pair<std::string,int>(it.key(), 
+    caracteristicasEnte.insert(std::pair<std::string,int>(it.key(),
                                                           it.value()));
   }
 

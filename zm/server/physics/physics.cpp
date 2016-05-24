@@ -6,8 +6,8 @@
 
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
-#define ALTO_TOTAL 9
-#define ANCHO_TOTAL 12
+#define ALTO_TOTAL 12
+#define ANCHO_TOTAL 16
 #define AIRE 0
 #define PISO 1
 
@@ -16,7 +16,7 @@ Physics::Physics() {}//: ground(world){}
 
 Physics::~Physics(){}
 
-void Physics::setMap(JsonMap jm){
+void Physics::setMap(const JsonMap& jm){
   std::vector<int> matriz = jm.imageNumbers;
   for ( int j = 0; j < ALTO_TOTAL; ++j ) {
     for ( int i = 0; i < ANCHO_TOTAL; ++i ) {
@@ -62,7 +62,7 @@ b2Body* World::createBody(const b2BodyDef& bodyDef){
 void World::step(){
   float32 timeStep = 1.0f / 60.0f; //60Hz
   int32 velocityIterations = 8; //valores sugeridos
-  int32 positionIterations = 3; 
+  int32 positionIterations = 3;
   world->Step(timeStep, velocityIterations, positionIterations);
 }
 

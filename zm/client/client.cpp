@@ -13,7 +13,8 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   Window window(this);
   window.set_default_size(1024, 768);
 
-  Canvas area(this);
+  Canvas area(serverProxy);
+  serverProxy.startTimer();
   window.add(area);
   area.show();
 
@@ -21,6 +22,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
       sigc::mem_fun(area, &Canvas::updateGameState) );
 
   app->run(window);
+
 }
 
 void Client::draw(Game game) {

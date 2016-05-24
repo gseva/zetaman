@@ -5,6 +5,7 @@
 #include <gtkmm/drawingarea.h>
 
 #include "zm/game_protocol.h"
+#include "zm/server_proxy.h"
 #include "zm/client/map.h"
 
 
@@ -13,12 +14,11 @@ namespace zm {
 class Client;
 
 class Canvas : public Gtk::DrawingArea {
-Client* c_;
 Game game_;
 Map map_;
 
 public:
-  explicit Canvas(Client* c);
+  explicit Canvas(ServerProxy& sp);
   virtual ~Canvas();
 
   void updateGameState(Game gs);

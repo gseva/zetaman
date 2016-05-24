@@ -6,6 +6,10 @@
 ServerProxy::ServerProxy() : s_(*this){
 }
 
+void ServerProxy::startTimer() {
+  s_.startTimer();
+}
+
 void ServerProxy::jump() {
   s_.jump();
   std::cout << "hola\n";
@@ -28,4 +32,13 @@ void ServerProxy::moveLeft(){
 
 void ServerProxy::stopHorizontalMove(){
   s_.stopHorizontalMove();
+}
+
+
+std::vector<std::string> ServerProxy::getImageNames() {
+  return s_.getImageNames();
+}
+
+std::vector<int> ServerProxy::getImages() {
+  return s_.getImages();
 }
