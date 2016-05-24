@@ -43,7 +43,11 @@ Ground::Ground(World& world) : world(world){
   groundBodyDef.position.Set(0.0f, -10.0f); //centro
   groundBody = world.createBody(groundBodyDef);
   groundBox.SetAsBox(50.0f, 10.0f);
-  groundBody->CreateFixture(&groundBox, 0.0f);
+  fixtureDef.shape = &groundBox;
+  fixtureDef.density = 0.0f;
+  fixtureDef.filter.categoryBits = 0x0003;
+  //fixtureDef.filter.maskBits = 0x0001 | 0x0002;
+  groundBody->CreateFixture(&fixtureDef);
 }
 
 Ground::~Ground(){}
@@ -58,6 +62,8 @@ PlayerBody::PlayerBody(Physics& physics) : physics(physics){
   fixtureDef.shape = &dynamicCircle;
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 0.0f;
+  fixtureDef.filter.categoryBits = 0x0001;
+  fixtureDef.filter.maskBits = 0xffff & ~0x0002;
   body->CreateFixture(&fixtureDef);
 }
 
@@ -94,4 +100,29 @@ void PlayerBody::stopHorizontalMove(){
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 0;
   body->SetLinearVelocity(vel);
+}
+
+EnemyBody::EnemyBody(Physics& physics) : physics(physics){
+  bodyDef.type = b2_dynamicBody;
+  bodyDef.position.Set(3.0f, 4.0f);
+  body = this->physics.createBody(bodyDef);
+  b2CircleShape dynamicCircle;
+  dynamicCircle.m_p.Set(3.0f, 3.0f);
+  dynamicCircle.m_radius = 0.5f;
+  fixtureDef.shape = &dynamicCircle;
+  fixtureDef.density = 1.0f;
+  fixtureDef.friction = 0.0f;
+  fixtureDef.filter.categoryBits = 0x0002;
+  fixtureDef.filter.maskBits = 0xffff & ~0x0001;
+  body->CreateFixture(&fixtureDef);
+}
+
+EnemyBody::~EnemyBody(){}
+
+b2Vec2 EnemyBody::getPosition(){
+  return body->GetPosition();
+}
+
+void EnemyBody::setPosition(int x, int y){
+  body->SetTransform(b2Vec2(x,y), body->GetAngle());
 }

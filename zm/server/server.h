@@ -4,6 +4,7 @@
 #include <vector>
 #include "zm/game_protocol.h"
 #include "zm/server/player.h"
+#include "zm/server/enemy.h"
 #include <Box2D/Box2D.h>
 #include <zm/thread.h>
 #include "zm/server/physics/physics.h"
@@ -25,6 +26,7 @@ private:
   Physics physics;
   Timer timer;
   Player player;
+  Enemy enemy;
   /*b2World* world;
   b2Vec2* gravity;
 

@@ -30,11 +30,25 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   // Dibujo de un circulo
   cr->save();
+  
   cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
   cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
   cr->fill_preserve();
   cr->restore();  // Vuelvo a un negro opaco
+  
   cr->stroke();
+
+  cr->save();
+
+  cr->arc(game_.enemies.at(0)->pos.x, game_.enemies.at(0)->pos.y,
+                                       radius, 0.0, 2.0 * M_PI); // Un circulo
+  cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
+  cr->fill_preserve();
+  cr->restore();  // Vuelvo a un negro opaco
+  cr->stroke();
+  
+
+
 
   return true;
 }

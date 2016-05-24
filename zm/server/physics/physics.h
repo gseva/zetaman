@@ -23,6 +23,7 @@ private:
   b2Body* groundBody;
   b2PolygonShape groundBox;
   World& world;
+  b2FixtureDef fixtureDef;
 };
 
 
@@ -47,6 +48,20 @@ public:
   void right();
   void left();
   void stopHorizontalMove();
+private:
+  Physics physics;
+  bool idle;
+  b2Body* body;
+  b2BodyDef bodyDef;
+  b2FixtureDef fixtureDef;
+};
+
+class EnemyBody{
+public:
+  explicit EnemyBody(Physics& physics);
+  ~EnemyBody();
+  b2Vec2 getPosition();
+  void setPosition(int x, int y);
 private:
   Physics physics;
   bool idle;
