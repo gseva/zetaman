@@ -144,6 +144,7 @@ editor_dir = $(zm_dir)editor/
 assets_dir = assets/
 images_config = $(assets_dir)image.gresource.xml
 editor_config = $(assets_dir)editor.gresource.xml
+maps_dir = $(assets_dir)maps/
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
@@ -247,6 +248,7 @@ lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
 client_assets: $(client_resources) $(o_client_resources)
+	@cp -r $(maps_dir) $(build_dir)maps
 
 editor_assets: $(editor_resources) $(o_editor_resources)
 
