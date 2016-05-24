@@ -2,6 +2,8 @@
 #include "zm/server_proxy.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 ServerProxy::ServerProxy() : s_(*this){
 }

@@ -2,7 +2,7 @@
 #define __SERVER_H__
 
 #include <vector>
-
+#include <string>
 #include <Box2D/Box2D.h>
 
 #include "zm/game_protocol.h"

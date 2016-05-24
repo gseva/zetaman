@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "zm/client/map.h"
-
+#include <vector>
 #include <gdkmm/general.h> // set_source_pixbuf()
 
 // static const char* image_names[] = {

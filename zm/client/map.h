@@ -2,6 +2,7 @@
 #define __ZM_CLIENT_MAP_H__
 
 #include <vector>
+#include <string>
 
 #include <gdkmm/pixbuf.h>
 #include <glibmm/refptr.h>
