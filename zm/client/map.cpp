@@ -37,7 +37,7 @@ Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
 }
 
 void Map::loadImages() {
-  std::string prefix = "/assets/images/";
+  std::string prefix = "/zm/images/tiles/";
   for (int i = 0; i < imageNames_.size(); ++i) {
     std::string resource_name = prefix + imageNames_[i];
 

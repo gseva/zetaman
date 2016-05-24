@@ -1,5 +1,5 @@
-#ifndef __CLIENT_CANVAS_H__
-#define __CLIENT_CANVAS_H__
+#ifndef __ZM_CLIENT_CANVAS_H__
+#define __ZM_CLIENT_CANVAS_H__
 
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/drawingarea.h>
@@ -7,15 +7,15 @@
 #include "zm/game_protocol.h"
 #include "zm/server_proxy.h"
 #include "zm/client/map.h"
+#include "zm/client/image_buffer.h"
 
 
 namespace zm {
 
-class Client;
-
 class Canvas : public Gtk::DrawingArea {
 Game game_;
 Map map_;
+ImageBuffer buff_;
 
 public:
   explicit Canvas(ServerProxy& sp);

@@ -7,7 +7,6 @@
 
 
 class ServerProxy {
-
 Server s_;
 
 public:
@@ -28,8 +27,6 @@ public:
   zm::Game getState();
 
   void updateState(zm::Game g);
-
-
 };
 
 #endif
