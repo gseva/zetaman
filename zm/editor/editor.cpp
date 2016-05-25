@@ -75,8 +75,10 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
 
   createEmptyGrid();
 
-  nameToSpawn.insert({IMAGEN_ENEMIGO,0});
-  nameToSpawn.insert({IMAGEN_JUGADOR,0});
+  nameToSpawnNumber.insert({IMAGEN_ENEMIGO,0});
+  nameToSpawnType.insert({IMAGEN_ENEMIGO,"enemy"});
+  nameToSpawnNumber.insert({IMAGEN_JUGADOR,1});
+  nameToSpawnType.insert({IMAGEN_JUGADOR,"player"});
   nameToPhysics.insert({IMAGEN_TERRENO,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
@@ -257,7 +259,7 @@ JsonMap Editor::createJsonMap()
           numeroImagen++;
 
           /*Si la imagen es de un spawn se tiene que dibujar aire*/
-          if (nameToSpawn.count(image)==0)
+          if (nameToSpawnNumber.count(image)==0)
           {
             jMap.imageNames.push_back(image);
           } else {
@@ -267,11 +269,24 @@ JsonMap Editor::createJsonMap()
         }
 
         jMap.imageNumbers.push_back(nameToNumber[image]);
+
+        if (nameToSpawnNumber.count(image)!=0)
+        {
+          SpawnData data;
+          data.column = j;
+          data.row = i;
+          data.type = nameToSpawnNumber[image];
+          jMap.spawnsData.push_back(data);
+        }
       }
     }
   }
 
-
+  for (std::map<std::string, int>::iterator it = nameToSpawnNumber.begin();
+       it != nameToSpawnNumber.end(); ++it)
+  {
+    jMap.spawnTypes.push_back(nameToSpawnType[it->first]);
+  }
 
   return jMap;
 }

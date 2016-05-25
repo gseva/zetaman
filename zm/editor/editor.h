@@ -40,7 +40,8 @@ class Editor {
     std::string imageNamesCurrent[ANCHO][ALTO];
     int currentScreenNumber;
 
-    std::map<std::string, int> nameToSpawn;
+    std::map<std::string, int> nameToSpawnNumber;
+    std::map<std::string, std::string> nameToSpawnType;
     std::map<std::string, std::string> nameToPhysics;
 
   public:
