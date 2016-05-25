@@ -4,6 +4,7 @@
 #define IMAGEN_JUGADOR "/zm/editor/images/player.png"
 #define IMAGEN_TERRENO "/zm/editor/images/grass_mid.png"
 #define IMAGEN_ENEMIGO "/zm/editor/images/enemy.png"
+#define IMAGEN_BLANCO "/zm/editor/images/void.png"
 
 void Editor::on_buttonCrearJugador_clicked()
 {
@@ -23,10 +24,17 @@ void Editor::on_buttonCrearEnemigo_clicked()
   imagenSeleccionada = IMAGEN_ENEMIGO;
 }
 
+void Editor::on_buttonBorrarTile_clicked()
+{
+  std::cout << "Borrar tile seleccionado" << std::endl;
+  imagenSeleccionada = IMAGEN_BLANCO;
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
-                                      Gtk::Image* imagen)
+                                      Gtk::Image* imagen, int col, int row)
 {
   imagen->set_from_resource(imagenSeleccionada);
+  imageNamesMatrix[col][row] = imagenSeleccionada;
   std::cout << "Clickeo en division" << std::endl;
   return true;
 }
@@ -40,6 +48,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
+  builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -48,6 +57,8 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   connectButtonsWithSignals();
 
   createEmptyGrid();
+
+  createNewScreen();
 }
 
 void Editor::connectButtonsWithSignals()
@@ -68,6 +79,12 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnCrearEnemigo->signal_clicked().connect(
         sigc::mem_fun(this,&Editor::on_buttonCrearEnemigo_clicked));
+  }
+
+  if (pBtnBorrarTile)
+  {
+    pBtnBorrarTile ->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonBorrarTile_clicked));
   }
 }
 
@@ -96,7 +113,7 @@ void Editor::createEmptyGrid()
   {
       for (int j = 0; j < ALTO; j++)
       {
-          imageMatrix[i][j].set_from_resource("/zm/editor/images/void.png");
+          imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
       }
   }
 
@@ -108,7 +125,7 @@ void Editor::createEmptyGrid()
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
       eventBoxMatrix[i][j].signal_button_press_event().connect(
         sigc::bind<Gtk::Image*>(sigc::mem_fun(
-            this,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));
+            this,&Editor::on_eventbox_button_press), &imageMatrix[i][j], i, j));
     }
   }
 }
@@ -118,4 +135,42 @@ void Editor::runEditor()
   pGrid->show_all_children();
 
   app->run(*pwindow);
+}
+
+
+void Editor::createNewScreen()
+{
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      imageNamesMatrix[i][j] = IMAGEN_BLANCO;
+    }
+  }
+}
+
+void Editor::exportCreatedMap()
+{
+  JsonSerializer s;
+  
+  JsonMap jMap;
+
+  jMap = createJsonMap();
+
+  s.exportMap("exportandoEditor.json", jMap);
+}
+
+JsonMap Editor::createJsonMap()
+{
+  JsonMap jMap;
+
+  for (int i=ALTO; i>0; i--)
+  {
+    for (int j=ANCHO; j>0; j--)
+    {
+      jMap.imageNames.push_back(imageNamesMatrix[j][i]);
+    }
+  }
+
+  return jMap;
 }
