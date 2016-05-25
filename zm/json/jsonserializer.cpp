@@ -55,17 +55,20 @@ void JsonSerializer::exportMap(std::string path, JsonMap m)
 
   json exportableSpawns;
 
-  for (unsigned int i=0; i<m.spawnsData.size();i++)
+  for (unsigned int i=0; i<m.spawnsData.size(); i++)
   {
-    if(exportableSpawns!=NULL)
+    if (exportableSpawns!=NULL)
     {
-      exportableSpawns = {{{"x",m.spawnsData[i].column},{"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}}, exportableSpawns};  
+      exportableSpawns = {{{"x",m.spawnsData[i].column},
+      {"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}},
+       exportableSpawns};  
     } else {
-      exportableSpawns = {{"x",m.spawnsData[i].column},{"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}};
+      exportableSpawns = {{"x",m.spawnsData[i].column},
+      {"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}};
     } 
   }
 
-  exportable["spawn"] = exportableSpawns;
+  exportable["spawns"] = exportableSpawns;
 
   std::cout << exportable << std::endl;
 
