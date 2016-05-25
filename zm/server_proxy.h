@@ -13,7 +13,7 @@ public:
   GameUpdateHandler updateHandler;
 
   ServerProxy();
-
+  void connect();
   void startTimer();
 
   void jump();

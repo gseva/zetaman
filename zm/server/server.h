@@ -18,14 +18,14 @@ class Server{
 public:
 	explicit Server(ServerProxy& sp);
 	~Server();
-
+  void newPlayer();
   void startTimer();
 
-	void jump();
+	void jump(int playerNummber);
 	zm::proto::Game getState();
-  void right();
-  void left();
-  void stopHorizontalMove();
+  void right(int playerNummber);
+  void left(int playerNummber);
+  void stopHorizontalMove(int playerNummber);
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();
@@ -33,7 +33,7 @@ public:
 private:
   Physics physics;
   Timer timer;
-  Player player;
+  std::vector<Player*> players;
   JsonMap jm;
 };
 

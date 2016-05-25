@@ -14,6 +14,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   window.set_default_size(1024, 768);
 
   Canvas area(serverProxy);
+  serverProxy.connect();
   serverProxy.startTimer();
   window.add(area);
   area.show();

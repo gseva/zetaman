@@ -8,12 +8,17 @@
 ServerProxy::ServerProxy() : s_(*this){
 }
 
+void ServerProxy::connect(){
+  s_.newPlayer();
+}
+
+
 void ServerProxy::startTimer() {
   s_.startTimer();
 }
 
 void ServerProxy::jump() {
-  s_.jump();
+  s_.jump(0);
   std::cout << "hola\n";
 }
 
@@ -26,14 +31,14 @@ void ServerProxy::updateState(zm::proto::Game gs) {
 }
 
 void ServerProxy::moveRight(){
-  s_.right();
+  s_.right(0);
 }
 void ServerProxy::moveLeft(){
-  s_.left();
+  s_.left(0);
 }
 
 void ServerProxy::stopHorizontalMove(){
-  s_.stopHorizontalMove();
+  s_.stopHorizontalMove(0);
 }
 
 
