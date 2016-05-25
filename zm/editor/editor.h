@@ -9,6 +9,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <map>
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
@@ -37,7 +38,10 @@ class Editor {
 
     std::vector<ScreenContent> contenidoPantallas;
     std::string imageNamesCurrent[ANCHO][ALTO];
-    int currentScreenNumber;   
+    int currentScreenNumber;
+
+    std::map<std::string, int> nameToSpawn;
+    std::map<std::string, std::string> nameToPhysics;
 
   public:
     void on_buttonCrearJugador_clicked();

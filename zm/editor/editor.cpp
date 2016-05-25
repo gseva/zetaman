@@ -1,5 +1,8 @@
 #include "editor.h"
 #include <iostream>
+#include <vector>
+#include <string>
+#include <map>
 
 #define IMAGEN_JUGADOR "/zm/editor/images/player.png"
 #define IMAGEN_TERRENO "/zm/editor/images/grass_mid.png"
@@ -71,6 +74,13 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   connectButtonsWithSignals();
 
   createEmptyGrid();
+
+  nameToSpawn.insert({IMAGEN_ENEMIGO,0});
+  nameToSpawn.insert({IMAGEN_JUGADOR,0});
+  nameToPhysics.insert({IMAGEN_TERRENO,"solid"});
+  nameToPhysics.insert({IMAGEN_BLANCO,"void"});
+  nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
+  nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
 }
 
 void Editor::connectButtonsWithSignals()
@@ -230,6 +240,8 @@ void Editor::exportCreatedMap()
 JsonMap Editor::createJsonMap()
 {
   JsonMap jMap;
+  std::map<std::string, int> nameToNumber;
+  int numeroImagen = 0;
 
   for (int i=0; i<ALTO; i++)
   {
@@ -237,11 +249,29 @@ JsonMap Editor::createJsonMap()
     {
       for (int j=0; j<ANCHO; j++)
       {
-        jMap.imageNames.push_back(
-          contenidoPantallas.at(k).imageNamesMatrix[j][i]);
+        std::string image = contenidoPantallas.at(k).imageNamesMatrix[j][i];
+
+        if (nameToNumber.count(image) == 0)
+        {
+          nameToNumber.insert({image,numeroImagen});
+          numeroImagen++;
+
+          /*Si la imagen es de un spawn se tiene que dibujar aire*/
+          if (nameToSpawn.count(image)==0)
+          {
+            jMap.imageNames.push_back(image);
+          } else {
+            jMap.imageNames.push_back(IMAGEN_BLANCO);
+          }
+          jMap.physics.push_back(nameToPhysics[image]);
+        }
+
+        jMap.imageNumbers.push_back(nameToNumber[image]);
       }
     }
   }
+
+
 
   return jMap;
 }
