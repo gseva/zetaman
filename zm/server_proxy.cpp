@@ -13,8 +13,8 @@ void ServerProxy::connect(){
 }
 
 
-void ServerProxy::startTimer() {
-  s_.startTimer();
+void ServerProxy::startLevel() {
+  s_.startLevel();
 }
 
 void ServerProxy::jump() {

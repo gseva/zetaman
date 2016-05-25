@@ -10,14 +10,12 @@
 
 #define PPM 64
 
-Server::Server(ServerProxy& sp) : timer(physics, sp){
+Server::Server(ServerProxy& sp) : sp(sp){
   JsonSerializer js;
   jm = js.importMap(DEFAULT_PATH);
-  physics.setMap(jm);
 }
 
 Server::~Server(){
-  timer.join();
   std::vector<Player*>::iterator playersInterator;
   for ( playersInterator = players.begin(); playersInterator != players.end(); 
     ++playersInterator ) {
@@ -26,38 +24,36 @@ Server::~Server(){
 }
 
 void Server::newPlayer(){
-  Player* player = new Player(physics);
+  Player* player = new Player();
   players.push_back(player);
 }
 
-void Server::startTimer() {
-  timer.start();
+
+void Server::startLevel(){
+  std::string path(DEFAULT_PATH);
+  level = new Level(players, path, sp);
 }
 
 void Server::jump(int playerNummber){
-	players[playerNummber]->jump();
+  level->jump(playerNummber);
 }
 
 
 void Server::right(int playerNummber){
-  players[playerNummber]->right();
+  level->right(playerNummber);
 }
+
 void Server::left(int playerNummber){
-  players[playerNummber]->left();
+  level->left(playerNummber);
 }
 
 void Server::stopHorizontalMove(int playerNummber){
-  players[playerNummber]->stopHorizontalMove();
+  level->stopHorizontalMove(playerNummber);
 }
 
 zm::proto::Game Server::getState(){
   //TODO: iterar sobre player y cargar correctamente el game
-  b2Vec2 position = players[0]->getPosition();
-
-  zm::proto::Game gs;
-  gs.x = position.x * PPM;
-  gs.y = position.y * -PPM + 768;
-  return gs;
+  return level->getState();
 }
 
 std::vector<std::string> Server::getImageNames(){

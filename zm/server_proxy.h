@@ -14,7 +14,7 @@ public:
 
   ServerProxy();
   void connect();
-  void startTimer();
+  void startLevel();
 
   void jump();
   void moveRight();

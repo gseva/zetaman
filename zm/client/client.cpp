@@ -15,7 +15,7 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
 
   Canvas area(serverProxy);
   serverProxy.connect();
-  serverProxy.startTimer();
+  serverProxy.startLevel();
   window.add(area);
   area.show();
 
