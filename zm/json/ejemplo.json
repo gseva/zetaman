@@ -1,5 +1,7 @@
 {
   "tiles": [0,0,0,0,0,1,0,0,0,1,0,2,2,0,1,1,1],
   "images": ["imagen1","imagen2","imagen3"],
-  "physics": ["piso","escalera","piso","piso"]	
+  "spawns": [{"x": 10, "y": 10, "type": 1}, {"x": 20, "y":10,"type":3}],
+  "spawnTypes": ["player1", "bumpy", "life"],
+  "physics": ["solid","stairway","piso","piso"]
 }
