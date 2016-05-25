@@ -20,6 +20,7 @@ class Editor {
     Gtk::Button* pBtnCrearEnemigo;
     Gtk::Button* pBtnCrearJugador;
     Gtk::Button* pBtnBorrarTile;
+    Gtk::Button* pBtnSaveMap;
     Gtk::Window* pwindow;
     Gtk::Grid* pGrid;
     Glib::RefPtr<Gtk::Application> app;
@@ -34,6 +35,7 @@ class Editor {
     void on_buttonCrearTerreno_clicked();
     void on_buttonCrearEnemigo_clicked();
     void on_buttonBorrarTile_clicked();
+    void on_buttonSaveMap_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);

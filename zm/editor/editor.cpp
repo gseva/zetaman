@@ -30,12 +30,19 @@ void Editor::on_buttonBorrarTile_clicked()
   imagenSeleccionada = IMAGEN_BLANCO;
 }
 
+void Editor::on_buttonSaveMap_clicked()
+{
+  std::cout << "Guardando mapa" << std::endl;
+
+  exportCreatedMap();
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
                                       Gtk::Image* imagen, int col, int row)
 {
   imagen->set_from_resource(imagenSeleccionada);
   imageNamesMatrix[col][row] = imagenSeleccionada;
-  std::cout << "Clickeo en division" << std::endl;
+  std::cout << "Clickeo en division" << col << " "<< row << std::endl;
   return true;
 }
 
@@ -49,6 +56,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
+  builder->get_widget("btnSaveMap", pBtnSaveMap);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -85,6 +93,12 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnBorrarTile ->signal_clicked().connect(
       sigc::mem_fun(this,&Editor::on_buttonBorrarTile_clicked));
+  }
+
+  if (pBtnSaveMap)
+  {
+    pBtnSaveMap->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
   }
 }
 
@@ -164,9 +178,9 @@ JsonMap Editor::createJsonMap()
 {
   JsonMap jMap;
 
-  for (int i=ALTO; i>0; i--)
+  for (int i=0; i<ALTO; i++)
   {
-    for (int j=ANCHO; j>0; j--)
+    for (int j=0; j<ANCHO; j++)
     {
       jMap.imageNames.push_back(imageNamesMatrix[j][i]);
     }
