@@ -94,6 +94,22 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="GtkListBoxRow" id="listboxrow6">
+                <property name="width_request">100</property>
+                <property name="height_request">80</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkButton" id="btnAddScreen">
+                    <property name="label" translatable="yes">Agregar pantalla</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>

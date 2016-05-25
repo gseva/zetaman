@@ -8,10 +8,16 @@
 #include <glibmm/refptr.h>
 #include <string>
 #include <iostream>
+#include <vector>
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
 #define ANCHO 12
+
+typedef struct ScreenContent{
+    int screenNumber;
+    std::string imageNamesMatrix[ANCHO][ALTO];
+} ScreenContent;
 
 class Editor {
   private:
@@ -21,6 +27,7 @@ class Editor {
     Gtk::Button* pBtnCrearJugador;
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
+    Gtk::Button* pBtnAgregarPantalla;
     Gtk::Window* pwindow;
     Gtk::Grid* pGrid;
     Glib::RefPtr<Gtk::Application> app;
@@ -28,7 +35,9 @@ class Editor {
     Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
     Gtk::Image imageMatrix[ANCHO][ALTO];
 
-    std::string imageNamesMatrix[ANCHO][ALTO];
+    std::vector<ScreenContent> contenidoPantallas;
+    std::string imageNamesCurrent[ANCHO][ALTO];
+    int currentScreenNumber;   
 
   public:
     void on_buttonCrearJugador_clicked();
@@ -36,6 +45,7 @@ class Editor {
     void on_buttonCrearEnemigo_clicked();
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
+    void on_buttonAddScreen_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);
@@ -45,4 +55,5 @@ class Editor {
     void createNewScreen();
     void exportCreatedMap();
     JsonMap createJsonMap();
+    void saveLastScreen();
 };

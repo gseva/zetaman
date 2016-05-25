@@ -37,11 +37,16 @@ void Editor::on_buttonSaveMap_clicked()
   exportCreatedMap();
 }
 
+void Editor::on_buttonAddScreen_clicked()
+{
+  createNewScreen();
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
                                       Gtk::Image* imagen, int col, int row)
 {
   imagen->set_from_resource(imagenSeleccionada);
-  imageNamesMatrix[col][row] = imagenSeleccionada;
+  imageNamesCurrent[col][row] = imagenSeleccionada;
   std::cout << "Clickeo en division" << col << " "<< row << std::endl;
   return true;
 }
@@ -57,6 +62,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("btnSaveMap", pBtnSaveMap);
+  builder->get_widget("btnAddScreen", pBtnAgregarPantalla);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -65,8 +71,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   connectButtonsWithSignals();
 
   createEmptyGrid();
-
-  createNewScreen();
 }
 
 void Editor::connectButtonsWithSignals()
@@ -99,6 +103,12 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnSaveMap->signal_clicked().connect(
       sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
+  }
+
+  if (pBtnAgregarPantalla)
+  {
+    pBtnAgregarPantalla->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonAddScreen_clicked));
   }
 }
 
@@ -142,6 +152,16 @@ void Editor::createEmptyGrid()
             this,&Editor::on_eventbox_button_press), &imageMatrix[i][j], i, j));
     }
   }
+
+  /*Seteo datos de esta pantalla*/
+  currentScreenNumber = 0;
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      imageNamesCurrent[i][j] = IMAGEN_BLANCO;
+    }
+  }
 }
 
 void Editor::runEditor()
@@ -154,13 +174,44 @@ void Editor::runEditor()
 
 void Editor::createNewScreen()
 {
+  ScreenContent currentScreen;
+  currentScreen.screenNumber = currentScreenNumber;
+
   for (int i=0; i<ANCHO; i++)
   {
     for (int j=0; j<ALTO; j++)
     {
-      imageNamesMatrix[i][j] = IMAGEN_BLANCO;
+      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+      imageNamesCurrent[i][j] = IMAGEN_BLANCO;
     }
   }
+
+  contenidoPantallas.push_back(currentScreen);
+  currentScreenNumber++;
+
+  for (int i = 0; i < ANCHO; i++)
+  {
+    for (int j = 0; j < ALTO; j++)
+    {
+      imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
+    }
+  }
+}
+
+void Editor::saveLastScreen()
+{
+  ScreenContent currentScreen;
+  currentScreen.screenNumber = currentScreenNumber;
+
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+    }
+  }
+
+  contenidoPantallas.push_back(currentScreen);
 }
 
 void Editor::exportCreatedMap()
@@ -168,6 +219,8 @@ void Editor::exportCreatedMap()
   JsonSerializer s;
   
   JsonMap jMap;
+
+  saveLastScreen();
 
   jMap = createJsonMap();
 
@@ -180,9 +233,13 @@ JsonMap Editor::createJsonMap()
 
   for (int i=0; i<ALTO; i++)
   {
-    for (int j=0; j<ANCHO; j++)
+    for (unsigned int k=0; k<contenidoPantallas.size(); k++)
     {
-      jMap.imageNames.push_back(imageNamesMatrix[j][i]);
+      for (int j=0; j<ANCHO; j++)
+      {
+        jMap.imageNames.push_back(
+          contenidoPantallas.at(k).imageNamesMatrix[j][i]);
+      }
     }
   }
 
