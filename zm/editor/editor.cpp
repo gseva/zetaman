@@ -74,36 +74,36 @@ void Editor::connectButtonsWithSignals()
 void Editor::createEmptyGrid()
 {
   /*Agrego los event box a la grid*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
           pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
       }
   }
 
   /*Agrego las imagenes a los event box*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
           eventBoxMatrix[i][j].add(imageMatrix[i][j]);
       }
   }
 
   /*Seteo las imagenes*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
           imageMatrix[i][j].set_from_resource("/zm/editor/images/void.png");
       }
   }
 
   /*Seteo el evento en los event box*/
-  for (int i=0; i<ALTO; i++)
+  for (int i=0; i<ANCHO; i++)
   {
-    for (int j=0; j<ANCHO; j++)
+    for (int j=0; j<ALTO; j++)
     {
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
       eventBoxMatrix[i][j].signal_button_press_event().connect(

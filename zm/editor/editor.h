@@ -9,8 +9,8 @@
 #include <string>
 #include <iostream>
 
-#define ALTO 12
-#define ANCHO 9
+#define ALTO 9
+#define ANCHO 12
 
 class Editor {
   private:
@@ -22,8 +22,8 @@ class Editor {
     Gtk::Grid* pGrid;
     Glib::RefPtr<Gtk::Application> app;
 
-    Gtk::EventBox eventBoxMatrix[ALTO][ANCHO];
-    Gtk::Image imageMatrix[ALTO][ANCHO];
+    Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
+    Gtk::Image imageMatrix[ANCHO][ALTO];
 
   public:
     void on_buttonCrearJugador_clicked();
