@@ -1,37 +1,65 @@
-#include "zm/server/server.h"
 #include <Box2D/Box2D.h>
-#include "zm/server/physics/physics.h"
 #include <iostream>
-Server::Server(ServerProxy& sp) : timer(physics, sp),
-  player(physics){
-  timer.start();
+#include <string>
+#include <vector>
+#include "zm/server/server.h"
+#include "zm/server/physics/physics.h"
+#include "zm/json/jsonserializer.h"
+
+#define DEFAULT_PATH "assets/maps/mapita.json"
+
+#define PPM 64
+
+Server::Server(ServerProxy& sp) : sp(sp){
+  JsonSerializer js;
+  jm = js.importMap(DEFAULT_PATH);
 }
 
 Server::~Server(){
-  timer.join();
+  std::vector<Player*>::iterator playersInterator;
+  for ( playersInterator = players.begin(); playersInterator != players.end(); 
+    ++playersInterator ) {
+    delete (*playersInterator);
+  }
 }
 
-void Server::jump(){
-	player.jump();
+void Server::newPlayer(){
+  Player* player = new Player();
+  players.push_back(player);
 }
 
 
-void Server::right(){
-  player.right();
-}
-void Server::left(){
-  player.left();
+void Server::startLevel(){
+  std::string path(DEFAULT_PATH);
+  level = new Level(players, path, sp);
 }
 
-void Server::stopHorizontalMove(){
-  player.stopHorizontalMove();
+void Server::jump(int playerNummber){
+  level->jump(playerNummber);
 }
 
-zm::Game Server::getState(){
-  b2Vec2 position = player.getPosition();
 
-  zm::Game gs;
-  gs.x = position.x*100;
-  gs.y = position.y*(-100)+400;
-  return gs;
+void Server::right(int playerNummber){
+  level->right(playerNummber);
+}
+
+void Server::left(int playerNummber){
+  level->left(playerNummber);
+}
+
+void Server::stopHorizontalMove(int playerNummber){
+  level->stopHorizontalMove(playerNummber);
+}
+
+zm::proto::Game Server::getState(){
+  //TODO: iterar sobre player y cargar correctamente el game
+  return level->getState();
+}
+
+std::vector<std::string> Server::getImageNames(){
+  return jm.imageNames;
+}
+
+std::vector<int> Server::getImages() {
+  return jm.imageNumbers;
 }

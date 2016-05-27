@@ -18,55 +18,55 @@ public:
   void draw(const Cairo::RefPtr<Cairo::Context>& context, ImageBuffer& buff);
 
   virtual std::string& getImageName() = 0;
-  virtual zm::Position& getPosition() = 0;
+  virtual zm::proto::Position& getPosition() = 0;
 };
 
 
 class Player : public Drawable {
-zm::Player p_;
+zm::proto::Player p_;
 std::string imageName_;
 
 public:
-  explicit Player(zm::Player p);
+  explicit Player(zm::proto::Player p);
 
   virtual std::string& getImageName() override;
-  virtual zm::Position& getPosition() override;
+  virtual zm::proto::Position& getPosition() override;
 };
 
 
 class Enemy : public Drawable {
-zm::Enemy e_;
+zm::proto::Enemy e_;
 std::string imageName_;
 
 public:
-  explicit Enemy(zm::Enemy e);
+  explicit Enemy(zm::proto::Enemy e);
 
   virtual std::string& getImageName() override;
-  virtual zm::Position& getPosition() override;
+  virtual zm::proto::Position& getPosition() override;
 };
 
 
 class Proyectile : public Drawable {
-zm::Proyectile p_;
+zm::proto::Proyectile p_;
 std::string imageName_;
 
 public:
-  explicit Proyectile(zm::Proyectile p);
+  explicit Proyectile(zm::proto::Proyectile p);
 
   virtual std::string& getImageName() override;
-  virtual zm::Position& getPosition() override;
+  virtual zm::proto::Position& getPosition() override;
 };
 
 
 class PowerUp : public Drawable {
-zm::PowerUp p_;
+zm::proto::PowerUp p_;
 std::string imageName_;
 
 public:
-  explicit PowerUp(zm::PowerUp p);
+  explicit PowerUp(zm::proto::PowerUp p);
 
   virtual std::string& getImageName() override;
-  virtual zm::Position& getPosition() override;
+  virtual zm::proto::Position& getPosition() override;
 };
 
 

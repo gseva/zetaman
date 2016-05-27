@@ -5,17 +5,17 @@
 
 class Player{
 public:
-	explicit Player(Physics& physics);
+	Player();
 	~Player();
 	void setPosition(int x, int y);
-  void createBody(b2World* world);
+  void createBody(Physics* physics);
   void right();
 	void left();
   void stopHorizontalMove();
 	void jump();
   b2Vec2 getPosition();
 private:
-  PlayerBody body;
+  PlayerBody *body;
 };
 
 #endif

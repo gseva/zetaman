@@ -5,6 +5,7 @@
 #include <gtkmm/drawingarea.h>
 
 #include "zm/game_protocol.h"
+#include "zm/server_proxy.h"
 #include "zm/client/map.h"
 #include "zm/client/image_buffer.h"
 
@@ -12,15 +13,15 @@
 namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
-Game game_;
+proto::Game game_;
 Map map_;
 ImageBuffer buff_;
 
 public:
-  Canvas();
+  explicit Canvas(ServerProxy& sp);
   virtual ~Canvas();
 
-  void updateGameState(Game gs);
+  void updateGameState(proto::Game gs);
 
 protected:
   void redraw();
