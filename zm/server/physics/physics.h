@@ -31,10 +31,10 @@ public:
   void setMap(const JsonMap& jm);
   void step();
   b2Body* createBody(const b2BodyDef& bodyDef);
+  std::vector<b2Body*> stairways;
 private:
   World world;
   Ground ground;
-  std::vector<b2Body*> stairways;
 };
 
 class Body {
@@ -49,6 +49,7 @@ protected:
   b2Body* body;
   b2BodyDef bodyDef;
   b2FixtureDef fixtureDef;
+  b2Fixture* fixture;
 };
 
 class PlayerBody : public Body {
@@ -59,6 +60,8 @@ public:
   void right();
   void left();
   void stopHorizontalMove();
+  void up();
+  bool canGoUp();
 private:
   bool idle;
 };

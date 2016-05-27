@@ -75,6 +75,10 @@ void Level::stopHorizontalMove(int playerNummber){
   players[playerNummber]->stopHorizontalMove();
 }
 
+void Level::up(int playerNummber){
+  players[playerNummber]->up();
+}
+
 std::vector<std::string> Level::getImageNames(){
   return jm.imageNames;
 }

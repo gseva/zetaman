@@ -42,6 +42,8 @@ bool Window::on_key_press_event(GdkEventKey* event) {
     c_->serverProxy.moveRight();
   } else if (event->keyval == GDK_KEY_Left) {
     c_->serverProxy.moveLeft();
+  } else if (event->keyval == GDK_KEY_Up) {
+    c_->serverProxy.up();
   }
 
   return Gtk::Window::on_key_press_event(event);

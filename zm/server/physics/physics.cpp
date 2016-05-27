@@ -133,7 +133,7 @@ PlayerBody::PlayerBody(Physics& physics) : Body(physics){
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
-  body->CreateFixture(&fixtureDef);
+  fixture = body->CreateFixture(&fixtureDef);
 }
 PlayerBody::~PlayerBody(){}
 
@@ -163,6 +163,25 @@ void PlayerBody::stopHorizontalMove(){
   body->SetLinearVelocity(vel);
 }
 
+void PlayerBody::up(){
+  if ( canGoUp() ) {
+    b2Vec2 v = body->GetLinearVelocity();
+    v.y = 5;
+    body->SetLinearVelocity(v);
+  }
+}
+
+bool PlayerBody::canGoUp(){
+  std::vector<b2Body*>::iterator i;
+  std::vector<b2Body*> stairways = this->physics.stairways;
+  for ( i = stairways.begin(); i != stairways.end(); ++i ) {
+    if ( b2TestOverlap((*i)->GetFixtureList()[0].GetShape(),
+      0,fixture->GetShape(),0, (*i)->GetTransform(), body->GetTransform()) )
+      return true;
+  }
+  return false;
+}
+
 Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
   totalMoves(15) {
   b2PolygonShape shape;
@@ -172,7 +191,7 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
-  body->CreateFixture(&fixtureDef);
+  fixture = body->CreateFixture(&fixtureDef);
   amountMoves = 0;
   b2Vec2 vel;
   sig = 1;

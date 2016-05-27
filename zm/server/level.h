@@ -22,6 +22,7 @@ public:
   void right(int playerNummber);
   void left(int playerNummber);
   void stopHorizontalMove(int playerNummber);
+  void up(int playerNummber);
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();

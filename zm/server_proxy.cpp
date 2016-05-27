@@ -42,6 +42,10 @@ void ServerProxy::stopHorizontalMove(){
 }
 
 
+void ServerProxy::up(){
+  s_.up(0);
+}
+
 std::vector<std::string> ServerProxy::getImageNames() {
   return s_.getImageNames();
 }

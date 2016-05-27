@@ -51,6 +51,10 @@ void Server::stopHorizontalMove(int playerNummber){
   level->stopHorizontalMove(playerNummber);
 }
 
+void Server::up(int playerNummber){
+  level->up(playerNummber);
+}
+
 zm::proto::Game Server::getState(){
   //TODO: iterar sobre player y cargar correctamente el game
   return level->getState();

@@ -20,6 +20,7 @@ public:
   void moveRight();
   void moveLeft();
   void stopHorizontalMove();
+  void up();
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();

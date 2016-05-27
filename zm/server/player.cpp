@@ -38,3 +38,7 @@ void Player::left(){
 void Player::stopHorizontalMove(){
   body->stopHorizontalMove();
 }
+
+void Player::up(){
+  body->up();
+}

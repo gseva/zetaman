@@ -13,6 +13,7 @@ public:
 	void left();
   void stopHorizontalMove();
 	void jump();
+  void up();
   b2Vec2 getPosition();
 private:
   PlayerBody *body;
