@@ -32,7 +32,7 @@ JsonMap JsonSerializer::importMap(std::string path)
   for (json::iterator it = spawns.begin(); it != spawns.end(); ++it) {
     json singleSpawn = *it;
     SpawnData spawnData;
-    spawnData.column = singleSpawn["x"]; 
+    spawnData.column = singleSpawn["x"];
     spawnData.row = singleSpawn["y"];
     spawnData.type = singleSpawn["type"];
     mapa.spawnsData.push_back(spawnData);
@@ -43,7 +43,7 @@ JsonMap JsonSerializer::importMap(std::string path)
   mapa.physics = physicsVector;
   mapa.spawnTypes = spawnTypesVector;
 
-  return mapa;  
+  return mapa;
 }
 
 void JsonSerializer::exportMap(std::string path, JsonMap m)
@@ -53,19 +53,15 @@ void JsonSerializer::exportMap(std::string path, JsonMap m)
   exportable= {{"tiles",m.imageNumbers},{"images",m.imageNames},
                 {"physics",m.physics},{"spawnTypes", m.spawnTypes}};
 
-  json exportableSpawns;
+  json exportableSpawns = json::array();
 
   for (unsigned int i=0; i<m.spawnsData.size(); i++)
   {
-    if (exportableSpawns!=NULL)
-    {
-      exportableSpawns = {{{"x",m.spawnsData[i].column},
-      {"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}},
-       exportableSpawns};  
-    } else {
-      exportableSpawns = {{"x",m.spawnsData[i].column},
-      {"y",m.spawnsData[i].row},{"type",m.spawnsData[i].type}};
-    } 
+    exportableSpawns.push_back({
+      {"x", m.spawnsData[i].column},
+      {"y", m.spawnsData[i].row},
+      {"type", m.spawnsData[i].type}
+    });
   }
 
   exportable["spawns"] = exportableSpawns;
@@ -96,7 +92,7 @@ std::map<std::string,int> JsonSerializer::importarEnte(std::string path)
 
   for (json::iterator it = j.begin(); it != j.end(); ++it)
   {
-    caracteristicasEnte.insert(std::pair<std::string,int>(it.key(), 
+    caracteristicasEnte.insert(std::pair<std::string,int>(it.key(),
                                                           it.value()));
   }
 
