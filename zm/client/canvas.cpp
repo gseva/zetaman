@@ -31,10 +31,10 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   p.pos.y = game_.y;
   game_.players.push_back(p);
 
-  proto::Enemy e;
+  /*proto::Enemy e;
   e.pos.x = game_.x + 35;
   e.pos.y = game_.y + 35;
-  game_.enemies.push_back(e);
+  game_.enemies.push_back(e);*/
 
   proto::Proyectile pr;
   pr.pos.x = game_.x - 35;

@@ -29,6 +29,7 @@ private:
   Physics physics;
   Timer timer;
   std::vector<Player*>& players;
+  std::vector<Enemy*> enemies;
   JsonMap jm;
 };
 #endif

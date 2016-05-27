@@ -14,16 +14,14 @@ private:
   b2Vec2* gravity;
 };
 
-/*class Ground{
+class Ground{
 public:
-  explicit Ground(World& world);
+  Ground();
   ~Ground();
+  void addBlock(b2Body* blockBody);
 private:
-  b2BodyDef groundBodyDef;
-  b2Body* groundBody;
-  b2PolygonShape groundBox;
-  World& world;
-};*/
+  std::vector<b2Body*> blocks;
+};
 
 
 class Physics {
@@ -35,12 +33,14 @@ public:
   b2Body* createBody(const b2BodyDef& bodyDef);
 private:
   World world;
-//  Ground ground;
+  Ground ground;
+  std::vector<b2Body*> stairways;
 };
 
 class Body {
 public:
   explicit Body(Physics& physics);
+  explicit Body(Physics& physics, float32 x, float32 y);
   virtual ~Body();
   void setPosition(int x, int y);
   b2Vec2 getPosition();
@@ -61,6 +61,17 @@ public:
   void stopHorizontalMove();
 private:
   bool idle;
+};
+
+class Enemy : public Body{
+public:
+  explicit Enemy(Physics& physics, float32 x, float32 y);
+  virtual ~Enemy();
+  void lived();
+private:
+  int amountMoves;
+  const int totalMoves;
+  int sig;
 };
 
 #endif
