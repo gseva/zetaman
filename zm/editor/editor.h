@@ -16,7 +16,6 @@
 #define ANCHO 12
 
 typedef struct ScreenContent{
-    int screenNumber;
     std::string imageNamesMatrix[ANCHO][ALTO];
 } ScreenContent;
 
@@ -29,6 +28,8 @@ class Editor {
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
     Gtk::Button* pBtnAgregarPantalla;
+    Gtk::Button* pBtnNextScreen;
+    Gtk::Button* pBtnPreviousScreen;
     Gtk::Window* pwindow;
     Gtk::Grid* pGrid;
     Glib::RefPtr<Gtk::Application> app;
@@ -38,7 +39,8 @@ class Editor {
 
     std::vector<ScreenContent> contenidoPantallas;
     std::string imageNamesCurrent[ANCHO][ALTO];
-    int currentScreenNumber;
+    unsigned int currentScreenNumber;
+    unsigned int totalScreenCount;
 
     std::map<std::string, int> nameToSpawnNumber;
     std::map<std::string, std::string> nameToSpawnType;
@@ -51,6 +53,8 @@ class Editor {
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
     void on_buttonAddScreen_clicked();
+    void on_buttonNextScreen_clicked();
+    void on_buttonPreviousScreen_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);

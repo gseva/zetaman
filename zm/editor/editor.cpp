@@ -45,6 +45,43 @@ void Editor::on_buttonAddScreen_clicked()
   createNewScreen();
 }
 
+void Editor::on_buttonNextScreen_clicked()
+{
+  if ((currentScreenNumber!=contenidoPantallas.size())
+    && contenidoPantallas.size()!=0 )
+  {
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageMatrix[i][j].set_from_resource(
+        contenidoPantallas[currentScreenNumber+1].imageNamesMatrix[i][j]);
+      }
+    }
+
+    currentScreenNumber++;
+  }
+}
+
+void Editor::on_buttonPreviousScreen_clicked()
+{
+  if (currentScreenNumber!=0)
+  {
+    saveLastScreen();
+
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageMatrix[i][j].set_from_resource(
+        contenidoPantallas[currentScreenNumber-1].imageNamesMatrix[i][j]);
+      }
+    }
+
+    currentScreenNumber--;  
+  }
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
                                       Gtk::Image* imagen, int col, int row)
 {
@@ -66,6 +103,8 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("btnSaveMap", pBtnSaveMap);
   builder->get_widget("btnAddScreen", pBtnAgregarPantalla);
+  builder->get_widget("btnNextScreen", pBtnNextScreen);
+  builder->get_widget("btnPreviousScreen", pBtnPreviousScreen);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -83,6 +122,9 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
   nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
+
+  currentScreenNumber = 0;
+  totalScreenCount = 1;
 }
 
 void Editor::connectButtonsWithSignals()
@@ -121,6 +163,18 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnAgregarPantalla->signal_clicked().connect(
       sigc::mem_fun(this, &Editor::on_buttonAddScreen_clicked));
+  }
+
+  if (pBtnNextScreen)
+  {
+    pBtnNextScreen->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonNextScreen_clicked));
+  }
+
+  if (pBtnPreviousScreen)
+  {
+    pBtnPreviousScreen->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonPreviousScreen_clicked));
   }
 }
 
@@ -166,7 +220,6 @@ void Editor::createEmptyGrid()
   }
 
   /*Seteo datos de esta pantalla*/
-  currentScreenNumber = 0;
   for (int i=0; i<ANCHO; i++)
   {
     for (int j=0; j<ALTO; j++)
@@ -187,7 +240,6 @@ void Editor::runEditor()
 void Editor::createNewScreen()
 {
   ScreenContent currentScreen;
-  currentScreen.screenNumber = currentScreenNumber;
 
   for (int i=0; i<ANCHO; i++)
   {
@@ -199,7 +251,8 @@ void Editor::createNewScreen()
   }
 
   contenidoPantallas.push_back(currentScreen);
-  currentScreenNumber++;
+  totalScreenCount++;
+  currentScreenNumber = totalScreenCount-1;
 
   for (int i = 0; i < ANCHO; i++)
   {
@@ -212,18 +265,22 @@ void Editor::createNewScreen()
 
 void Editor::saveLastScreen()
 {
-  ScreenContent currentScreen;
-  currentScreen.screenNumber = currentScreenNumber;
-
-  for (int i=0; i<ANCHO; i++)
+  /*Si no esta guardada*/
+  if (currentScreenNumber==contenidoPantallas.size())
   {
-    for (int j=0; j<ALTO; j++)
-    {
-      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
-    }
-  }
+    ScreenContent currentScreen;
 
+    for (int i=0; i<ANCHO; i++)
+    {
+      for (int j=0; j<ALTO; j++)
+      {
+        currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+      }
+    }
+
+  std::cout << "Pantalla guardada" << std::endl;
   contenidoPantallas.push_back(currentScreen);
+  }
 }
 
 void Editor::exportCreatedMap()
