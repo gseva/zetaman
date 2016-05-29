@@ -12,6 +12,22 @@
 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 2 , 0 , 1 
 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ],
   "images": ["grass.png", "ladder_mid.png"],
-  "physics": ["piso","escalera","piso","piso"]
-
+  "physics": ["piso","escalera","piso","piso"],
+"spawnTypes":[
+	"enemy" ,
+	"player"
+	],
+"spawns":[
+	{
+		"type": 0 , 
+		"x": 5 ,
+		"y": 1 
+	} ,
+	{
+		"type": 1 ,
+		"x": 0 ,
+		"y": 6
+	}
+	]
 }
+

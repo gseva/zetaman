@@ -6,11 +6,21 @@
 #include "json.hpp"
 using json = nlohmann::json;
 
-struct JsonMap {
+typedef struct SpawnData
+{
+  int column;
+  int row;
+  int type;
+} Spawn;
+
+typedef struct JsonMap
+{
   std::vector<int> imageNumbers;
   std::vector<std::string> imageNames;
   std::vector<std::string> physics;
-};
+  std::vector<std::string> spawnTypes;
+  std::vector<SpawnData> spawnsData;
+} JsonMap;
 
 class JsonSerializer
 {

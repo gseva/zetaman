@@ -100,7 +100,6 @@ void Level::up(int playerNumber){
 }
 
 void Level::shoot(int playerNumber){
-  std::cout <<"\nlevel shot";
   Bullet* bullet = players[playerNumber]->shoot();
   bullets.push_back(bullet);
 }

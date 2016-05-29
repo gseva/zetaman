@@ -1,9 +1,13 @@
 #include "editor.h"
 #include <iostream>
+#include <vector>
+#include <string>
+#include <map>
 
 #define IMAGEN_JUGADOR "/zm/editor/images/player.png"
 #define IMAGEN_TERRENO "/zm/editor/images/grass_mid.png"
 #define IMAGEN_ENEMIGO "/zm/editor/images/enemy.png"
+#define IMAGEN_BLANCO "/zm/editor/images/void.png"
 
 void Editor::on_buttonCrearJugador_clicked()
 {
@@ -23,11 +27,30 @@ void Editor::on_buttonCrearEnemigo_clicked()
   imagenSeleccionada = IMAGEN_ENEMIGO;
 }
 
+void Editor::on_buttonBorrarTile_clicked()
+{
+  std::cout << "Borrar tile seleccionado" << std::endl;
+  imagenSeleccionada = IMAGEN_BLANCO;
+}
+
+void Editor::on_buttonSaveMap_clicked()
+{
+  std::cout << "Guardando mapa" << std::endl;
+
+  exportCreatedMap();
+}
+
+void Editor::on_buttonAddScreen_clicked()
+{
+  createNewScreen();
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
-                                      Gtk::Image* imagen)
+                                      Gtk::Image* imagen, int col, int row)
 {
   imagen->set_from_resource(imagenSeleccionada);
-  std::cout << "Clickeo en division" << std::endl;
+  imageNamesCurrent[col][row] = imagenSeleccionada;
+  std::cout << "Clickeo en division" << col << " "<< row << std::endl;
   return true;
 }
 
@@ -40,6 +63,9 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
+  builder->get_widget("btnBorrarTile", pBtnBorrarTile);
+  builder->get_widget("btnSaveMap", pBtnSaveMap);
+  builder->get_widget("btnAddScreen", pBtnAgregarPantalla);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -48,6 +74,15 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   connectButtonsWithSignals();
 
   createEmptyGrid();
+
+  nameToSpawnNumber.insert({IMAGEN_ENEMIGO,0});
+  nameToSpawnType.insert({IMAGEN_ENEMIGO,"enemy"});
+  nameToSpawnNumber.insert({IMAGEN_JUGADOR,1});
+  nameToSpawnType.insert({IMAGEN_JUGADOR,"player"});
+  nameToPhysics.insert({IMAGEN_TERRENO,"solid"});
+  nameToPhysics.insert({IMAGEN_BLANCO,"void"});
+  nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
+  nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
 }
 
 void Editor::connectButtonsWithSignals()
@@ -69,46 +104,74 @@ void Editor::connectButtonsWithSignals()
     pBtnCrearEnemigo->signal_clicked().connect(
         sigc::mem_fun(this,&Editor::on_buttonCrearEnemigo_clicked));
   }
+
+  if (pBtnBorrarTile)
+  {
+    pBtnBorrarTile ->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonBorrarTile_clicked));
+  }
+
+  if (pBtnSaveMap)
+  {
+    pBtnSaveMap->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
+  }
+
+  if (pBtnAgregarPantalla)
+  {
+    pBtnAgregarPantalla->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonAddScreen_clicked));
+  }
 }
 
 void Editor::createEmptyGrid()
 {
   /*Agrego los event box a la grid*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
           pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
       }
   }
 
   /*Agrego las imagenes a los event box*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
           eventBoxMatrix[i][j].add(imageMatrix[i][j]);
       }
   }
 
   /*Seteo las imagenes*/
-  for (int i = 0; i < ALTO; i++)
+  for (int i = 0; i < ANCHO; i++)
   {
-      for (int j = 0; j < ANCHO; j++)
+      for (int j = 0; j < ALTO; j++)
       {
-          imageMatrix[i][j].set_from_resource("/zm/editor/images/void.png");
+          imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
       }
   }
 
   /*Seteo el evento en los event box*/
-  for (int i=0; i<ALTO; i++)
+  for (int i=0; i<ANCHO; i++)
   {
-    for (int j=0; j<ANCHO; j++)
+    for (int j=0; j<ALTO; j++)
     {
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
       eventBoxMatrix[i][j].signal_button_press_event().connect(
         sigc::bind<Gtk::Image*>(sigc::mem_fun(
-            this,&Editor::on_eventbox_button_press), &imageMatrix[i][j]));
+            this,&Editor::on_eventbox_button_press), &imageMatrix[i][j], i, j));
+    }
+  }
+
+  /*Seteo datos de esta pantalla*/
+  currentScreenNumber = 0;
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      imageNamesCurrent[i][j] = IMAGEN_BLANCO;
     }
   }
 }
@@ -118,4 +181,112 @@ void Editor::runEditor()
   pGrid->show_all_children();
 
   app->run(*pwindow);
+}
+
+
+void Editor::createNewScreen()
+{
+  ScreenContent currentScreen;
+  currentScreen.screenNumber = currentScreenNumber;
+
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+      imageNamesCurrent[i][j] = IMAGEN_BLANCO;
+    }
+  }
+
+  contenidoPantallas.push_back(currentScreen);
+  currentScreenNumber++;
+
+  for (int i = 0; i < ANCHO; i++)
+  {
+    for (int j = 0; j < ALTO; j++)
+    {
+      imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
+    }
+  }
+}
+
+void Editor::saveLastScreen()
+{
+  ScreenContent currentScreen;
+  currentScreen.screenNumber = currentScreenNumber;
+
+  for (int i=0; i<ANCHO; i++)
+  {
+    for (int j=0; j<ALTO; j++)
+    {
+      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+    }
+  }
+
+  contenidoPantallas.push_back(currentScreen);
+}
+
+void Editor::exportCreatedMap()
+{
+  JsonSerializer s;
+  
+  JsonMap jMap;
+
+  saveLastScreen();
+
+  jMap = createJsonMap();
+
+  s.exportMap("exportandoEditor.json", jMap);
+}
+
+JsonMap Editor::createJsonMap()
+{
+  JsonMap jMap;
+  std::map<std::string, int> nameToNumber;
+  int numeroImagen = 0;
+
+  for (int i=0; i<ALTO; i++)
+  {
+    for (unsigned int k=0; k<contenidoPantallas.size(); k++)
+    {
+      for (int j=0; j<ANCHO; j++)
+      {
+        std::string image = contenidoPantallas.at(k).imageNamesMatrix[j][i];
+
+        if (nameToNumber.count(image) == 0)
+        {
+          nameToNumber.insert({image,numeroImagen});
+          numeroImagen++;
+
+          /*Si la imagen es de un spawn se tiene que dibujar aire*/
+          if (nameToSpawnNumber.count(image)==0)
+          {
+            jMap.imageNames.push_back(image);
+          } else {
+            jMap.imageNames.push_back(IMAGEN_BLANCO);
+          }
+          jMap.physics.push_back(nameToPhysics[image]);
+        }
+
+        jMap.imageNumbers.push_back(nameToNumber[image]);
+
+        if (nameToSpawnNumber.count(image)!=0)
+        {
+          SpawnData data;
+          data.column = j;
+          data.row = i;
+          data.type = nameToSpawnNumber[image];
+          jMap.spawnsData.push_back(data);
+        }
+      }
+    }
+  }
+
+  for (std::map<std::string, int>::iterator it = nameToSpawnNumber.begin();
+       it != nameToSpawnNumber.end(); ++it)
+  {
+    jMap.spawnTypes.push_back(nameToSpawnType[it->first]);
+  }
+
+  return jMap;
 }
