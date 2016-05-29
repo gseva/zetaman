@@ -10,13 +10,15 @@ class ServerProxy;
 class Timer : public Thread{
 public:
   explicit Timer(Physics& physics, ServerProxy& sp,
-    std::vector<Enemy*>& enemies);
+    std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
   virtual ~Timer();
   virtual void run();
 private:
+  void collides(std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
   Physics& physics;
   ServerProxy& sp;
   std::vector<Enemy*>& enemies;
+  std::vector<Bullet*>& bullets;
 };
 
 #endif

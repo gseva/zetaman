@@ -3,6 +3,7 @@
 #include <vector>
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
+#include "zm/thread.h"
 
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
@@ -15,6 +16,7 @@
 #define ENEMY_TYPE 0x0002
 #define BLOCK_TYPE 0x0003
 #define STAIR_TYPE 0x0004
+#define BULLET_TYPE 0x0005
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
 
@@ -32,7 +34,7 @@ void Physics::setMap(const JsonMap& jm){
           b2Body* blockBody;
           blockBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
           blockBody = world.createBody(blockBodyDef);
-          
+
           b2PolygonShape blockBox;// = new b2PolygonShape();
           blockBox.SetAsBox(0.5f, 0.5f);
           b2FixtureDef fixtureDef;
@@ -66,13 +68,18 @@ void Physics::setMap(const JsonMap& jm){
 
 
 void Physics::step(){
+  Lock locker(mutex);
   world.step();
 }
 
 b2Body* Physics::createBody(const b2BodyDef& bodyDef){
+  Lock locker(mutex);
   return world.createBody(bodyDef);
 }
 
+void Physics::destroyBody(b2Body* body){
+  world.destroyBody(body);
+}
 
 World::World(){
   gravity = new b2Vec2(DEFAULT_GRAVITY_X, DEFAULT_GRAVITY_Y);
@@ -86,6 +93,10 @@ World::~World(){
 
 b2Body* World::createBody(const b2BodyDef& bodyDef){
   return world->CreateBody(&bodyDef);
+}
+
+void World::destroyBody(b2Body* body){
+  world->DestroyBody(body);
 }
 
 void World::step(){
@@ -115,22 +126,26 @@ Body::Body(Physics& physics, float32 x, float32 y) : physics(physics){
   body = this->physics.createBody(bodyDef);
  }
 
-Body::~Body(){}
+Body::~Body(){
+  this->physics.destroyBody(body);
+}
 
 b2Vec2 Body::getPosition(){
+  Lock locker(mutex);
   return body->GetPosition();
 }
 
 void Body::setPosition(int x, int y){
+  Lock locker(mutex);
   body->SetTransform(b2Vec2(x,y), body->GetAngle());
 }
 
 PlayerBody::PlayerBody(Physics& physics) : Body(physics){
   b2PolygonShape shape;
-  shape.SetAsBox(0.5f, 0.5f);
+  shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
   fixtureDef.density = 1.0f;
-  fixtureDef.friction = 1.0f;
+  fixtureDef.friction = 100.0f;
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
@@ -138,26 +153,30 @@ PlayerBody::PlayerBody(Physics& physics) : Body(physics){
 PlayerBody::~PlayerBody(){}
 
 void PlayerBody::jump(){
+  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   if ( vel.y == 0 ) {
-    vel.y += 10;
+    vel.y += 6;
     body->SetLinearVelocity(vel);
     idle = false;
   }
 }
 
 void PlayerBody::right(){
+  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
-  vel.x = 10;
+  vel.x = 6;
   body->SetLinearVelocity(vel);
 }
 void PlayerBody::left(){
+  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
-  vel.x = -10;
+  vel.x = -6;
   body->SetLinearVelocity(vel);
 }
 
 void PlayerBody::stopHorizontalMove(){
+  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 0;
   body->SetLinearVelocity(vel);
@@ -166,12 +185,14 @@ void PlayerBody::stopHorizontalMove(){
 void PlayerBody::up(){
   if ( canGoUp() ) {
     b2Vec2 v = body->GetLinearVelocity();
-    v.y = 5;
+    v.y = 3;
+    Lock locker(mutex);
     body->SetLinearVelocity(v);
   }
 }
 
 bool PlayerBody::canGoUp(){
+  Lock locker(mutex);
   std::vector<b2Body*>::iterator i;
   std::vector<b2Body*> stairways = this->physics.stairways;
   for ( i = stairways.begin(); i != stairways.end(); ++i ) {
@@ -182,10 +203,16 @@ bool PlayerBody::canGoUp(){
   return false;
 }
 
+Bullet* PlayerBody::shoot(){
+  b2Vec2 pos = getPosition();
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y);
+  return bullet;
+}
+
 Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
   totalMoves(15) {
   b2PolygonShape shape;
-  shape.SetAsBox(0.5f, 0.5f);
+  shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 1.0f;
@@ -202,6 +229,7 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
 Enemy::~Enemy(){}
 
 void Enemy::lived(){
+  Lock locker(mutex);
   if ( amountMoves == totalMoves ) {
     sig *= -1;
     amountMoves = 0;
@@ -211,4 +239,23 @@ void Enemy::lived(){
     b2Vec2 vel = body->GetLinearVelocity();
     vel.x = 3 * sig;
     body->SetLinearVelocity(vel);
+}
+
+Bullet::Bullet(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
+  vel(6,0) {
+  b2PolygonShape shape;
+  shape.SetAsBox(0.1f, 0.1f);
+  fixtureDef.shape = &shape;
+  fixtureDef.filter.categoryBits = BULLET_TYPE;
+  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE;
+  fixture = body->CreateFixture(&fixtureDef);
+  body->SetLinearVelocity(vel);
+  body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
+}
+
+Bullet::~Bullet(){}
+
+void Bullet::move(){
+  Lock locker(mutex);
+  body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
 }

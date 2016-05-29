@@ -17,12 +17,13 @@ public:
     const std::string& path, ServerProxy& sp);
   ~Level();
 
-  void jump(int playerNummber);
+  void jump(int playerNumber);
   zm::proto::Game getState();
-  void right(int playerNummber);
-  void left(int playerNummber);
-  void stopHorizontalMove(int playerNummber);
-  void up(int playerNummber);
+  void right(int playerNumber);
+  void left(int playerNumber);
+  void stopHorizontalMove(int playerNumber);
+  void up(int playerNumber);
+  void shoot(int playerNumber);
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();
@@ -31,6 +32,7 @@ private:
   Timer timer;
   std::vector<Player*>& players;
   std::vector<Enemy*> enemies;
+  std::vector<Bullet*> bullets;
   JsonMap jm;
 };
 #endif

@@ -16,11 +16,13 @@ Server::Server(ServerProxy& sp) : sp(sp){
 }
 
 Server::~Server(){
-  std::vector<Player*>::iterator playersInterator;
-  for ( playersInterator = players.begin(); playersInterator != players.end(); 
-    ++playersInterator ) {
-    delete (*playersInterator);
+  std::vector<Player*>::iterator playersIterator;
+  for ( playersIterator = players.begin(); playersIterator != players.end(); 
+    ++playersIterator ) {
+    delete (*playersIterator);
   }
+  if ( level != NULL )
+    stopLevel();
 }
 
 void Server::newPlayer(){
@@ -34,29 +36,36 @@ void Server::startLevel(){
   level = new Level(players, path, sp);
 }
 
-void Server::jump(int playerNummber){
-  level->jump(playerNummber);
+void Server::stopLevel(){
+  delete level;
+}
+
+void Server::jump(int playerNumber){
+  level->jump(playerNumber);
 }
 
 
-void Server::right(int playerNummber){
-  level->right(playerNummber);
+void Server::right(int playerNumber){
+  level->right(playerNumber);
 }
 
-void Server::left(int playerNummber){
-  level->left(playerNummber);
+void Server::left(int playerNumber){
+  level->left(playerNumber);
 }
 
-void Server::stopHorizontalMove(int playerNummber){
-  level->stopHorizontalMove(playerNummber);
+void Server::stopHorizontalMove(int playerNumber){
+  level->stopHorizontalMove(playerNumber);
 }
 
-void Server::up(int playerNummber){
-  level->up(playerNummber);
+void Server::up(int playerNumber){
+  level->up(playerNumber);
+}
+
+void Server::shoot(int playerNumber){
+  level->shoot(playerNumber);
 }
 
 zm::proto::Game Server::getState(){
-  //TODO: iterar sobre player y cargar correctamente el game
   return level->getState();
 }
 

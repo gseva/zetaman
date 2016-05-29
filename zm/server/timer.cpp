@@ -6,8 +6,9 @@
 #include <chrono>
 #include <thread>
 
-Timer::Timer(Physics& physics, ServerProxy& sp, std::vector<Enemy*>& enemies) :
-physics(physics), sp(sp), enemies(enemies){}
+Timer::Timer(Physics& physics, ServerProxy& sp, std::vector<Enemy*>& enemies,
+  std::vector<Bullet*>& bullets) : physics(physics), sp(sp), enemies(enemies),
+  bullets(bullets){}
 
 Timer::~Timer(){}
 
@@ -19,7 +20,44 @@ void Timer::run(){
     for ( i = enemies.begin(); i != enemies.end(); ++i ) {
       (*i)->lived();
     }
+    std::vector<Bullet*>::iterator j;
+    for ( j = bullets.begin(); j != bullets.end(); ++j ) {
+      (*j)->move();
+    }
+    collides(enemies, bullets);
     sp.updateState(sp.getState());
   }
   return;
+}
+
+void Timer::collides(std::vector<Enemy*>& enemies,
+  std::vector<Bullet*>& bullets){
+  std::vector<std::vector<Enemy*>::iterator> enemiesToDestroy;
+  std::vector<std::vector<Bullet*>::iterator> bulletsToDestroy;
+  
+  for (std::vector<Bullet*>::iterator bullet = bullets.begin();
+    bullet != bullets.end(); ++bullet ) {
+    for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
+      enemy != enemies.end(); ++enemy ) {
+      if ( b2TestOverlap(
+        (*enemy)->body->GetFixtureList()[0].GetShape(), 0,
+        (*bullet)->body->GetFixtureList()[0].GetShape(),0,
+        (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform()) ) {
+        enemiesToDestroy.push_back(enemy);
+        bulletsToDestroy.push_back(bullet);
+      }  
+    }  
+  }
+  std::vector<std::vector<Enemy*>::iterator>::iterator enemyToDestroy;
+  for ( enemyToDestroy = enemiesToDestroy.begin();
+    enemyToDestroy != enemiesToDestroy.end(); ++enemyToDestroy ) {
+    delete **enemyToDestroy;    
+    enemies.erase(*enemyToDestroy);
+  }
+  std::vector<std::vector<Bullet*>::iterator>::iterator bulletToDestroy;
+  for ( bulletToDestroy = bulletsToDestroy.begin();
+    bulletToDestroy != bulletsToDestroy.end(); ++bulletToDestroy ) {
+    delete **bulletToDestroy;    
+    bullets.erase(*bulletToDestroy);
+  }
 }

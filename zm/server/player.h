@@ -14,6 +14,7 @@ public:
   void stopHorizontalMove();
 	void jump();
   void up();
+  Bullet* shoot();
   b2Vec2 getPosition();
 private:
   PlayerBody *body;

@@ -19,7 +19,6 @@ void ServerProxy::startLevel() {
 
 void ServerProxy::jump() {
   s_.jump(0);
-  std::cout << "hola\n";
 }
 
 zm::proto::Game ServerProxy::getState() {
@@ -44,6 +43,10 @@ void ServerProxy::stopHorizontalMove(){
 
 void ServerProxy::up(){
   s_.up(0);
+}
+
+void ServerProxy::shoot(){
+  s_.shoot(0);
 }
 
 std::vector<std::string> ServerProxy::getImageNames() {

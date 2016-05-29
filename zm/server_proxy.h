@@ -21,6 +21,7 @@ public:
   void moveLeft();
   void stopHorizontalMove();
   void up();
+  void shoot();
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();
