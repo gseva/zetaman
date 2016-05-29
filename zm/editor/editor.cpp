@@ -332,7 +332,8 @@ JsonMap Editor::createJsonMap()
 {
   JsonMap jMap;
   std::map<std::string, int> nameToNumber;
-  int numeroImagen = 0;
+  int numeroImagen = 1;
+  nameToNumber.insert({IMAGEN_BLANCO,0});
 
   for (int i=0; i<ALTO; i++)
   {
@@ -342,22 +343,22 @@ JsonMap Editor::createJsonMap()
       {
         std::string image = contenidoPantallas.at(k).imageNamesMatrix[j][i];
 
-        if (nameToNumber.count(image) == 0)
+        if (nameToNumber.count(image) == 0 && nameToSpawnNumber.count(image)==0)
         {
           nameToNumber.insert({image,numeroImagen});
-          numeroImagen++;
-
-          /*Si la imagen es de un spawn se tiene que dibujar aire*/
-          if (nameToSpawnNumber.count(image)==0)
-          {
-            jMap.imageNames.push_back(image);
-          } else {
-            jMap.imageNames.push_back(IMAGEN_BLANCO);
-          }
+          numeroImagen++;          
+          
+          jMap.imageNames.push_back(image);
+          
           jMap.physics.push_back(nameToPhysics[image]);
         }
 
-        jMap.imageNumbers.push_back(nameToNumber[image]);
+        if (nameToSpawnNumber.count(image)==0)
+        {
+          jMap.imageNumbers.push_back(nameToNumber[image]);  
+        } else {
+          jMap.imageNumbers.push_back(nameToNumber[IMAGEN_BLANCO]);
+        }
 
         if (nameToSpawnNumber.count(image)!=0)
         {
