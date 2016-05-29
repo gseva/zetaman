@@ -64,5 +64,5 @@ class Editor {
     void createNewScreen();
     void exportCreatedMap();
     JsonMap createJsonMap();
-    void saveLastScreen();
+    void saveUnsavedScreen();
 };

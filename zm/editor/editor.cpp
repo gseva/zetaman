@@ -47,9 +47,11 @@ void Editor::on_buttonAddScreen_clicked()
 
 void Editor::on_buttonNextScreen_clicked()
 {
-  if ((currentScreenNumber!=contenidoPantallas.size()-1)
+  if ((currentScreenNumber!=totalScreenCount-1)
     && contenidoPantallas.size()!=0 )
   {
+    saveUnsavedScreen();
+
     for (int i = 0; i < ANCHO; i++)
     {
       for (int j = 0; j < ALTO; j++)
@@ -78,7 +80,7 @@ void Editor::on_buttonPreviousScreen_clicked()
 {
   if (currentScreenNumber!=0)
   {
-    saveLastScreen();
+    saveUnsavedScreen();
 
     for (int i = 0; i < ANCHO; i++)
     {
@@ -261,7 +263,7 @@ void Editor::runEditor()
 
 void Editor::createNewScreen()
 {
-  saveLastScreen();
+  saveUnsavedScreen();
 
   for (int i=0; i<ANCHO; i++)
   {
@@ -283,9 +285,9 @@ void Editor::createNewScreen()
   }
 }
 
-void Editor::saveLastScreen()
+void Editor::saveUnsavedScreen()
 {
-  /*Si no esta guardada*/
+  /*Si no esta guardada la ultima*/
   if (currentScreenNumber==contenidoPantallas.size())
   {
     ScreenContent currentScreen;
@@ -300,6 +302,15 @@ void Editor::saveLastScreen()
 
   std::cout << "Pantalla guardada" << std::endl;
   contenidoPantallas.push_back(currentScreen);
+  } else {
+    for (int i=0; i<ANCHO; i++)
+    {
+      for (int j=0; j<ALTO; j++)
+      {
+        contenidoPantallas[currentScreenNumber].imageNamesMatrix[i][j] =
+         imageNamesCurrent[i][j];
+      }
+    }
   }
 }
 
@@ -309,7 +320,7 @@ void Editor::exportCreatedMap()
   
   JsonMap jMap;
 
-  saveLastScreen();
+  saveUnsavedScreen();
 
   jMap = createJsonMap();
 
