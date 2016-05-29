@@ -149,6 +149,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
 
   currentScreenNumber = 0;
   totalScreenCount = 1;
+  imagenSeleccionada = IMAGEN_TERRENO;
 }
 
 void Editor::connectButtonsWithSignals()
