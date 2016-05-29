@@ -47,7 +47,7 @@ void Editor::on_buttonAddScreen_clicked()
 
 void Editor::on_buttonNextScreen_clicked()
 {
-  if ((currentScreenNumber!=contenidoPantallas.size())
+  if ((currentScreenNumber!=contenidoPantallas.size()-1)
     && contenidoPantallas.size()!=0 )
   {
     for (int i = 0; i < ANCHO; i++)
@@ -59,8 +59,19 @@ void Editor::on_buttonNextScreen_clicked()
       }
     }
 
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageNamesCurrent[i][j] = 
+        contenidoPantallas[currentScreenNumber+1].imageNamesMatrix[i][j];
+      }
+    }
+
     currentScreenNumber++;
   }
+
+  std::cout << currentScreenNumber << std::endl;
 }
 
 void Editor::on_buttonPreviousScreen_clicked()
@@ -78,8 +89,19 @@ void Editor::on_buttonPreviousScreen_clicked()
       }
     }
 
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageNamesCurrent[i][j] = 
+        contenidoPantallas[currentScreenNumber-1].imageNamesMatrix[i][j];
+      }
+    }
+
     currentScreenNumber--;  
   }
+
+  std::cout << currentScreenNumber << std::endl;
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -239,18 +261,16 @@ void Editor::runEditor()
 
 void Editor::createNewScreen()
 {
-  ScreenContent currentScreen;
+  saveLastScreen();
 
   for (int i=0; i<ANCHO; i++)
   {
     for (int j=0; j<ALTO; j++)
     {
-      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
       imageNamesCurrent[i][j] = IMAGEN_BLANCO;
     }
   }
 
-  contenidoPantallas.push_back(currentScreen);
   totalScreenCount++;
   currentScreenNumber = totalScreenCount-1;
 
