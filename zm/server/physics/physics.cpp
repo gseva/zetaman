@@ -10,8 +10,8 @@
 #define ALTO_TOTAL 12
 #define ANCHO_TOTAL 16
 #define AIRE 0
-#define PISO 1
-#define STAIR 2
+#define SOLID "solid"
+#define STAIR "stair"
 #define PLAYER_TYPE 0x0001
 #define ENEMY_TYPE 0x0002
 #define BLOCK_TYPE 0x0003
@@ -29,7 +29,7 @@ void Physics::setMap(const JsonMap& jm){
   std::vector<int> matriz = jm.imageNumbers;
   for ( int j = 0; j < ALTO_TOTAL; ++j ) {
     for ( int i = 0; i < ANCHO_TOTAL; ++i ) {
-      if ( matriz[i + j*ANCHO_TOTAL] == PISO ) {
+      if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == SOLID ) {
           b2BodyDef blockBodyDef;// = new b2BodyDef();
           b2Body* blockBody;
           blockBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
@@ -37,6 +37,7 @@ void Physics::setMap(const JsonMap& jm){
 
           b2PolygonShape blockBox;// = new b2PolygonShape();
           blockBox.SetAsBox(0.5f, 0.5f);
+          blockBox.m_radius = 0.0f;
           b2FixtureDef fixtureDef;
           fixtureDef.shape = &blockBox;
           fixtureDef.density = 1.0f;
@@ -45,7 +46,7 @@ void Physics::setMap(const JsonMap& jm){
           fixtureDef.filter.maskBits = ALL_CONTACT;
           blockBody->CreateFixture(&fixtureDef);
           ground.addBlock(blockBody);
-      } else if ( matriz[i + j*ANCHO_TOTAL] == STAIR ) {
+      } else if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == STAIR ) {
           b2BodyDef stairBodyDef;// = new b2BodyDef();
           b2Body* stairBody;
           stairBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
@@ -150,6 +151,19 @@ PlayerBody::PlayerBody(Physics& physics) : Body(physics){
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
 }
+
+PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) : 
+  Body(physics, x, y){
+  b2PolygonShape shape;
+  shape.SetAsBox(0.4f, 0.4f);
+  fixtureDef.shape = &shape;
+  fixtureDef.density = 1.0f;
+  fixtureDef.friction = 100.0f;
+  fixtureDef.filter.categoryBits = PLAYER_TYPE;
+  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
+  fixture = body->CreateFixture(&fixtureDef); 
+}
+
 PlayerBody::~PlayerBody(){}
 
 void PlayerBody::jump(){
@@ -205,7 +219,9 @@ bool PlayerBody::canGoUp(){
 
 Bullet* PlayerBody::shoot(){
   b2Vec2 pos = getPosition();
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y);
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y,signo);
   return bullet;
 }
 
@@ -241,8 +257,8 @@ void Enemy::lived(){
     body->SetLinearVelocity(vel);
 }
 
-Bullet::Bullet(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
-  vel(6,0) {
+Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo) : 
+  Body(physics, x, y), vel(6*signo,0) {
   b2PolygonShape shape;
   shape.SetAsBox(0.1f, 0.1f);
   fixtureDef.shape = &shape;

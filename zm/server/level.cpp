@@ -10,30 +10,29 @@
 #include "zm/game_protocol.h"
 
 #define PPM 64
+#define PLAYER "player"
+#define ENEMY "enemy"
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
   ServerProxy& sp) : timer(physics, sp, enemies, bullets),
   players(connectedPlayers){
   JsonSerializer js;
-  
   jm = js.importMap(path);
   physics.setMap(jm);
-
-
-  for ( unsigned int i = 0; i < players.size(); ++i ) {
-    players[i]->createBody(&physics);
+  unsigned int amountPlayers = 0;
+  for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
+    i != jm.spawnsData.end(); ++i ) {
+    if ( jm.spawnTypes[(*i).type] == ENEMY ) {
+      Enemy* enemy = new Enemy(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
+      if ( amountPlayers < players.size() ){
+        players[amountPlayers]->createBody(&physics,
+          (*i).column+0.5f, (*i).row+0.5f);
+        amountPlayers++;
+      }
+    }
   }
-
-  Enemy* enemy = new Enemy(physics, 5.5f, 3.5f);
-  enemies.push_back(enemy);
-  enemy = new Enemy(physics, 2.5f, 8.5f);
-  enemies.push_back(enemy);
-  enemy = new Enemy(physics, 10.5f, 10.5f);
-  enemies.push_back(enemy);
-
-  Bullet* bullet = new Bullet(physics, 2.5f, 9.5f);
-  bullets.push_back(bullet);
-
   timer.start();
 }
 Level::~Level(){
@@ -71,7 +70,7 @@ zm::proto::Game Level::getState(){
   for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
     zm::proto::Proyectile proyectile;
-    proyectile.pos.x = (*bullet)->getPosition().x* PPM;
+    proyectile.pos.x = (*bullet)->getPosition().x * PPM;
     proyectile.pos.y = (*bullet)->getPosition().y * -PPM + 768;
     gs.proyectiles.push_back(proyectile);
   }

@@ -8,7 +8,7 @@ public:
 	Player();
 	~Player();
 	void setPosition(int x, int y);
-  void createBody(Physics* physics);
+  void createBody(Physics* physics, float32 x, float32 y);
   void right();
 	void left();
   void stopHorizontalMove();

@@ -15,8 +15,8 @@ Player::~Player(){
     delete body;
 }
 
-void Player::createBody(Physics* physics){
-  body = new PlayerBody(*physics);
+void Player::createBody(Physics* physics, float32 x, float32 y){
+  body = new PlayerBody(*physics,x,y);
 }
 
 void Player::jump(){
