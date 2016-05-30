@@ -59,11 +59,24 @@ protected:
 
 class Bullet : public Body {
 public:
-  explicit Bullet(Physics& physics, float32 x, float32 y, int signo);
-  virtual ~Bullet();
+  explicit Bullet(Physics& physics, float32 x, float32 y, int signo,
+    int mask, int category);
+  virtual ~Bullet()=0;
   void move();
 protected:
   const b2Vec2 vel;
+};
+
+class PlayerBullet : public Bullet {
+public:
+  explicit PlayerBullet(Physics& physics, float32 x, float32 y, int signo);
+  ~PlayerBullet();
+};
+
+class EnemyBullet : public Bullet {
+public:
+  explicit EnemyBullet(Physics& physics, float32 x, float32 y, int signo);
+  ~EnemyBullet();
 };
 
 class PlayerBody : public Body {
@@ -86,11 +99,27 @@ class Enemy : public Body{
 public:
   explicit Enemy(Physics& physics, float32 x, float32 y);
   virtual ~Enemy();
-  void lived();
+  virtual EnemyBullet* move();
 private:
   int amountMoves;
   const int totalMoves;
   int sig;
+};
+
+enum MetState{protect, notProtect};
+
+class Met : public Enemy{
+public:
+  explicit Met(Physics& physics, float32 x, float32 y);
+  virtual ~Met();
+  virtual EnemyBullet* move();
+  EnemyBullet* shoot();
+private:
+  MetState state;
+  const float32 period;
+  int tics;
+  int shoots;
+  const int amountShots;    
 };
 
 #endif

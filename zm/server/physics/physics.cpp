@@ -16,7 +16,8 @@
 #define ENEMY_TYPE 0x0002
 #define BLOCK_TYPE 0x0003
 #define STAIR_TYPE 0x0004
-#define BULLET_TYPE 0x0005
+#define PLAYER_BULLET_TYPE 0x0005
+#define ENEMY_BULLET_TYPE 0x0006
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
 
@@ -37,7 +38,7 @@ void Physics::setMap(const JsonMap& jm){
 
           b2PolygonShape blockBox;// = new b2PolygonShape();
           blockBox.SetAsBox(0.5f, 0.5f);
-          blockBox.m_radius = 0.0f;
+          blockBox.m_radius = 0.1f;
           b2FixtureDef fixtureDef;
           fixtureDef.shape = &blockBox;
           fixtureDef.density = 1.0f;
@@ -144,11 +145,12 @@ void Body::setPosition(int x, int y){
 PlayerBody::PlayerBody(Physics& physics) : Body(physics){
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
+  shape.m_radius = 0.1f;
   fixtureDef.shape = &shape;
-  fixtureDef.density = 1.0f;
+  fixtureDef.density = 100.0f;
   fixtureDef.friction = 100.0f;
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
-  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
+  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_BULLET_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
 }
 
@@ -221,7 +223,7 @@ Bullet* PlayerBody::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y,signo);
+  Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y,signo);
   return bullet;
 }
 
@@ -233,7 +235,7 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
-  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
+  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_BULLET_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
   amountMoves = 0;
   b2Vec2 vel;
@@ -244,7 +246,7 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
 
 Enemy::~Enemy(){}
 
-void Enemy::lived(){
+EnemyBullet* Enemy::move(){
   Lock locker(mutex);
   if ( amountMoves == totalMoves ) {
     sig *= -1;
@@ -255,15 +257,52 @@ void Enemy::lived(){
     b2Vec2 vel = body->GetLinearVelocity();
     vel.x = 3 * sig;
     body->SetLinearVelocity(vel);
+    return NULL;
 }
 
-Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo) : 
-  Body(physics, x, y), vel(6*signo,0) {
+Met::Met(Physics& physics, float32 x, float32 y) : 
+  Enemy(physics, x, y), period(60*3), amountShots(3){
+    shoots = 0;
+    tics = 0;
+    state = notProtect;
+}
+
+Met::~Met(){}
+
+EnemyBullet* Met::move(){
+  tics++;
+  if ( tics == period )
+    tics = 0;
+  if ( tics == 0 ){
+    switch ( state ) {
+      case notProtect: state = protect;
+      break;
+      case protect: state = notProtect;
+      break;
+    }
+  }
+  if ( state == notProtect && ((tics % 60) == 0 ) ) {
+    return shoot();
+  }
+  return NULL;
+}
+
+EnemyBullet* Met::shoot(){
+ b2Vec2 pos = getPosition();
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
+  //bullet->move();
+  return bullet;
+}
+
+Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
+  int mask, int category) : Body(physics, x, y), vel(6*signo,0) {
   b2PolygonShape shape;
-  shape.SetAsBox(0.1f, 0.1f);
+  shape.SetAsBox(0.01f, 0.01f);
   fixtureDef.shape = &shape;
-  fixtureDef.filter.categoryBits = BULLET_TYPE;
-  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE;
+  fixtureDef.filter.categoryBits = category;
+  fixtureDef.filter.maskBits = mask;
   fixture = body->CreateFixture(&fixtureDef);
   body->SetLinearVelocity(vel);
   body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
@@ -275,3 +314,15 @@ void Bullet::move(){
   Lock locker(mutex);
   body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
 }
+
+PlayerBullet::PlayerBullet(Physics& physics, float32 x, float32 y, int signo) :
+  Bullet(physics, x, y, signo,
+    ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE, PLAYER_BULLET_TYPE){}
+
+PlayerBullet::~PlayerBullet(){}
+
+EnemyBullet::EnemyBullet(Physics& physics, float32 x, float32 y, int signo) :
+  Bullet(physics, x, y, signo,
+    ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_TYPE, ENEMY_BULLET_TYPE){}
+
+EnemyBullet::~EnemyBullet(){}

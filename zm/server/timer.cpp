@@ -18,7 +18,10 @@ void Timer::run(){
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;
     for ( i = enemies.begin(); i != enemies.end(); ++i ) {
-      (*i)->lived();
+      Bullet* bullet = (*i)->move();
+      if ( bullet != NULL ) {
+        bullets.push_back(bullet);
+      }
     }
     std::vector<Bullet*>::iterator j;
     for ( j = bullets.begin(); j != bullets.end(); ++j ) {
