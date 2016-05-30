@@ -13,17 +13,18 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
   Window window(this);
   window.set_default_size(1024, 768);
 
-  Canvas area;
+  Canvas area(serverProxy);
+  serverProxy.connect();
+  serverProxy.startLevel();
   window.add(area);
   area.show();
 
   serverProxy.updateHandler.signal_game_update().connect(
       sigc::mem_fun(area, &Canvas::updateGameState) );
-
   app->run(window);
 }
 
-void Client::draw(Game game) {
+void Client::draw(proto::Game game) {
 }
 
 
@@ -41,7 +42,11 @@ bool Window::on_key_press_event(GdkEventKey* event) {
     c_->serverProxy.moveRight();
   } else if (event->keyval == GDK_KEY_Left) {
     c_->serverProxy.moveLeft();
-  }
+  } else if (event->keyval == GDK_KEY_Up) {
+    c_->serverProxy.up();
+  } else if ((event->keyval == GDK_KEY_A) || (event->keyval == GDK_KEY_a)) {
+    c_->serverProxy.shoot();
+  } 
 
   return Gtk::Window::on_key_press_event(event);
 }

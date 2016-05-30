@@ -13,15 +13,22 @@ public:
   GameUpdateHandler updateHandler;
 
   ServerProxy();
+  void connect();
+  void startLevel();
 
   void jump();
   void moveRight();
   void moveLeft();
   void stopHorizontalMove();
+  void up();
+  void shoot();
 
-  zm::Game getState();
+  std::vector<std::string> getImageNames();
+  std::vector<int> getImages();
 
-  void updateState(zm::Game g);
+  zm::proto::Game getState();
+
+  void updateState(zm::proto::Game g);
 };
 
 #endif

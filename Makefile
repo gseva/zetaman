@@ -37,10 +37,10 @@ box2d = si
 CFLAGS = -Wall -Werror -pedantic -pedantic-errors -ansi
 
 # Para optimizar el binario resultante lo mejor posible
-CFLAGS += -O3 -DNDEBUG
+#CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
-# CFLAGS += -ggdb -DDEBUG -fno-inline
+ CFLAGS += -ggdb -DDEBUG -fno-inline
 
 # Opciones del enlazador.
 #LDFLAGS =
@@ -144,6 +144,7 @@ editor_dir = $(zm_dir)editor/
 assets_dir = assets/
 images_config = $(assets_dir)image.gresource.xml
 editor_config = $(assets_dir)editor.gresource.xml
+maps_dir = $(assets_dir)maps/
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
@@ -168,8 +169,13 @@ o_client_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(client_sources)
 o_editor_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(editor_sources))
 o_json_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(json_sources))
 o_server_all_files = $(o_server_only_files) $(o_common_files)
-o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files)
+
+#o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_json_only_files)
+#o_editor_all_files = $(o_editor_only_files)
+
+o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_json_only_files)
 o_editor_all_files = $(o_editor_only_files) $(o_json_only_files)
+
 o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files) $(o_json_only_files)
 
 o_client_resources = $(resources_dir)client_resources.o
@@ -247,6 +253,7 @@ lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
 client_assets: $(client_resources) $(o_client_resources)
+	@cp -r $(maps_dir) $(build_dir)maps
 
 editor_assets: $(editor_resources) $(o_editor_resources)
 

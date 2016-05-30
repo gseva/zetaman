@@ -6,18 +6,17 @@
 #include <map>
 #include <string>
 
+
+
 JsonMap JsonSerializer::importMap(std::string path)
 {
-  std::fstream fs;
-
-  std::map<std::string, int> tiles;
-
-  fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
+  std::ifstream fs(path);
 
   json j;
 
   fs >> j; //Carga el json en memoria
 
+  std::cout << j << std::endl;
   fs.close();
 
   JsonMap mapa;

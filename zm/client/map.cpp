@@ -1,43 +1,45 @@
 
 #include <string>
+#include <iostream>
 
 #include "zm/client/map.h"
-
+#include <vector>
 #include <gdkmm/general.h> // set_source_pixbuf()
 
-static const char* image_names[] = {
-  "grass.png",
-  "ladder_mid.png",
-  "grass_half.png",
-  "grass_mid.png"
-};
-static const int tiles_[240] = {
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-};
+// static const char* image_names[] = {
+//   "grass.png",
+//   "ladder_mid.png",
+//   "grass_half.png",
+//   "grass_mid.png"
+// };
+// static const int tiles_[240] = {
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+// };
 
 
 namespace zm {
 
-Map::Map() {
+Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
+        tiles_(tiles), imageNames_(imageNames) {
   loadImages();
   // images_ v = {"grass.png", "ladder_mid.png"};
 }
 
 void Map::loadImages() {
   std::string prefix = "/zm/images/tiles/";
-  for (int i = 0; i < N_IMAGES; ++i) {
-    std::string resource_name = prefix + image_names[i];
+  for (unsigned int i = 0; i < imageNames_.size(); ++i) {
+    std::string resource_name = prefix + imageNames_[i];
 
     // create_from_resource es de gtk 3.12, y en ubuntu 14.04 la version de gtk
     // es 3.10
@@ -54,7 +56,7 @@ void Map::draw(const Cairo::RefPtr<Cairo::Context>& context) {
 
   // om.tercio // 2
 
-  int largo = 20;
+  int largo = 16;
 
   for (int i = 0; i < 16; ++i) {
     for (int j = 0; j < 12; ++j) {

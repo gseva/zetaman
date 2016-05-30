@@ -1,3 +1,5 @@
+#ifndef __JSON_SERIALIZER_H__
+#define __JSON_SERIALIZER_H__
 #include <vector>
 #include <string>
 #include <map>
@@ -27,3 +29,4 @@ class JsonSerializer
   void exportMap(std::string path, JsonMap m);
   std::map<std::string,int> importarEnte(std::string path);
 };
+#endif

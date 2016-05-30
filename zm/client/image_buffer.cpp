@@ -13,7 +13,7 @@ Glib::RefPtr<Gdk::Pixbuf> ImageBuffer::getImage(const std::string& key) {
 
     auto image = Glib::wrap(gdk_pixbuf_new_from_resource(
                                  resource_name.c_str(), 0));
-    images_.insert(std::make_pair(key, image));
+    images_.insert({key, image});
   }
 
   return images_.at(key);
