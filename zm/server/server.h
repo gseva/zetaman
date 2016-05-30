@@ -21,12 +21,15 @@ public:
 	~Server();
   void newPlayer();
   void startLevel();
+  void stopLevel();
 
-	void jump(int playerNummber);
+	void jump(int playerNumber);
 	zm::proto::Game getState();
   void right(int playerNummber);
-  void left(int playerNummber);
-  void stopHorizontalMove(int playerNummber);
+  void left(int playerNumber);
+  void stopHorizontalMove(int playerNumber);
+  void up(int playerNumber);
+  void shoot(int playerNumber);
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();

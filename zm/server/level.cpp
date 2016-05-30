@@ -6,28 +6,33 @@
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
-#include "level.h"
+#include "zm/server/level.h"
 #include "zm/game_protocol.h"
 
 #define PPM 64
+#define PLAYER "player"
+#define ENEMY "enemy"
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
-  ServerProxy& sp) : timer(physics, sp, enemies), players(connectedPlayers){
+  ServerProxy& sp) : timer(physics, sp, enemies, bullets),
+  players(connectedPlayers){
   JsonSerializer js;
-  
   jm = js.importMap(path);
   physics.setMap(jm);
-
-
-  for ( unsigned int i = 0; i < players.size(); ++i ) {
-    players[i]->createBody(&physics);
+  unsigned int amountPlayers = 0;
+  for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
+    i != jm.spawnsData.end(); ++i ) {
+    if ( jm.spawnTypes[(*i).type] == ENEMY ) {
+      Enemy* enemy = new Enemy(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
+      if ( amountPlayers < players.size() ){
+        players[amountPlayers]->createBody(&physics,
+          (*i).column+0.5f, (*i).row+0.5f);
+        amountPlayers++;
+      }
+    }
   }
-
-  Enemy* enemy = new Enemy(physics, 5.5f, 3.5f);
-  enemies.push_back(enemy);
-  enemy = new Enemy(physics, 2.5f, 8.5f);
-  enemies.push_back(enemy);
-  
   timer.start();
 }
 Level::~Level(){
@@ -44,9 +49,16 @@ Level::~Level(){
 }
 
 zm::proto::Game Level::getState(){
-//TODO: iterar sobre player y cargar correctamente el game
-  b2Vec2 position = players[0]->getPosition();
   zm::proto::Game gs;
+
+  for ( std::vector<Player*>::iterator player = players.begin();
+    player != players.end(); ++player ) {
+    zm::proto::Player protoPlayer;
+    protoPlayer.pos.x = (*player)->getPosition().x* PPM;
+    protoPlayer.pos.y = (*player)->getPosition().y * -PPM + 768;
+    gs.players.push_back(protoPlayer); 
+  }
+
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy;
@@ -54,25 +66,41 @@ zm::proto::Game Level::getState(){
     protoEnemy.pos.y = (*enemy)->getPosition().y * -PPM + 768;
     gs.enemies.push_back(protoEnemy);
   }
-  gs.x = position.x * PPM;
-  gs.y = position.y * -PPM + 768;
+
+  for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
+    bullet != bullets.end(); ++bullet ) {
+    zm::proto::Proyectile proyectile;
+    proyectile.pos.x = (*bullet)->getPosition().x * PPM;
+    proyectile.pos.y = (*bullet)->getPosition().y * -PPM + 768;
+    gs.proyectiles.push_back(proyectile);
+  }
+
   return gs;
 }
 
-void Level::jump(int playerNummber){
-  players[playerNummber]->jump();
+void Level::jump(int playerNumber){
+  players[playerNumber]->jump();
 }
 
-void Level::right(int playerNummber){
-  players[playerNummber]->right();
+void Level::right(int playerNumber){
+  players[playerNumber]->right();
 }
 
-void Level::left(int playerNummber){
-  players[playerNummber]->left();
+void Level::left(int playerNumber){
+  players[playerNumber]->left();
 }
 
-void Level::stopHorizontalMove(int playerNummber){
-  players[playerNummber]->stopHorizontalMove();
+void Level::stopHorizontalMove(int playerNumber){
+  players[playerNumber]->stopHorizontalMove();
+}
+
+void Level::up(int playerNumber){
+  players[playerNumber]->up();
+}
+
+void Level::shoot(int playerNumber){
+  Bullet* bullet = players[playerNumber]->shoot();
+  bullets.push_back(bullet);
 }
 
 std::vector<std::string> Level::getImageNames(){

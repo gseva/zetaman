@@ -3,16 +3,20 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
 
+
 #define T 10
 #define VY_MIN_LIM -10
 #define VY_MAX_LIM 10
 
 Player::Player(){}
 
-Player::~Player(){}
+Player::~Player(){
+  if ( body != NULL )
+    delete body;
+}
 
-void Player::createBody(Physics* physics){
-  body = new PlayerBody(*physics);
+void Player::createBody(Physics* physics, float32 x, float32 y){
+  body = new PlayerBody(*physics,x,y);
 }
 
 void Player::jump(){
@@ -37,4 +41,13 @@ void Player::left(){
 
 void Player::stopHorizontalMove(){
   body->stopHorizontalMove();
+}
+
+void Player::up(){
+  body->up();
+}
+
+Bullet* Player::shoot(){
+  Bullet* bullet = body->shoot();
+  return bullet;
 }

@@ -45,6 +45,67 @@ void Editor::on_buttonAddScreen_clicked()
   createNewScreen();
 }
 
+void Editor::on_buttonNextScreen_clicked()
+{
+  if ((currentScreenNumber!=totalScreenCount-1)
+    && contenidoPantallas.size()!=0 )
+  {
+    saveUnsavedScreen();
+
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageMatrix[i][j].set_from_resource(
+        contenidoPantallas[currentScreenNumber+1].imageNamesMatrix[i][j]);
+      }
+    }
+
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageNamesCurrent[i][j] = 
+        contenidoPantallas[currentScreenNumber+1].imageNamesMatrix[i][j];
+      }
+    }
+
+    currentScreenNumber++;
+  }
+
+  std::cout << currentScreenNumber << std::endl;
+}
+
+void Editor::on_buttonPreviousScreen_clicked()
+{
+  if (currentScreenNumber!=0)
+  {
+    saveUnsavedScreen();
+
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageMatrix[i][j].set_from_resource(
+        contenidoPantallas[currentScreenNumber-1].imageNamesMatrix[i][j]);
+      }
+    }
+
+    for (int i = 0; i < ANCHO; i++)
+    {
+      for (int j = 0; j < ALTO; j++)
+      {
+        imageNamesCurrent[i][j] = 
+        contenidoPantallas[currentScreenNumber-1].imageNamesMatrix[i][j];
+      }
+    }
+
+    currentScreenNumber--;  
+  }
+
+  std::cout << currentScreenNumber << std::endl;
+}
+
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
                                       Gtk::Image* imagen, int col, int row)
 {
@@ -66,6 +127,8 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("btnSaveMap", pBtnSaveMap);
   builder->get_widget("btnAddScreen", pBtnAgregarPantalla);
+  builder->get_widget("btnNextScreen", pBtnNextScreen);
+  builder->get_widget("btnPreviousScreen", pBtnPreviousScreen);
   builder->get_widget("applicationwindow1", pwindow);
   builder->get_widget("grid1", pGrid);
 
@@ -83,6 +146,10 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
   nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
+
+  currentScreenNumber = 0;
+  totalScreenCount = 1;
+  imagenSeleccionada = IMAGEN_TERRENO;
 }
 
 void Editor::connectButtonsWithSignals()
@@ -121,6 +188,18 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnAgregarPantalla->signal_clicked().connect(
       sigc::mem_fun(this, &Editor::on_buttonAddScreen_clicked));
+  }
+
+  if (pBtnNextScreen)
+  {
+    pBtnNextScreen->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonNextScreen_clicked));
+  }
+
+  if (pBtnPreviousScreen)
+  {
+    pBtnPreviousScreen->signal_clicked().connect(
+      sigc::mem_fun(this, &Editor::on_buttonPreviousScreen_clicked));
   }
 }
 
@@ -166,7 +245,6 @@ void Editor::createEmptyGrid()
   }
 
   /*Seteo datos de esta pantalla*/
-  currentScreenNumber = 0;
   for (int i=0; i<ANCHO; i++)
   {
     for (int j=0; j<ALTO; j++)
@@ -186,20 +264,18 @@ void Editor::runEditor()
 
 void Editor::createNewScreen()
 {
-  ScreenContent currentScreen;
-  currentScreen.screenNumber = currentScreenNumber;
+  saveUnsavedScreen();
 
   for (int i=0; i<ANCHO; i++)
   {
     for (int j=0; j<ALTO; j++)
     {
-      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
       imageNamesCurrent[i][j] = IMAGEN_BLANCO;
     }
   }
 
-  contenidoPantallas.push_back(currentScreen);
-  currentScreenNumber++;
+  totalScreenCount++;
+  currentScreenNumber = totalScreenCount-1;
 
   for (int i = 0; i < ANCHO; i++)
   {
@@ -210,20 +286,33 @@ void Editor::createNewScreen()
   }
 }
 
-void Editor::saveLastScreen()
+void Editor::saveUnsavedScreen()
 {
-  ScreenContent currentScreen;
-  currentScreen.screenNumber = currentScreenNumber;
-
-  for (int i=0; i<ANCHO; i++)
+  /*Si no esta guardada la ultima*/
+  if (currentScreenNumber==contenidoPantallas.size())
   {
-    for (int j=0; j<ALTO; j++)
+    ScreenContent currentScreen;
+
+    for (int i=0; i<ANCHO; i++)
     {
-      currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+      for (int j=0; j<ALTO; j++)
+      {
+        currentScreen.imageNamesMatrix[i][j] = imageNamesCurrent[i][j];
+      }
+    }
+
+  std::cout << "Pantalla guardada" << std::endl;
+  contenidoPantallas.push_back(currentScreen);
+  } else {
+    for (int i=0; i<ANCHO; i++)
+    {
+      for (int j=0; j<ALTO; j++)
+      {
+        contenidoPantallas[currentScreenNumber].imageNamesMatrix[i][j] =
+         imageNamesCurrent[i][j];
+      }
     }
   }
-
-  contenidoPantallas.push_back(currentScreen);
 }
 
 void Editor::exportCreatedMap()
@@ -232,7 +321,7 @@ void Editor::exportCreatedMap()
   
   JsonMap jMap;
 
-  saveLastScreen();
+  saveUnsavedScreen();
 
   jMap = createJsonMap();
 
@@ -243,7 +332,8 @@ JsonMap Editor::createJsonMap()
 {
   JsonMap jMap;
   std::map<std::string, int> nameToNumber;
-  int numeroImagen = 0;
+  int numeroImagen = 1;
+  nameToNumber.insert({IMAGEN_BLANCO,0});
 
   for (int i=0; i<ALTO; i++)
   {
@@ -253,22 +343,22 @@ JsonMap Editor::createJsonMap()
       {
         std::string image = contenidoPantallas.at(k).imageNamesMatrix[j][i];
 
-        if (nameToNumber.count(image) == 0)
+        if (nameToNumber.count(image) == 0 && nameToSpawnNumber.count(image)==0)
         {
           nameToNumber.insert({image,numeroImagen});
-          numeroImagen++;
-
-          /*Si la imagen es de un spawn se tiene que dibujar aire*/
-          if (nameToSpawnNumber.count(image)==0)
-          {
-            jMap.imageNames.push_back(image);
-          } else {
-            jMap.imageNames.push_back(IMAGEN_BLANCO);
-          }
+          numeroImagen++;          
+          
+          jMap.imageNames.push_back(image);
+          
           jMap.physics.push_back(nameToPhysics[image]);
         }
 
-        jMap.imageNumbers.push_back(nameToNumber[image]);
+        if (nameToSpawnNumber.count(image)==0)
+        {
+          jMap.imageNumbers.push_back(nameToNumber[image]);  
+        } else {
+          jMap.imageNumbers.push_back(nameToNumber[IMAGEN_BLANCO]);
+        }
 
         if (nameToSpawnNumber.count(image)!=0)
         {
