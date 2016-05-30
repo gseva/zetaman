@@ -13,20 +13,26 @@ typedef struct SpawnData
   int type;
 } Spawn;
 
-typedef struct JsonMap
+struct JsonMap
 {
   std::vector<int> imageNumbers;
   std::vector<std::string> imageNames;
   std::vector<std::string> physics;
   std::vector<std::string> spawnTypes;
   std::vector<SpawnData> spawnsData;
-} JsonMap;
+
+  // Serializa imageNames e imageNumbers.
+  std::string getReducedString();
+
+  // Popula un json map desde un string con imageNames e imageNumbers
+  void fromReducedString(std::string);
+};
 
 class JsonSerializer
 {
   public:
   JsonMap importMap(std::string path);
-  void exportMap(std::string path, JsonMap m);
+  void exportMap(std::string path, const JsonMap& m);
   std::map<std::string,int> importarEnte(std::string path);
 };
 #endif

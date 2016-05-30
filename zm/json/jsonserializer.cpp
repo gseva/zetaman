@@ -7,6 +7,23 @@
 #include <string>
 
 
+std::string JsonMap::getReducedString() {
+  json map;
+
+  map = {{"tiles", imageNumbers}, {"images", imageNames}};
+
+  return map.dump();
+}
+
+void JsonMap::fromReducedString(const std::string& s) {
+  json j;
+
+  j << s;
+
+  imageNumbersVector = j["tiles"];
+  imageNamesVector = j["images"];
+}
+
 
 JsonMap JsonSerializer::importMap(std::string path)
 {
@@ -45,12 +62,12 @@ JsonMap JsonSerializer::importMap(std::string path)
   return mapa;
 }
 
-void JsonSerializer::exportMap(std::string path, JsonMap m)
+void JsonSerializer::exportMap(std::string path, const JsonMap& m)
 {
   json exportable;
 
-  exportable= {{"tiles",m.imageNumbers},{"images",m.imageNames},
-                {"physics",m.physics},{"spawnTypes", m.spawnTypes}};
+  exportable = {{"tiles", m.imageNumbers}, {"images", m.imageNames},
+                {"physics", m.physics}, {"spawnTypes", m.spawnTypes}};
 
   json exportableSpawns = json::array();
 
