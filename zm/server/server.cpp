@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "zm/connection.h"
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
@@ -10,19 +12,29 @@
 
 #define PPM 64
 
-Server::Server(ServerProxy& sp) : sp(sp){
+Server::Server() : cp(*this) {
   JsonSerializer js;
   jm = js.importMap(DEFAULT_PATH);
 }
 
 Server::~Server(){
   std::vector<Player*>::iterator playersIterator;
-  for ( playersIterator = players.begin(); playersIterator != players.end(); 
+  for ( playersIterator = players.begin(); playersIterator != players.end();
     ++playersIterator ) {
     delete (*playersIterator);
   }
   if ( level != NULL )
     stopLevel();
+}
+
+void Server::run() {
+  while(true) {
+    zm::Socket accepter;
+    accepter.bindAndListen("9090");
+    zm::Socket playerSock = accepter.accept();
+
+    playerSock.write(jm.getReducedString());
+  }
 }
 
 void Server::newPlayer(){
@@ -33,7 +45,7 @@ void Server::newPlayer(){
 
 void Server::startLevel(){
   std::string path(DEFAULT_PATH);
-  level = new Level(players, path, sp);
+  level = new Level(players, path, cp);
 }
 
 void Server::stopLevel(){

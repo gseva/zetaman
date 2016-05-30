@@ -1,10 +1,11 @@
-#include "jsonserializer.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <utility>
 #include <map>
 #include <string>
+
+#include "zm/json/jsonserializer.h"
 
 
 std::string JsonMap::getReducedString() {
@@ -16,12 +17,13 @@ std::string JsonMap::getReducedString() {
 }
 
 void JsonMap::fromReducedString(const std::string& s) {
-  json j;
+  json j = json::parse(s);
 
-  j << s;
+  std::vector<int> imageNumbersVector = j["tiles"];
+  std::vector<std::string> imageNamesVector = j["images"];
 
-  imageNumbersVector = j["tiles"];
-  imageNamesVector = j["images"];
+  imageNumbers = imageNumbersVector;
+  imageNames = imageNamesVector;
 }
 
 

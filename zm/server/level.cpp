@@ -13,8 +13,8 @@
 #define PLAYER "player"
 #define ENEMY "enemy"
 
-Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
-  ServerProxy& sp) : timer(physics, sp, enemies, bullets),
+Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
+  ClientProxy& cp) : timer(physics, cp, enemies, bullets),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);
@@ -56,7 +56,7 @@ zm::proto::Game Level::getState(){
     zm::proto::Player protoPlayer;
     protoPlayer.pos.x = (*player)->getPosition().x* PPM;
     protoPlayer.pos.y = (*player)->getPosition().y * -PPM + 768;
-    gs.players.push_back(protoPlayer); 
+    gs.players.push_back(protoPlayer);
   }
 
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();

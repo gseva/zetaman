@@ -25,7 +25,7 @@ struct JsonMap
   std::string getReducedString();
 
   // Popula un json map desde un string con imageNames e imageNumbers
-  void fromReducedString(std::string);
+  void fromReducedString(const std::string& s);
 };
 
 class JsonSerializer

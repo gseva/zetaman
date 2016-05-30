@@ -3,20 +3,20 @@
 #include <zm/thread.h>
 #include <vector>
 #include "zm/server/physics/physics.h"
-//#include "zm/server_proxy.h"
+#include "zm/server/client_proxy.h"
 
-class ServerProxy;
 
-class Timer : public Thread{
+class Timer : public Thread {
 public:
-  explicit Timer(Physics& physics, ServerProxy& sp,
+  explicit Timer(Physics& physics, ClientProxy& cp_,
     std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
   virtual ~Timer();
   virtual void run();
 private:
   void collides(std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
+
   Physics& physics;
-  ServerProxy& sp;
+  ClientProxy& cp_;
   std::vector<Enemy*>& enemies;
   std::vector<Bullet*>& bullets;
 };

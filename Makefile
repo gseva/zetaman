@@ -40,7 +40,7 @@ CFLAGS = -Wall -Werror -pedantic -pedantic-errors -ansi
 #CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
- CFLAGS += -ggdb -DDEBUG -fno-inline
+CFLAGS += -ggdb -DDEBUG -fno-inline
 
 # Opciones del enlazador.
 #LDFLAGS =
@@ -61,24 +61,24 @@ CXXSTD = gnu++11
 
 # Agrego flags y libs de GTK+ de ser necesario.
 ifdef gtk
-CFLAGS += $(shell pkg-config --cflags gtk+-3.0) \
+GTKCFLAGS += $(shell pkg-config --cflags gtk+-3.0) \
 	-DG_DISABLE_DEPRECATED 	 	\
 	-DGDK_DISABLE_DEPRECATED 	\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED \
 	-DGTK_DISABLE_DEPRECATED
-LDFLAGS += $(shell pkg-config --libs gtk+-3.0)
+GTKLDFLAGS += $(shell pkg-config --libs gtk+-3.0)
 endif
 
 # Agrego flags y libs de GTK+ de ser necesario.
 ifdef gtkmm
-CFLAGS += $(shell pkg-config --cflags gtkmm-3.0) \
+GTKMMCFLAGS = $(shell pkg-config --cflags gtkmm-3.0) \
 	-DG_DISABLE_DEPRECATED 	 	\
 	-DGDK_DISABLE_DEPRECATED 	\
 	-DGDK_PIXBUF_DISABLE_DEPRECATED \
 	-DGTK_DISABLE_DEPRECATED	\
 	-DGDKMM_DISABLE_DEPRECATED 	\
 	-DGTKMM_DISABLE_DEPRECATED
-LDFLAGS += $(shell pkg-config --libs gtkmm-3.0)
+GTKMMLDFLAGS = $(shell pkg-config --libs gtkmm-3.0)
 endif
 
 # Linkeo con libm de ser necesario.
@@ -88,11 +88,11 @@ endif
 
 # Linkeo con pthreads de ser necesario.
 ifdef pthreads
-LDFLAGS += -lpthread -pthread
+PTHREAD_FLAGS = -lpthread -pthread
 endif
 
 ifdef box2d
-LDFLAGS +=  -lBox2D
+BOX2D_FLAGS = -lBox2D
 endif
 
 ifdef static
@@ -113,6 +113,13 @@ else
 CXXFLAGS += -std=$(CXXSTD)
 LD = $(CXX)
 endif
+
+SRV_CFLAGS = $(CXXFLAGS)
+SRV_LDFLAGS = $(LDFLAGS) $(BOX2D_FLAGS) $(PTHREAD_FLAGS)
+CL_CFLAGS = $(CXXFLAGS) $(GTKMMCFLAGS)
+CL_LDFLAGS = $(LDFLAGS) $(GTKMMLDFLAGS) $(PTHREAD_FLAGS)
+EDITOR_CFLAGS = $(CXXFLAGS) $(GTKMMCFLAGS)
+EDITOR_LDLAGS = $(LDFLAGS) $(GTKMMLDFLAGS)
 
 GLIB_COMPILE_RESOURCES = glib-compile-resources
 compile_res = @$(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(dir $<) --generate-source $<
@@ -153,7 +160,7 @@ common_sources ?= $(wildcard $(zm_dir)*.$(extension))
 editor_sources ?= $(wildcard $(editor_dir)*.$(extension))
 json_sources ?= $(wildcard $(json_dir)*.$(extension))
 all_sources = $(client_sources) $(server_sources) $(common_sources) $(json_sources) $(editor_sources)
-all_headers = $(wildcard $(zm_dir)**/*.$(header_extension))
+all_headers = $(wildcard $(zm_dir)*.$(header_extension) $(zm_dir)**/*.$(header_extension))
 
 resources_dir = $(build_dir)resources/
 client_resources = $(resources_dir)client_resources.c
@@ -168,8 +175,8 @@ o_server_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(server_sources)
 o_client_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(client_sources))
 o_editor_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(editor_sources))
 o_json_only_files = $(patsubst %.$(extension),$(obj_dir)/%.o,$(json_sources))
-o_server_all_files = $(o_server_only_files) $(o_common_files)
-o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_json_only_files)
+o_server_all_files = $(o_server_only_files) $(o_common_files) $(o_json_only_files)
+o_client_all_files = $(o_client_only_files) $(o_common_files) $(o_json_only_files)
 o_editor_all_files = $(o_editor_only_files) $(o_json_only_files)
 
 o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $(o_editor_only_files) $(o_json_only_files)
@@ -188,8 +195,20 @@ lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
 
 all: lint client editor
 
-$(o_all_files): $(obj_dir)/%.o : %.$(extension)
+$(o_common_files): $(obj_dir)/%.o : %.$(extension)
 	$(LD) $(CXXFLAGS) -c $< -o $@
+
+$(o_json_only_files): $(obj_dir)/%.o : %.$(extension)
+	$(LD) $(CXXFLAGS) -c $< -o $@
+
+$(o_server_only_files): $(obj_dir)/%.o : %.$(extension)
+	$(LD) $(SRV_CFLAGS) -c $< -o $@
+
+$(o_client_only_files): $(obj_dir)/%.o : %.$(extension)
+	$(LD) $(CL_CFLAGS) -c $< -o $@
+
+$(o_editor_only_files): $(obj_dir)/%.o : %.$(extension)
+	$(LD) $(EDITOR_CFLAGS) -c $< -o $@
 
 $(client_resources): $(images_config)
 	$(compile_res)
@@ -203,47 +222,18 @@ $(o_client_resources): $(client_resources)
 $(o_editor_resources): $(editor_resources)
 	$(link_res)
 
-# $(o_all_files)/%.o: %.(extension)
-# 	$(LD) $(CXXFLAGS) -c $< -o $@
-
-# $(o_server_only_files): $(server_sources)
-# 	$(LD) $(CXXFLAGS) -c $< -o $@
-
-# $(o_client_only_files): $(client_sources)
-# 	$(LD) $(CXXFLAGS) -c $< -o $@
-
-# $(o_common_files): $(obj_dir)/%.o : $(zm_dir)/%.o
-
-# $(o_client_all_files): $(obj_dir)/%.o : $(SOURCEDIR)/%.cpp
-#     $(CC) $(FLAGS) $< -o $@
-
 create_dirs:
 	@$(foreach file, $(o_all_files) $(resources_dir) , mkdir -p $(dir $(file));)
 	@mkdir -p $(resources_dir)
 
 client: create_dirs client_assets $(o_client_all_files)
-	@if [ -z "$(o_client_all_files)" ]; \
-	then \
-		echo "No hay archivos de entrada para el cliente (archivos zm/cient/*.$(extension))."; \
-		false; \
-	fi >&2
-	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(LDFLAGS)
+	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(CL_LDFLAGS)
 
-server: $(o_server_only_files)
-	@if [ -z "$(o_server_only_files)" ]; \
-	then \
-		echo "No hay archivos de entrada para el servidor (archivos zm/server/*.$(extension))."; \
-		false; \
-	fi >&2
-	$(LD) $(o_server_only_files) -o $(server_target) $(LDFLAGS)
+server: $(o_server_all_files)
+	$(LD) $(o_server_all_files) -o $(server_target) $(SRV_LDFLAGS)
 
 editor: create_dirs editor_assets $(o_editor_all_files)
-	@if [ -z "$(o_editor_all_files)" ]; \
-	then \
-		echo "No hay archivos de entrada para el servidor (archivos zm/editor/*.$(extension))."; \
-		false; \
-	fi >&2
-	$(LD) $(o_editor_all_files) $(o_editor_resources) -o $(editor_target) $(LDFLAGS)
+	$(LD) $(o_editor_all_files) $(o_editor_resources) -o $(editor_target) $(EDITOR_LDFLAGS)
 
 lint:
 	$(lint_command) $(all_sources) $(all_headers)

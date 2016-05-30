@@ -25,7 +25,7 @@ void Thread::join(){
 }
 
 Mutex::Mutex(){
-	pthread_mutex_init(&this->mutex, NULL);	
+	pthread_mutex_init(&this->mutex, NULL);
 }
 
 void Mutex::lock(){
