@@ -13,6 +13,9 @@
 #define PLAYER "player"
 #define ENEMY "enemy"
 
+#define XMAX 47
+#define XMIN 0
+
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
   ServerProxy& sp) : timer(physics, sp, enemies, bullets),
   players(connectedPlayers){
@@ -51,18 +54,44 @@ Level::~Level(){
 zm::proto::Game Level::getState(){
   zm::proto::Game gs;
 
+  int xmin, xmax, xo;
+  int yo = 0;
+
+  xmin = (*players.begin())->getPosition().x;
+  xmax = xmin;
+
+  for ( std::vector<Player*>::iterator player = players.begin();
+    player != players.end(); ++player ) {
+    if ( ((*player)->getPosition().x ) < xmin )
+      xmin = (*player)->getPosition().x;
+    if ( ((*player)->getPosition().x ) > xmax )
+      xmax = (*player)->getPosition().x;
+  }
+  xo = (xmax + xmin) / 2 - 8;// * PPM;
+  std::cout << xo << "\n";
+  if ( xo > XMAX ){
+    xo = XMAX;
+    std::cout << "ME PASE y volvi\n";
+  }
+  if ( xo < XMIN )
+    xo = XMIN;
+
+  gs.camPos.x = xo;
+  gs.camPos.y = yo;
+
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
     zm::proto::Player protoPlayer;
-    protoPlayer.pos.x = (*player)->getPosition().x* PPM;
+    protoPlayer.pos.x = (*player)->getPosition().x* PPM - xo * PPM;
     protoPlayer.pos.y = (*player)->getPosition().y * -PPM + 768;
-    gs.players.push_back(protoPlayer); 
+    gs.players.push_back(protoPlayer);
   }
+
 
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy;
-    protoEnemy.pos.x = (*enemy)->getPosition().x* PPM;
+    protoEnemy.pos.x = (*enemy)->getPosition().x* PPM - xo * PPM;
     protoEnemy.pos.y = (*enemy)->getPosition().y * -PPM + 768;
     gs.enemies.push_back(protoEnemy);
   }
@@ -70,7 +99,7 @@ zm::proto::Game Level::getState(){
   for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
     zm::proto::Proyectile proyectile;
-    proyectile.pos.x = (*bullet)->getPosition().x * PPM;
+    proyectile.pos.x = (*bullet)->getPosition().x * PPM - xo * PPM;
     proyectile.pos.y = (*bullet)->getPosition().y * -PPM + 768;
     gs.proyectiles.push_back(proyectile);
   }

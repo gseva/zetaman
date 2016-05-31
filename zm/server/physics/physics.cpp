@@ -8,7 +8,7 @@
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
 #define ALTO_TOTAL 12
-#define ANCHO_TOTAL 16
+#define ANCHO_TOTAL 64
 #define AIRE 0
 #define SOLID "solid"
 #define STAIR "stair"
@@ -41,7 +41,7 @@ void Physics::setMap(const JsonMap& jm){
           blockBox.m_radius = 0.1f;
           b2FixtureDef fixtureDef;
           fixtureDef.shape = &blockBox;
-          fixtureDef.density = 1.0f;
+          fixtureDef.density = 100.0f;
           fixtureDef.friction = 1.0f;
           fixtureDef.filter.categoryBits = BLOCK_TYPE;
           fixtureDef.filter.maskBits = ALL_CONTACT;

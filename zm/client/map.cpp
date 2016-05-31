@@ -51,16 +51,16 @@ void Map::loadImages() {
   }
 }
 
-void Map::draw(const Cairo::RefPtr<Cairo::Context>& context) {
+void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
   context->save();
 
   // om.tercio // 2
 
-  int largo = 16;
+  int largo = 64;
 
   for (int i = 0; i < 16; ++i) {
     for (int j = 0; j < 12; ++j) {
-      int tilePos = largo * j + i;
+      int tilePos = largo * (j+y) + (i + x);
       int imageNum = tiles_[tilePos];
       if (imageNum == 0) continue;
       auto image = images_[imageNum - 1];
