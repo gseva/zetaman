@@ -65,6 +65,7 @@ enum GameState { playing, won, lost };
 
 class Game {
 public:
+  Game();
   int x, y;
 
   // Esta posicion es para que el cliente entienda que tiles dibujar.

@@ -2,18 +2,52 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
+#include "zm/connection.h"
 #include "zm/game_protocol.h"
+#include "zm/thread.h"
 
 class Server;
 
+namespace zm {
+
+
+class ClientProxy;
+
+class Sender : public Thread {
+Queue<proto::Game>& eventQueue_;
+Socket& clientSock_;
+public:
+  Sender(Queue<proto::Game>& eventQueue, Socket& clientSock);
+  virtual void run();
+};
+
+
+class Receiver : public Thread {
+ClientProxy& cp_;
+Socket& clientSock_;
+public:
+  bool stop;
+  Receiver(ClientProxy& cp, Socket& clientSock);
+  virtual void run();
+};
+
+
 class ClientProxy {
 Server &s_;
+Queue<proto::Game> eventQueue_;
+Socket clientSock_;
+Sender* sender_;
 public:
-  explicit ClientProxy(Server& s);
+  explicit ClientProxy(Server& s, Socket sock_);
+  ~ClientProxy();
+
+  void startGame();
 
   void updateState(zm::proto::Game gs);
 
   zm::proto::Game getState();
 };
 
+
+} // zm
 #endif

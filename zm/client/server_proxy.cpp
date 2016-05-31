@@ -93,6 +93,22 @@ std::vector<int> ServerProxy::getImages() {
   return map_.imageNumbers;
 }
 
+
+Sender::Sender(Queue<proto::ClientEvent>& eventQueue, Socket& serverSock) :
+               eventQueue_(eventQueue), serverSock_(serverSock) {
+}
+
+void Sender::run() {
+  proto::ClientEvent client;
+  do {
+    client = eventQueue_.pop();
+    if (client.state == proto::ClientEventType::shutdown) continue;
+    std::string s = client.serialize() + "\n";
+    serverSock_.write(s);
+  } while (client.state != proto::ClientEventType::shutdown);
+}
+
+
 Receiver::Receiver(ServerProxy& sp, Socket& serverSock)
                   : sp_(sp), serverSock_(serverSock), stop(true) {
 }
@@ -109,21 +125,6 @@ void Receiver::run() {
     }
     sp_.updateState(game);
   } while (!stop);
-}
-
-
-Sender::Sender(Queue<proto::ClientEvent>& eventQueue, Socket& serverSock) :
-               eventQueue_(eventQueue), serverSock_(serverSock) {
-}
-
-void Sender::run() {
-  proto::ClientEvent client;
-  do {
-    client = eventQueue_.pop();
-    if (client.state == proto::ClientEventType::shutdown) continue;
-    std::string s = client.serialize() + "\n";
-    serverSock_.write(s);
-  } while (client.state != proto::ClientEventType::shutdown);
 }
 
 } // zm

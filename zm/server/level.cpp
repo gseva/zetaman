@@ -14,7 +14,7 @@
 #define ENEMY "enemy"
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
-  ClientProxy& cp) : timer(physics, cp, enemies, bullets),
+  zm::ClientProxy& cp) : timer(physics, cp, enemies, bullets),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);

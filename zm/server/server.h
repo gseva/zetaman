@@ -40,7 +40,7 @@ private:
   Level* level;
   std::vector<Player*> players;
   JsonMap jm;
-  ClientProxy cp;
+  zm::ClientProxy* cp;
 };
 
 #endif

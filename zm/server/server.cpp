@@ -12,7 +12,7 @@
 
 #define PPM 64
 
-Server::Server() : cp(*this) {
+Server::Server() {
   JsonSerializer js;
   jm = js.importMap(DEFAULT_PATH);
 }
@@ -25,6 +25,8 @@ Server::~Server(){
   }
   if ( level != NULL )
     stopLevel();
+
+  delete cp;
 }
 
 void Server::run() {
@@ -35,11 +37,15 @@ void Server::run() {
     std::string map = jm.getReducedString() + "\n";
     playerSock.write(map);
 
-    zm::proto::Game game;
-    game.x = 300;
-    game.y = 300;
-    std::string gameString = game.serialize() + "\n";
-    playerSock.write(gameString);
+    cp = new zm::ClientProxy(*this, playerSock);
+    cp->startGame();
+    newPlayer();
+    startLevel();
+    // zm::proto::Game game;
+    // game.x = 300;
+    // game.y = 300;
+    // std::string gameString = game.serialize() + "\n";
+    // playerSock.write(gameString);
   }
 }
 
@@ -51,7 +57,7 @@ void Server::newPlayer(){
 
 void Server::startLevel(){
   std::string path(DEFAULT_PATH);
-  level = new Level(players, path, cp);
+  level = new Level(players, path, *cp);
 }
 
 void Server::stopLevel(){

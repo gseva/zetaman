@@ -6,7 +6,7 @@
 #include "zm/server/timer.h"
 #include "zm/server/physics/physics.h"
 
-Timer::Timer(Physics& physics, ClientProxy& cp, std::vector<Enemy*>& enemies,
+Timer::Timer(Physics& physics, zm::ClientProxy& cp, std::vector<Enemy*>& enemies,
   std::vector<Bullet*>& bullets) : physics(physics), cp_(cp), enemies(enemies),
   bullets(bullets){}
 

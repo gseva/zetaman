@@ -15,7 +15,7 @@ class Server;
 class Level{
 public:
   explicit Level(std::vector<Player*>& connectedPlayers,
-    const std::string& path, ClientProxy& cp);
+    const std::string& path, zm::ClientProxy& cp);
   ~Level();
 
   void jump(int playerNumber);
