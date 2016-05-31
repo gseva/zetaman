@@ -5,7 +5,7 @@
 #include <gtkmm/drawingarea.h>
 
 #include "zm/game_protocol.h"
-#include "zm/server_proxy.h"
+#include "zm/client/server_proxy.h"
 #include "zm/client/map.h"
 #include "zm/client/image_buffer.h"
 

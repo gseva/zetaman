@@ -28,12 +28,12 @@ Server::~Server(){
 }
 
 void Server::run() {
-  while(true) {
+  while (true) {
     zm::Socket accepter;
     accepter.bindAndListen("9090");
     zm::Socket playerSock = accepter.accept();
-
-    playerSock.write(jm.getReducedString());
+    std::string map = jm.getReducedString() + "\n";
+    playerSock.write(map);
   }
 }
 

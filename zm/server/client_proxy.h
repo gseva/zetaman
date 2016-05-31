@@ -14,7 +14,6 @@ public:
   void updateState(zm::proto::Game gs);
 
   zm::proto::Game getState();
-
 };
 
 #endif

@@ -40,11 +40,5 @@ public:
 };
 
 
-class Accepter : public Thread {
-Mutex m_;
-Socket sock_;
-
-};
-
 }// zm
 #endif

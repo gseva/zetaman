@@ -2,6 +2,7 @@
 #define __GAME_PROTOCOL_H__
 
 #include <vector>
+#include <string>
 
 namespace zm {
 namespace proto {
@@ -12,6 +13,13 @@ public:
   int x, y;
 };
 
+template <typename T>
+struct StatefulEntity {
+  T state;
+  StatefulEntity() {}
+  explicit StatefulEntity(T s) : state(s) {
+  }
+};
 
 enum class PlayerState { movingLeft, movingRight, idle, shooting, jumping };
 
@@ -71,6 +79,18 @@ public:
   std::vector<Enemy> enemies;
   std::vector<Proyectile> proyectiles;
   std::vector<PowerUp> powerUps;
+};
+
+
+enum ClientEventType { moveLeft, moveRight, jump,
+                       stopMoving, shoot, shutdown };
+
+struct ClientEvent {
+  ClientEventType state;
+  ClientEvent() {}
+  explicit ClientEvent(ClientEventType s) : state(s) {
+  }
+  std::string serialize();
 };
 
 } // p

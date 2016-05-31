@@ -41,6 +41,9 @@ private:
 	Lock& operator=(const Lock&);
 };
 
+namespace zm {
+
+
 class ConditionVariable {
     private:
         pthread_mutex_t mutex;
@@ -48,19 +51,12 @@ class ConditionVariable {
 
         ConditionVariable& operator=(const ConditionVariable&);
         ConditionVariable(const ConditionVariable&);
+
     public:
-        ConditionVariable() {
-            pthread_mutex_init(&mutex, 0);
-            pthread_cond_init(&cond, 0);
-        }
+        ConditionVariable();
 
-        void lock() {
-            pthread_mutex_lock(&mutex);
-        }
-
-        void unlock() {
-            pthread_mutex_unlock(&mutex);
-        }
+        void lock();
+        void unlock();
 
         /*
          * Duerme al hilo actual a la espera de recibir una señal.
@@ -70,9 +66,7 @@ class ConditionVariable {
          * Este metodo debe llamarse solo si el mutex ya fue adquirido
          * (se debe llamar al metodo lock() antes).
          * */
-        void wait() {
-            pthread_cond_wait(&cond, &mutex);
-        }
+        void wait();
 
         /*
          * Envia una señal y despierta a un unico hilo que este durmiendo
@@ -80,9 +74,7 @@ class ConditionVariable {
          *
          * Si no hay ningun hilo durmiendo, la señal se descarta.
          * */
-        void signal() {
-            pthread_cond_signal(&cond);
-        }
+        void signal();
 
         /*
          * Envia una señal y despierta a todos los hilos que esten durmiendo
@@ -92,14 +84,9 @@ class ConditionVariable {
          *
          * Si no hay ningun hilo durmiendo, la señal se descarta.
          * */
-        void broadcast() {
-            pthread_cond_broadcast(&cond);
-        }
+        void broadcast();
 
-        ~ConditionVariable() {
-            pthread_cond_destroy(&cond);
-            pthread_mutex_destroy(&mutex);
-        }
+        ~ConditionVariable();
 };
 
 /*
@@ -125,62 +112,15 @@ class Queue {
         Queue(const Queue&);
 
         ConditionVariable cond;
+
     public:
         Queue() { }
 
-        void push(const T& val) {
-            cond.lock();
-            if (q.empty()) {
-                /*
-                 * La cola esta vacia por lo que este push hara que la cola
-                 * tenga un elemento y por lo tanto deje de estar vacia.
-                 *
-                 * Como puede haber hilos esperando a que la cola no este
-                 * vacia, despertamos a todos ellos enviandoles una señal
-                 * con el metodo broadcast().
-                 *
-                 * Como este hilo aun tiene adquirido el mutex (lock), los
-                 * otros hilos que se despierten no ejecutaran nada hasta
-                 * que liberemos el mutex lo que nos garantiza que no
-                 * habra race conditions.
-                 * */
-                cond.broadcast();
-            }
+        void push(const T& val);
 
-            q.push(val);
-            cond.unlock();
-        }
-
-        T pop() {
-            cond.lock();
-            while (q.empty()) {
-                /* Si la cola esta vacia, no podemos hacer un pop.
-                 * En vez de retornar con un codigo de error esperamos
-                 * a que la cola deje de estar vacia con el metodo wait().
-                 *
-                 * Literalmente este hilo deja de ejecutarse a la espera de
-                 * recibir una señal.
-                 * Señal que deberia llegarnos cuando la cola no este vacia
-                 * (alguien hizo un push). Sin embargo como pueden haber
-                 * otros hilos tambien haciendo pop, es posible que para
-                 * que este hilo en particular se despierte la cola vuelva
-                 * a estar vacia: por eso tenemos un loop y mientras este
-                 * vacia seguiremos haciendo waits.
-                 *
-                 * Por supuesto, el metodo wait() automaticamente libera
-                 * el mutex asociado. Cuando este hilo se despierte y se
-                 * retorne de wait(), el mutex es automaticamente obtenido
-                 * (lock) de forma transparente al desarrollador.
-                 * */
-                cond.wait();
-            }
-
-            const T val = q.front();
-            q.pop();
-
-            cond.unlock();
-            return val;
-        }
+        T pop();
 };
+
+} // zm
 
 #endif

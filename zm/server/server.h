@@ -16,7 +16,7 @@
 
 class Server{
 public:
-	explicit Server();
+	Server();
 	~Server();
 
   void run();
