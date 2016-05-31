@@ -34,6 +34,12 @@ void Server::run() {
     zm::Socket playerSock = accepter.accept();
     std::string map = jm.getReducedString() + "\n";
     playerSock.write(map);
+
+    zm::proto::Game game;
+    game.x = 300;
+    game.y = 300;
+    std::string gameString = game.serialize() + "\n";
+    playerSock.write(gameString);
   }
 }
 

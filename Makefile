@@ -193,7 +193,7 @@ lint_command = python lint/cpplint.py $(lint_extensions) $(lint_filters)
 
 .PHONY: all clean lint assets
 
-all: lint client editor
+all: lint client server editor
 
 $(o_common_files): $(obj_dir)/%.o : %.$(extension)
 	$(LD) $(CXXFLAGS) -c $< -o $@

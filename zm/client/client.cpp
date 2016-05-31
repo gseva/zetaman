@@ -73,6 +73,7 @@ void Window::on_startButton_clicked() {
 
   box_.pack_start(*canvas_);
   canvas_->show();
+  c_->serverProxy.startLevel();
 }
 
 } // zm

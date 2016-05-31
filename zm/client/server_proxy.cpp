@@ -17,14 +17,19 @@ void ServerProxy::connect(){
 
   sender_->start();
 
-  std::string mapString = serverSock_.readLine();
-  std::cout << mapString << std::endl;
-  map_.fromReducedString(mapString);
+  getMap_();
   // s_.newPlayer();
 }
 
+void ServerProxy::getMap_() {
+  std::string mapString = serverSock_.readLine();
+  std::cout << mapString << std::endl;
+  map_.fromReducedString(mapString);
+}
 
 void ServerProxy::startLevel() {
+  receiver_ = new Receiver(*this, serverSock_);
+  receiver_->start();
   // s_.startLevel();
 }
 
@@ -38,7 +43,7 @@ proto::Game ServerProxy::getState() {
   return game;
 }
 
-void ServerProxy::updateState(zm::proto::Game gs) {
+void ServerProxy::updateState(proto::Game gs) {
   updateHandler.signal_game_update().emit(gs);
 }
 
@@ -57,11 +62,14 @@ void ServerProxy::shutdown() {
   proto::ClientEvent client(proto::ClientEventType::shutdown);
   eventQueue_.push(client);
 
+  receiver_->stop = true;
   sender_->join();
 
   serverSock_.close();
+  receiver_->join();
 
   delete sender_;
+  delete receiver_;
 }
 
 ServerProxy::~ServerProxy() {
@@ -83,6 +91,24 @@ std::vector<std::string> ServerProxy::getImageNames() {
 
 std::vector<int> ServerProxy::getImages() {
   return map_.imageNumbers;
+}
+
+Receiver::Receiver(ServerProxy& sp, Socket& serverSock)
+                  : sp_(sp), serverSock_(serverSock), stop(true) {
+}
+
+void Receiver::run() {
+  proto::Game game;
+  do {
+    try {
+      game = proto::Game::deserialize(serverSock_.readLine());
+    }
+    catch(const std::exception& e) {
+      std::cerr << e.what() << '\n';
+      continue;
+    }
+    sp_.updateState(game);
+  } while (!stop);
 }
 
 

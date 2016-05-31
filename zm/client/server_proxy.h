@@ -12,6 +12,7 @@
 
 namespace zm {
 
+class ServerProxy;
 
 class Sender : public Thread {
 Queue<proto::ClientEvent>& eventQueue_;
@@ -22,12 +23,26 @@ public:
 };
 
 
+class Receiver : public Thread {
+ServerProxy& sp_;
+Socket& serverSock_;
+public:
+  bool stop;
+  Receiver(ServerProxy& sp, Socket& serverSock);
+  virtual void run();
+};
+
+
+
 class ServerProxy {
 // Server s_;
 Queue<proto::ClientEvent> eventQueue_;
 Socket serverSock_;
 Sender* sender_;
+Receiver* receiver_;
 JsonMap map_;
+
+void getMap_();
 
 public:
   GameUpdateHandler updateHandler;

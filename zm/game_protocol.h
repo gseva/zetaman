@@ -79,6 +79,9 @@ public:
   std::vector<Enemy> enemies;
   std::vector<Proyectile> proyectiles;
   std::vector<PowerUp> powerUps;
+
+  std::string serialize();
+  static Game deserialize(const std::string& s);
 };
 
 
