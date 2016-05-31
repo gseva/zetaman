@@ -26,7 +26,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
     i != jm.spawnsData.end(); ++i ) {
     if ( jm.spawnTypes[(*i).type] == ENEMY ) {
-      Enemy* enemy = new Enemy(physics, (*i).column+0.5f, (*i).row+0.5f);
+      Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
@@ -68,11 +68,8 @@ zm::proto::Game Level::getState(){
       xmax = (*player)->getPosition().x;
   }
   xo = (xmax + xmin) / 2 - 8;// * PPM;
-  std::cout << xo << "\n";
-  if ( xo > XMAX ){
+  if ( xo > XMAX )
     xo = XMAX;
-    std::cout << "ME PASE y volvi\n";
-  }
   if ( xo < XMIN )
     xo = XMIN;
 

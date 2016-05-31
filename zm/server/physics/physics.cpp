@@ -41,8 +41,8 @@ void Physics::setMap(const JsonMap& jm){
           blockBox.m_radius = 0.1f;
           b2FixtureDef fixtureDef;
           fixtureDef.shape = &blockBox;
-          fixtureDef.density = 100.0f;
-          fixtureDef.friction = 1.0f;
+          fixtureDef.density = 0.0f;
+          fixtureDef.friction = 0.0f;
           fixtureDef.filter.categoryBits = BLOCK_TYPE;
           fixtureDef.filter.maskBits = ALL_CONTACT;
           blockBody->CreateFixture(&fixtureDef);
@@ -160,7 +160,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
   fixtureDef.density = 1.0f;
-  fixtureDef.friction = 100.0f;
+  fixtureDef.friction = 0.0f;
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef); 
@@ -227,6 +227,11 @@ Bullet* PlayerBody::shoot(){
   return bullet;
 }
 
+bool PlayerBody::collide(Bullet* bullet){
+  return bullet->collide(this);
+}
+
+
 Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
   totalMoves(15) {
   b2PolygonShape shape;
@@ -260,8 +265,12 @@ EnemyBullet* Enemy::move(){
     return NULL;
 }
 
+bool Enemy::collide(Bullet* bullet){
+  return bullet->collide(this);
+}
+
 Met::Met(Physics& physics, float32 x, float32 y) : 
-  Enemy(physics, x, y), period(60*3), amountShots(3){
+  Enemy(physics, x, y), period(60*3){
     shoots = 0;
     tics = 0;
     state = notProtect;
@@ -315,14 +324,35 @@ void Bullet::move(){
   body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
 }
 
+bool Bullet::collide(Bullet* bullet){
+  return false;
+}
+
 PlayerBullet::PlayerBullet(Physics& physics, float32 x, float32 y, int signo) :
   Bullet(physics, x, y, signo,
     ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE, PLAYER_BULLET_TYPE){}
 
 PlayerBullet::~PlayerBullet(){}
 
+
+bool PlayerBullet::collide(Enemy* enemy){
+  return true;
+}
+
+bool PlayerBullet::collide(PlayerBody* player){
+  return false;
+}
+
 EnemyBullet::EnemyBullet(Physics& physics, float32 x, float32 y, int signo) :
   Bullet(physics, x, y, signo,
     ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_TYPE, ENEMY_BULLET_TYPE){}
 
 EnemyBullet::~EnemyBullet(){}
+
+bool EnemyBullet::collide(Enemy* enemy){
+  return false;
+}
+
+bool EnemyBullet::collide(PlayerBody* player){ 
+  return true;
+}

@@ -45,7 +45,9 @@ void Timer::collides(std::vector<Enemy*>& enemies,
       if ( b2TestOverlap(
         (*enemy)->body->GetFixtureList()[0].GetShape(), 0,
         (*bullet)->body->GetFixtureList()[0].GetShape(),0,
-        (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform()) ) {
+        (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform())
+        &&
+        (*enemy)->collide(*bullet) ) {
         enemiesToDestroy.push_back(enemy);
         bulletsToDestroy.push_back(bullet);
       }  
