@@ -5,6 +5,8 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/image.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/viewport.h>
+#include <gtkmm/scrolledwindow.h>
 #include <glibmm/refptr.h>
 #include <string>
 #include <iostream>
@@ -13,11 +15,8 @@
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
-#define ANCHO 12
+#define ANCHO 12*3
 
-typedef struct ScreenContent{
-    std::string imageNamesMatrix[ANCHO][ALTO];
-} ScreenContent;
 
 class Editor {
   private:
@@ -27,20 +26,16 @@ class Editor {
     Gtk::Button* pBtnCrearJugador;
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
-    Gtk::Button* pBtnAgregarPantalla;
-    Gtk::Button* pBtnNextScreen;
-    Gtk::Button* pBtnPreviousScreen;
     Gtk::Window* pwindow;
+    Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
+    Gtk::Viewport* pViewPort;
     Glib::RefPtr<Gtk::Application> app;
 
     Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
     Gtk::Image imageMatrix[ANCHO][ALTO];
 
-    std::vector<ScreenContent> contenidoPantallas;
     std::string imageNamesCurrent[ANCHO][ALTO];
-    unsigned int currentScreenNumber;
-    unsigned int totalScreenCount;
 
     std::map<std::string, int> nameToSpawnNumber;
     std::map<std::string, std::string> nameToSpawnType;
@@ -52,9 +47,6 @@ class Editor {
     void on_buttonCrearEnemigo_clicked();
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
-    void on_buttonAddScreen_clicked();
-    void on_buttonNextScreen_clicked();
-    void on_buttonPreviousScreen_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);
@@ -64,5 +56,4 @@ class Editor {
     void createNewScreen();
     void exportCreatedMap();
     JsonMap createJsonMap();
-    void saveUnsavedScreen();
 };

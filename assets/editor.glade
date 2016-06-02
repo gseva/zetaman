@@ -94,54 +94,6 @@
                 </child>
               </object>
             </child>
-            <child>
-              <object class="GtkListBoxRow" id="listboxrow6">
-                <property name="width_request">100</property>
-                <property name="height_request">80</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <child>
-                  <object class="GtkButton" id="btnAddScreen">
-                    <property name="label" translatable="yes">Agregar pantalla</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow" id="listboxrow7">
-                <property name="width_request">100</property>
-                <property name="height_request">80</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <child>
-                  <object class="GtkButton" id="btnNextScreen">
-                    <property name="label" translatable="yes">Avanzar</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkListBoxRow" id="listboxrow8">
-                <property name="width_request">100</property>
-                <property name="height_request">80</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <child>
-                  <object class="GtkButton" id="btnPreviousScreen">
-                    <property name="label" translatable="yes">Retroceder</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                  </object>
-                </child>
-              </object>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -150,35 +102,48 @@
           </packing>
         </child>
         <child>
-          <object class="GtkGrid" id="grid1">
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
+            <property name="shadow_type">in</property>
             <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
+              <object class="GtkViewport" id="viewport1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkGrid" id="grid1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                </child>
+              </object>
             </child>
           </object>
           <packing>
