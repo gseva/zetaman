@@ -1,5 +1,6 @@
 
 #include <string>
+#include <iostream>
 
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/general.h> // set_source_pixbuf()
@@ -20,6 +21,7 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
   int height = image->get_height();
 
   zm::proto::Position pos = getPosition();
+  std::cout << "dibujando " << pos.x << "x" << pos.y << std::endl;
 
   Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
                                 pos.y - height / 2);

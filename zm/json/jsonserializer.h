@@ -3,7 +3,9 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "json.hpp"
+
+#include "zm/json/json.hpp"
+
 using json = nlohmann::json;
 
 typedef struct SpawnData

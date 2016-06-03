@@ -4,31 +4,34 @@
 #include <vector>
 #include <string>
 
+#include "zm/json/json.hpp"
+
+using json = nlohmann::json;
+
 namespace zm {
 namespace proto {
 
 
-class Position {
-public:
+struct JsonSerializable {
+  virtual json getJson() = 0;
+};
+
+
+struct Position : JsonSerializable {
   int x, y;
+  virtual json getJson();
 };
 
-template <typename T>
-struct StatefulEntity {
-  T state;
-  StatefulEntity() {}
-  explicit StatefulEntity(T s) : state(s) {
-  }
-};
 
-enum class PlayerState { movingLeft, movingRight, idle, shooting, jumping };
+enum class PlayerState { movingLeft=0, movingRight=1, idle=2, shooting=3, jumping=4 };
 
-
-class Player {
-public:
+struct Player {
   Position pos;
   PlayerState ps;
   int health;
+
+  virtual json getJson();
+  static Player deserialize(const json& j);
 };
 
 
@@ -36,8 +39,7 @@ enum EnemyType { Met, Bumby, Sniper, JumpingSniper };
 
 enum class EnemyState { movingLeft, movingRight, idle, shooting, jumping };
 
-class Enemy {
-public:
+struct Enemy {
   Position pos;
   EnemyState ps;
   int health;
@@ -46,16 +48,14 @@ public:
 
 enum ProyectileType { Bomb };
 
-class Proyectile {
-public:
+struct Proyectile {
   Position pos;
 };
 
 
 enum PowerUpType { Life, SmallEnergy, LargeEnergy, SmallPlasma, LargePlasma };
 
-class PowerUp {
-public:
+struct PowerUp {
   Position pos;
   PowerUpType type;
 };
@@ -63,8 +63,7 @@ public:
 
 enum GameState { playing, won, lost };
 
-class Game {
-public:
+struct Game {
   Game();
   int x, y;
 

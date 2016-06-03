@@ -26,25 +26,25 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   map_.draw(cr);
 
-  proto::Player p;
-  p.pos.x = game_.x;
-  p.pos.y = game_.y;
-  game_.players.push_back(p);
+  // proto::Player p;
+  // p.pos.x = game_.x;
+  // p.pos.y = game_.y;
+  // game_.players.push_back(p);
 
   /*proto::Enemy e;
   e.pos.x = game_.x + 35;
   e.pos.y = game_.y + 35;
   game_.enemies.push_back(e);*/
 
-  proto::Proyectile pr;
-  pr.pos.x = game_.x - 35;
-  pr.pos.y = game_.y - 35;
-  game_.proyectiles.push_back(pr);
+  // proto::Proyectile pr;
+  // pr.pos.x = game_.x - 35;
+  // pr.pos.y = game_.y - 35;
+  // game_.proyectiles.push_back(pr);
 
-  proto::PowerUp pu;
-  pu.pos.x = game_.x - 55;
-  pu.pos.y = game_.y - 55;
-  game_.powerUps.push_back(pu);
+  // proto::PowerUp pu;
+  // pu.pos.x = game_.x - 55;
+  // pu.pos.y = game_.y - 55;
+  // game_.powerUps.push_back(pu);
 
 
   for (auto&& player : game_.players) {
