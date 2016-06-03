@@ -2,6 +2,7 @@
 #define __CONNECTION_H__
 
 #include <string>
+#include <memory>
 
 #include "zm/thread.h"
 
@@ -19,10 +20,11 @@ namespace zm {
 class Socket {
   int fd_;
 
-  explicit Socket(int fd);
-
+  int writeData_(const char* data, size_t bytes);
+  int receiveData_(char* result, size_t bytes);
 public:
   Socket();
+  explicit Socket(int fd);
 
   int connect(const std::string& hostname, const std::string& port);
 
@@ -30,7 +32,7 @@ public:
   std::string readLine();
 
   int bind(const std::string& port);
-  Socket accept();
+  std::shared_ptr<Socket> accept();
   int listen();
   int bindAndListen(const std::string& port);
 

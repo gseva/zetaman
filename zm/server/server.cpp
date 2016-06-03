@@ -33,9 +33,8 @@ void Server::run() {
   while (true) {
     zm::Socket accepter;
     accepter.bindAndListen("9090");
-    zm::Socket playerSock = accepter.accept();
-    std::string map = jm.getReducedString() + "\n";
-    playerSock.write(map);
+    auto playerSock = accepter.accept();
+    playerSock->write(jm.getReducedString());
 
     cp = new zm::ClientProxy(*this, playerSock);
     cp->startGame();

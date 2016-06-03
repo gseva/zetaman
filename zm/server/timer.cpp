@@ -6,14 +6,17 @@
 #include "zm/server/timer.h"
 #include "zm/server/physics/physics.h"
 
-Timer::Timer(Physics& physics, zm::ClientProxy& cp, std::vector<Enemy*>& enemies,
-  std::vector<Bullet*>& bullets) : physics(physics), cp_(cp), enemies(enemies),
-  bullets(bullets){}
+Timer::Timer(Physics& physics, zm::ClientProxy& cp,
+             std::vector<Enemy*>& enemies,
+             std::vector<Bullet*>& bullets) :
+  physics(physics), cp_(cp), enemies(enemies), bullets(bullets){
+}
 
 Timer::~Timer(){}
 
 void Timer::run(){
-  while ( true ) {
+  int i = 3;
+  while ( i-- ) {
     physics.step();
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;

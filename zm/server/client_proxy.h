@@ -2,6 +2,8 @@
 #ifndef __CLIENT_PROXY_H__
 #define __CLIENT_PROXY_H__
 
+#include <memory>
+
 #include "zm/connection.h"
 #include "zm/game_protocol.h"
 #include "zm/thread.h"
@@ -15,9 +17,9 @@ class ClientProxy;
 
 class Sender : public Thread {
 Queue<proto::Game>& eventQueue_;
-Socket& clientSock_;
+std::shared_ptr<Socket> clientSock_;
 public:
-  Sender(Queue<proto::Game>& eventQueue, Socket& clientSock);
+  Sender(Queue<proto::Game>& eventQueue, std::shared_ptr<Socket> clientSock);
   virtual void run();
 };
 
@@ -35,10 +37,10 @@ public:
 class ClientProxy {
 Server &s_;
 Queue<proto::Game> eventQueue_;
-Socket clientSock_;
+std::shared_ptr<Socket> clientSock_;
 Sender* sender_;
 public:
-  explicit ClientProxy(Server& s, Socket sock_);
+  explicit ClientProxy(Server& s, std::shared_ptr<Socket> sock_);
   ~ClientProxy();
 
   void startGame();

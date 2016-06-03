@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <string>
 
 #include "zm/server/client_proxy.h"
 #include "zm/server/server.h"
@@ -7,7 +8,7 @@
 namespace zm {
 
 
-ClientProxy::ClientProxy(Server& s, Socket sock_)
+ClientProxy::ClientProxy(Server& s, std::shared_ptr<Socket> sock_)
                         : s_(s), clientSock_(sock_) {
 }
 
@@ -29,7 +30,8 @@ proto::Game ClientProxy::getState() {
 }
 
 
-Sender::Sender(Queue<proto::Game>& eventQueue, Socket& clientSock) :
+Sender::Sender(Queue<proto::Game>& eventQueue,
+               std::shared_ptr<Socket> clientSock) :
                eventQueue_(eventQueue), clientSock_(clientSock) {
 }
 
@@ -38,8 +40,8 @@ void Sender::run() {
   do {
     game = eventQueue_.pop();
     if (game.state != proto::GameState::playing) continue;
-    std::string s = game.serialize() + "\n";
-    clientSock_.write(s);
+    std::string s = game.serialize();
+    clientSock_->write(s);
   } while (game.state == proto::GameState::playing);
 }
 

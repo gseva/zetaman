@@ -13,17 +13,17 @@ ServerProxy::ServerProxy() : sender_(NULL) {
 
 void ServerProxy::connect(){
   serverSock_.connect("127.0.0.1", "9090");
-  sender_ = new Sender(eventQueue_, serverSock_);
 
-  sender_->start();
 
   getMap_();
+
+  sender_ = new Sender(eventQueue_, serverSock_);
+  sender_->start();
   // s_.newPlayer();
 }
 
 void ServerProxy::getMap_() {
   std::string mapString = serverSock_.readLine();
-  std::cout << mapString << std::endl;
   map_.fromReducedString(mapString);
 }
 
@@ -110,7 +110,7 @@ void Sender::run() {
 
 
 Receiver::Receiver(ServerProxy& sp, Socket& serverSock)
-                  : sp_(sp), serverSock_(serverSock), stop(true) {
+                  : sp_(sp), serverSock_(serverSock), stop(false) {
 }
 
 void Receiver::run() {

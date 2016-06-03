@@ -3,6 +3,7 @@
 #include <string>
 #include <string.h>
 #include <strings.h>
+#include <vector>
 #include <sstream>
 #include <stdexcept>
 #include <sys/types.h>
@@ -10,7 +11,11 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#include <iostream>
+
 #include "zm/connection.h"
+
+#define MAX_BUFF_SIZE 4096
 
 namespace zm {
 
@@ -41,12 +46,11 @@ int Socket::connect(const std::string& hostname, const std::string& port) {
   return 0;
 }
 
-Socket Socket::accept() {
+std::shared_ptr<Socket> Socket::accept() {
   struct sockaddr_in cli_addr;
   socklen_t cli_len = sizeof(cli_addr);
   int newfd = ::accept(fd_, (struct sockaddr *) &cli_addr, &cli_len);
-  Socket socket(newfd);
-  return socket;
+  return std::make_shared<Socket> (newfd);;
 }
 
 
@@ -75,29 +79,49 @@ int Socket::bindAndListen(const std::string& port) {
   return listen();
 }
 
-int Socket::write(const std::string& s) {
-  int length = s.length();
-  const char* data = s.c_str();
-  while (length > 0)
+int Socket::writeData_(const char* data, size_t bytes) {
+  while (bytes > 0)
   {
-    int i = send(fd_, data, length, SOCKET_FLAGS);
+    ssize_t i = send(fd_, data, bytes, SOCKET_FLAGS);
     if (i < 1) return i;
     data += i;
-    length -= i;
+    bytes -= i;
   }
   return 0;
 }
 
-std::string Socket::readLine() {
-  std::string output;
-  char c = '\0';
-
-  while (c != '\n') {
-    int i = recv(fd_, &c, 1, SOCKET_FLAGS);
-    if (i < 1) throw std::runtime_error("No pude leer caracter!");
-    output += c;
+int Socket::receiveData_(char* result, size_t bytes) {
+  while (bytes > 0) {
+    ssize_t i = recv(fd_, result, bytes, SOCKET_FLAGS);
+    if (i < 1) {
+      return i;
+    }
+    bytes -= i;
+    result += i;
   }
-  return output;
+  return 0;
+}
+
+int Socket::write(const std::string& s) {
+  int stringLength = s.length();
+  uint32_t length = htonl(stringLength);
+  int res = writeData_((char*) &length, sizeof(uint32_t));
+  if (res != 0) return res;
+  const char* data = s.c_str();
+  return writeData_(data, stringLength);
+}
+
+std::string Socket::readLine() {
+  uint32_t length;
+  if (receiveData_((char*) &length, sizeof(uint32_t)) != 0) {
+    throw std::runtime_error("Error leyendo del socket!");
+  }
+  length = ntohl(length);
+  std::string result(length, 0);
+  if (receiveData_(&(result[0]), length) != 0) {
+    throw std::runtime_error("Error leyendo del socket!");
+  }
+  return result;
 }
 
 

@@ -35,7 +35,6 @@ JsonMap JsonSerializer::importMap(std::string path)
 
   fs >> j; //Carga el json en memoria
 
-  std::cout << j << std::endl;
   fs.close();
 
   JsonMap mapa;
@@ -83,8 +82,6 @@ void JsonSerializer::exportMap(std::string path, const JsonMap& m)
   }
 
   exportable["spawns"] = exportableSpawns;
-
-  std::cout << exportable << std::endl;
 
   std::fstream newFile;
 
