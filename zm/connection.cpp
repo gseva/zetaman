@@ -111,7 +111,7 @@ int Socket::write(const std::string& s) {
   return writeData_(data, stringLength);
 }
 
-std::string Socket::readLine() {
+std::string Socket::read() {
   uint32_t length;
   if (receiveData_((char*) &length, sizeof(uint32_t)) != 0) {
     throw std::runtime_error("Error leyendo del socket!");

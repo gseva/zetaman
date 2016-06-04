@@ -26,27 +26,6 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   map_.draw(cr);
 
-  // proto::Player p;
-  // p.pos.x = game_.x;
-  // p.pos.y = game_.y;
-  // game_.players.push_back(p);
-
-  /*proto::Enemy e;
-  e.pos.x = game_.x + 35;
-  e.pos.y = game_.y + 35;
-  game_.enemies.push_back(e);*/
-
-  // proto::Proyectile pr;
-  // pr.pos.x = game_.x - 35;
-  // pr.pos.y = game_.y - 35;
-  // game_.proyectiles.push_back(pr);
-
-  // proto::PowerUp pu;
-  // pu.pos.x = game_.x - 55;
-  // pu.pos.y = game_.y - 55;
-  // game_.powerUps.push_back(pu);
-
-
   for (auto&& player : game_.players) {
     drawing::Player dp(player);
     dp.draw(cr, buff_);
@@ -63,16 +42,6 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawing::PowerUp dp(powerUp);
     dp.draw(cr, buff_);
   }
-
-  // cr->set_line_width(10.0);
-
-  // Dibujo de un circulo
-  // cr->save();
-  // cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
-  // cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
-  // cr->fill_preserve();
-  // cr->restore();  // Vuelvo a un negro opaco
-  // cr->stroke();
 
   return true;
 }

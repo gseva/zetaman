@@ -25,9 +25,10 @@ public:
   void startLevel();
   void stopLevel();
 
-	void jump(int playerNumber);
 	zm::proto::Game getState();
-  void right(int playerNummber);
+
+  void jump(int playerNumber);
+  void right(int playerNumber);
   void left(int playerNumber);
   void stopHorizontalMove(int playerNumber);
   void up(int playerNumber);

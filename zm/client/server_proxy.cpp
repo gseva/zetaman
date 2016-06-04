@@ -19,26 +19,19 @@ void ServerProxy::connect(){
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
-  // s_.newPlayer();
 }
 
 void ServerProxy::getMap_() {
-  std::string mapString = serverSock_.readLine();
+  std::string mapString = serverSock_.read();
   map_.fromReducedString(mapString);
 }
 
 void ServerProxy::startLevel() {
   receiver_ = new Receiver(*this, serverSock_);
   receiver_->start();
-  // s_.startLevel();
-}
-
-void ServerProxy::jump() {
-  // s_.jump(0);
 }
 
 proto::Game ServerProxy::getState() {
-  // return s_.getState();
   proto::Game game;
   return game;
 }
@@ -47,20 +40,40 @@ void ServerProxy::updateState(proto::Game gs) {
   updateHandler.signal_game_update().emit(gs);
 }
 
-void ServerProxy::moveRight(){
-  // s_.right(0);
+void ServerProxy::jump() {
+  proto::ClientEvent ce(proto::ClientEventType::jump);
+  eventQueue_.push(ce);
 }
+
+void ServerProxy::moveRight(){
+  proto::ClientEvent ce(proto::ClientEventType::moveRight);
+  eventQueue_.push(ce);
+}
+
 void ServerProxy::moveLeft(){
-  // s_.left(0);
+  proto::ClientEvent ce(proto::ClientEventType::moveLeft);
+  eventQueue_.push(ce);
 }
 
 void ServerProxy::stopHorizontalMove(){
-  // s_.stopHorizontalMove(0);
+  proto::ClientEvent ce(proto::ClientEventType::stopMoving);
+  eventQueue_.push(ce);
 }
 
+void ServerProxy::up(){
+  proto::ClientEvent ce(proto::ClientEventType::moveUp);
+  eventQueue_.push(ce);
+}
+
+void ServerProxy::shoot(){
+  proto::ClientEvent ce(proto::ClientEventType::shoot);
+  eventQueue_.push(ce);
+}
+
+
 void ServerProxy::shutdown() {
-  proto::ClientEvent client(proto::ClientEventType::shutdown);
-  eventQueue_.push(client);
+  proto::ClientEvent ce(proto::ClientEventType::shutdown);
+  eventQueue_.push(ce);
 
   receiver_->stop = true;
   sender_->join();
@@ -76,14 +89,6 @@ ServerProxy::~ServerProxy() {
   shutdown();
 }
 
-
-void ServerProxy::up(){
-  // s_.up(0);
-}
-
-void ServerProxy::shoot(){
-  // s_.shoot(0);
-}
 
 std::vector<std::string> ServerProxy::getImageNames() {
   return map_.imageNames;
@@ -103,7 +108,7 @@ void Sender::run() {
   do {
     client = eventQueue_.pop();
     if (client.state == proto::ClientEventType::shutdown) continue;
-    std::string s = client.serialize() + "\n";
+    std::string s = client.serialize();
     serverSock_.write(s);
   } while (client.state != proto::ClientEventType::shutdown);
 }
@@ -117,7 +122,7 @@ void Receiver::run() {
   proto::Game game;
   do {
     try {
-      game = proto::Game::deserialize(serverSock_.readLine());
+      game = proto::Game::deserialize(serverSock_.read());
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';

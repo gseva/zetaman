@@ -88,6 +88,9 @@ Proyectile Proyectile::deserialize(const json& j) {
 Game::Game() : state(GameState::playing) {
 }
 
+Game::Game(GameState gs) : state(gs) {
+}
+
 std::string Game::serialize() {
   int s;
   switch (state) {
@@ -97,29 +100,28 @@ std::string Game::serialize() {
   }
 
   json playersJson = json::array();
-  for(auto&& player : players) {
+  for (auto&& player : players) {
     playersJson.push_back(player.getJson());
   }
 
   json enemiesJson = json::array();
-  for(auto&& enemy : enemies) {
+  for (auto&& enemy : enemies) {
     enemiesJson.push_back(enemy.getJson());
   }
 
   json proyectileJson = json::array();
-  for(auto&& proyectile : proyectiles) {
+  for (auto&& proyectile : proyectiles) {
     proyectileJson.push_back(proyectile.getJson());
   }
 
   json game = {{"x", x}, {"y", y}, {"st", s},
                {"p", playersJson}, {"e", enemiesJson}, {"p", proyectileJson}};
   std::string result = game.dump();
-  std::cout << "Serializando game: " << result << "\n";
   return result;
 }
 
+
 Game Game::deserialize(const std::string& s) {
-  std::cout << "Deserializando game: " << s << "\n";
   json j = json::parse(s);
 
   Game game;
@@ -150,7 +152,16 @@ Game Game::deserialize(const std::string& s) {
 
 
 std::string ClientEvent::serialize() {
-  return "foo";
+  json j = {{"e", static_cast<int>(state)}};
+  std::string ev = j.dump();
+  return ev;
+}
+
+ClientEvent ClientEvent::deserialize(const std::string& s) {
+  json j = json::parse(s);
+  int state = j["e"];
+  ClientEvent ce(static_cast<ClientEventType>(state));
+  return ce;
 }
 
 } // proto

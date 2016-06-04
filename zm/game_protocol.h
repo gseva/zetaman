@@ -23,7 +23,8 @@ struct Position : JsonSerializable {
 };
 
 
-enum class PlayerState { movingLeft=0, movingRight=1, idle=2, shooting=3, jumping=4 };
+enum class PlayerState { movingLeft=0, movingRight=1, idle=2,
+                         shooting=3, jumping=4 };
 
 struct Player : JsonSerializable {
   Position pos;
@@ -37,13 +38,14 @@ struct Player : JsonSerializable {
 
 enum EnemyType { Met=0, Bumby=1, Sniper=2, JumpingSniper=3 };
 
-enum class EnemyState { movingLeft=0, movingRight=1, idle=2, shooting=3, jumping=4 };
+enum class EnemyState { movingLeft=0, movingRight=1, idle=2,
+                        shooting=3, jumping=4 };
 
 struct Enemy : JsonSerializable {
   Position pos;
   EnemyState es;
   int health;
-  Enemy(EnemyState state=EnemyState::idle);
+  explicit Enemy(EnemyState state=EnemyState::idle);
 
   virtual json getJson();
   static Enemy deserialize(const json& j);
@@ -72,6 +74,8 @@ enum GameState { playing, won, lost };
 
 struct Game {
   Game();
+  explicit Game(GameState gs);
+
   int x, y;
 
   // Esta posicion es para que el cliente entienda que tiles dibujar.
@@ -92,15 +96,18 @@ struct Game {
 };
 
 
-enum ClientEventType { moveLeft, moveRight, jump,
+enum ClientEventType { moveLeft, moveRight, jump, moveUp, moveDown,
                        stopMoving, shoot, shutdown };
 
 struct ClientEvent {
   ClientEventType state;
+
   ClientEvent() {}
   explicit ClientEvent(ClientEventType s) : state(s) {
   }
+
   std::string serialize();
+  static ClientEvent deserialize(const std::string& s);
 };
 
 } // p

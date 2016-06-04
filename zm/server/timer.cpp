@@ -15,8 +15,7 @@ Timer::Timer(Physics& physics, zm::ClientProxy& cp,
 Timer::~Timer(){}
 
 void Timer::run(){
-  int i = 3;
-  while ( i-- ) {
+  while ( true ) {
     physics.step();
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;

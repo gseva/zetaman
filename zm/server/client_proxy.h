@@ -26,10 +26,10 @@ public:
 
 class Receiver : public Thread {
 ClientProxy& cp_;
-Socket& clientSock_;
+std::shared_ptr<Socket> clientSock_;
 public:
   bool stop;
-  Receiver(ClientProxy& cp, Socket& clientSock);
+  Receiver(ClientProxy& cp, std::shared_ptr<Socket> clientSock);
   virtual void run();
 };
 
@@ -39,6 +39,7 @@ Server &s_;
 Queue<proto::Game> eventQueue_;
 std::shared_ptr<Socket> clientSock_;
 Sender* sender_;
+Receiver* receiver_;
 public:
   explicit ClientProxy(Server& s, std::shared_ptr<Socket> sock_);
   ~ClientProxy();
@@ -46,6 +47,7 @@ public:
   void startGame();
 
   void updateState(zm::proto::Game gs);
+  void dispatchEvent(proto::ClientEvent ce);
 
   zm::proto::Game getState();
 };

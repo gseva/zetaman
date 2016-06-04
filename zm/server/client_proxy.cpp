@@ -19,10 +19,35 @@ void ClientProxy::updateState(proto::Game gs) {
 void ClientProxy::startGame() {
   sender_ = new Sender(eventQueue_, clientSock_);
   sender_->start();
+  receiver_ = new Receiver(*this, clientSock_);
+  receiver_->start();
+}
+
+void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
+  switch (ce.state) {
+    case proto::moveLeft: s_.left(0); break;
+    case proto::moveRight: s_.right(0); break;
+    case proto::jump: s_.jump(0); break;
+    case proto::moveUp: s_.up(0); break;
+    case proto::moveDown: break;
+    case proto::stopMoving: s_.stopHorizontalMove(0); break;
+    case proto::shoot: s_.shoot(0); break;
+    case proto::shutdown: break;
+  }
 }
 
 ClientProxy::~ClientProxy() {
+  proto::Game game(proto::GameState::lost);
+  eventQueue_.push(game);
+
+  clientSock_->close();
+  receiver_->stop = true;
+
   sender_->join();
+  receiver_->join();
+
+  delete sender_;
+  delete receiver_;
 }
 
 proto::Game ClientProxy::getState() {
@@ -46,21 +71,21 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ClientProxy& cp, Socket& clientSock)
-                  : cp_(cp), clientSock_(clientSock), stop(true) {
+Receiver::Receiver(ClientProxy& cp, std::shared_ptr<Socket> clientSock)
+                  : cp_(cp), clientSock_(clientSock), stop(false) {
 }
 
 void Receiver::run() {
-  proto::Game game;
+  proto::ClientEvent event;
   do {
     try {
-      game = proto::Game::deserialize(clientSock_.readLine());
+      event = proto::ClientEvent::deserialize(clientSock_->read());
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';
       continue;
     }
-    cp_.updateState(game);
+    cp_.dispatchEvent(event);
   } while (!stop);
 }
 

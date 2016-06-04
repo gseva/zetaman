@@ -29,7 +29,7 @@ public:
   int connect(const std::string& hostname, const std::string& port);
 
   int write(const std::string& s);
-  std::string readLine();
+  std::string read();
 
   int bind(const std::string& port);
   std::shared_ptr<Socket> accept();
