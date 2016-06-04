@@ -25,7 +25,7 @@ struct Position : JsonSerializable {
 
 enum class PlayerState { movingLeft=0, movingRight=1, idle=2, shooting=3, jumping=4 };
 
-struct Player {
+struct Player : JsonSerializable {
   Position pos;
   PlayerState ps;
   int health;
@@ -35,21 +35,28 @@ struct Player {
 };
 
 
-enum EnemyType { Met, Bumby, Sniper, JumpingSniper };
+enum EnemyType { Met=0, Bumby=1, Sniper=2, JumpingSniper=3 };
 
-enum class EnemyState { movingLeft, movingRight, idle, shooting, jumping };
+enum class EnemyState { movingLeft=0, movingRight=1, idle=2, shooting=3, jumping=4 };
 
-struct Enemy {
+struct Enemy : JsonSerializable {
   Position pos;
-  EnemyState ps;
+  EnemyState es;
   int health;
+  Enemy(EnemyState state=EnemyState::idle);
+
+  virtual json getJson();
+  static Enemy deserialize(const json& j);
 };
 
 
 enum ProyectileType { Bomb };
 
-struct Proyectile {
+struct Proyectile : JsonSerializable {
   Position pos;
+
+  virtual json getJson();
+  static Proyectile deserialize(const json& j);
 };
 
 
