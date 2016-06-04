@@ -7,6 +7,7 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/viewport.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/comboboxtext.h>
 #include <glibmm/refptr.h>
 #include <string>
 #include <iostream>
@@ -27,6 +28,7 @@ class Editor {
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
     Gtk::Window* pwindow;
+    Gtk::ComboBoxText* pComboBoxEnemy;
     Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
@@ -40,6 +42,7 @@ class Editor {
     std::map<std::string, int> nameToSpawnNumber;
     std::map<std::string, std::string> nameToSpawnType;
     std::map<std::string, std::string> nameToPhysics;
+    std::map<std::string, std::string> ddlToName;
 
   public:
     void on_buttonCrearJugador_clicked();
@@ -56,4 +59,5 @@ class Editor {
     void createNewScreen();
     void exportCreatedMap();
     JsonMap createJsonMap();
+    void initializeRelationships();
 };

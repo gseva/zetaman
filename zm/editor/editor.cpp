@@ -24,7 +24,7 @@ void Editor::on_buttonCrearTerreno_clicked()
 void Editor::on_buttonCrearEnemigo_clicked()
 {
   std::cout << "Crear enemigo seleccionado" << std::endl;
-  imagenSeleccionada = IMAGEN_ENEMIGO;
+  imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
 }
 
 void Editor::on_buttonBorrarTile_clicked()
@@ -64,24 +64,41 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("grid1", pGrid);
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
+  builder->get_widget("ddlEnemy", pComboBoxEnemy);
 
   pwindow->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
+
+  pComboBoxEnemy->append("Enemigo 1");
+  pComboBoxEnemy->append("Enemigo 2");
+  pComboBoxEnemy->append("Enemigo 3");
+  pComboBoxEnemy->set_active(0);
 
   connectButtonsWithSignals();
 
   createEmptyGrid();
 
+  initializeRelationships();
+
+
+  imagenSeleccionada = IMAGEN_TERRENO;
+}
+
+void Editor::initializeRelationships()
+{
+  /*Relacion entre nombre de la imagen con numero de spawn*/
   nameToSpawnNumber.insert({IMAGEN_ENEMIGO,0});
-  nameToSpawnType.insert({IMAGEN_ENEMIGO,"enemy"});
   nameToSpawnNumber.insert({IMAGEN_JUGADOR,1});
+  /*Relacion entre nombre de la imagen con tipo de spawn*/
+  nameToSpawnType.insert({IMAGEN_ENEMIGO,"enemy"});
   nameToSpawnType.insert({IMAGEN_JUGADOR,"player"});
+  /*Relacion entre nombre de la imagen con la fisica*/
   nameToPhysics.insert({IMAGEN_TERRENO,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
   nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
-
-  imagenSeleccionada = IMAGEN_TERRENO;
+  /*Relacion entre nombre en ddl con la imagen*/
+  ddlToName.insert({"Enemigo 1", IMAGEN_ENEMIGO});
 }
 
 void Editor::connectButtonsWithSignals()
