@@ -24,7 +24,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   // int radius = 35;
 
-  map_.draw(cr,game_.camPos.x, game_.camPos.y);
+  map_.draw(cr, game_.camPos.x, game_.camPos.y);
 
 
   for (auto&& player : game_.players) {
