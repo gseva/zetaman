@@ -22,7 +22,7 @@ void loadImages();
 public:
   Map(std::vector<int> tiles, std::vector<std::string> imageNames);
 
-  void draw(const Cairo::RefPtr<Cairo::Context>& context);
+  void draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y);
 };
 
 } // zm

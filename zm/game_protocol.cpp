@@ -12,6 +12,11 @@ namespace zm {
 namespace proto {
 
 
+zm::proto::Position::Position(){
+  x = 0;
+  y = 0;
+}
+
 json Position::getJson() {
   return {{"x", x}, {"y", y}};
 }

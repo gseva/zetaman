@@ -20,7 +20,10 @@ void Timer::run(){
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;
     for ( i = enemies.begin(); i != enemies.end(); ++i ) {
-      (*i)->lived();
+      Bullet* bullet = (*i)->move();
+      if ( bullet != NULL ) {
+        bullets.push_back(bullet);
+      }
     }
     std::vector<Bullet*>::iterator j;
     for ( j = bullets.begin(); j != bullets.end(); ++j ) {
@@ -44,7 +47,9 @@ void Timer::collides(std::vector<Enemy*>& enemies,
       if ( b2TestOverlap(
         (*enemy)->body->GetFixtureList()[0].GetShape(), 0,
         (*bullet)->body->GetFixtureList()[0].GetShape(),0,
-        (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform()) ) {
+        (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform())
+        &&
+        (*enemy)->collide(*bullet) ) {
         enemiesToDestroy.push_back(enemy);
         bulletsToDestroy.push_back(bullet);
       }
