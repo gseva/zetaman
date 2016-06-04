@@ -9,6 +9,7 @@ namespace proto {
 
 class Position {
 public:
+  Position();
   int x, y;
 };
 
