@@ -4,27 +4,33 @@
 #include <string>
 #include <map>
 
-#define IMAGEN_JUGADOR "/zm/editor/images/player.png"
+#define IMAGEN_JUGADOR "/zm/editor/images/player/megaman.png"
 #define IMAGEN_TERRENO "/zm/editor/images/grass_mid.png"
-#define IMAGEN_ENEMIGO "/zm/editor/images/enemy.png"
+#define IMAGEN_BUMPY "/zm/editor/images/enemies/bumpy/1.png"
 #define IMAGEN_BLANCO "/zm/editor/images/void.png"
+#define IMAGEN_ESCALERA "/zm/editor/images/tiles/ladder_mid.png"
+#define IMAGEN_MET "/zm/editor/images/enemies/met/unguarded.png"
+#define IMAGEN_SNIPER "/zm/editor/images/enemies/sniper/guarded.png"
 
 void Editor::on_buttonCrearJugador_clicked()
 {
+  pComboBoxEnemy->set_active(0);
   std::cout << "Crear jugador seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_JUGADOR;
 }
 
 void Editor::on_buttonCrearTerreno_clicked()
 {
+  pComboBoxEnemy->set_active(0);
   std::cout << "Crear terreno seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_TERRENO;
 }
 
-void Editor::on_buttonCrearEnemigo_clicked()
+void Editor::on_buttonCrearEscalera_clicked()
 {
-  std::cout << "Crear enemigo seleccionado" << std::endl;
-  imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
+  pComboBoxEnemy->set_active(0);
+  std::cout << "Crear escalera seleccionado" << std::endl;
+  imagenSeleccionada = IMAGEN_ESCALERA;
 }
 
 void Editor::on_buttonBorrarTile_clicked()
@@ -41,12 +47,8 @@ void Editor::on_buttonSaveMap_clicked()
 
 void Editor::on_buttonAcceptExport_clicked()
 {
-  if (pEntryLevelLength->get_text_length()>0
-    && pEntryExportMapName->get_text_length()>0)
+  if (pEntryExportMapName->get_text_length()>0)
   {
-    std::stringstream ss;
-    ss << pEntryLevelLength->get_text();
-    ss >> mapLength;
     mapName = pEntryExportMapName->get_text();
     pWindowNewLevel->hide();
     pWindowEditor->show();
@@ -60,6 +62,11 @@ void Editor::on_buttonCreateLevel_clicked()
 
 void Editor::on_buttonEditLevel_clicked()
 {
+}
+
+void Editor::on_ddlEnemy_changed()
+{
+  imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -78,8 +85,8 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
 
   /* Elementos de la ventana del editor*/
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
-  builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
+  builder->get_widget("btnCrearEscalera", pBtnCrearEscalera);
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("btnSaveMap", pBtnSaveMap);
   builder->get_widget("applicationwindow1", pWindowEditor);
@@ -91,7 +98,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("windowNewLevel", pWindowNewLevel);
   builder->get_widget("btnAcceptExport", pBtnAcceptExport);
   builder->get_widget("entryExportMapName", pEntryExportMapName);
-  builder->get_widget("entryLevelLength", pEntryLevelLength);
 
   /* Elementos del menu */
   builder->get_widget("windowMenu", pWindowMenu);
@@ -101,7 +107,10 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
 
-  pComboBoxEnemy->append("Enemigo 1");
+  pComboBoxEnemy->append("Elegir enemigo");
+  pComboBoxEnemy->append("Bumpy");
+  pComboBoxEnemy->append("Met");
+  pComboBoxEnemy->append("Sniper");
   pComboBoxEnemy->set_active(0);
 
   connectButtonsWithSignals();
@@ -117,18 +126,25 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
 void Editor::initializeRelationships()
 {
   /*Relacion entre nombre de la imagen con numero de spawn*/
-  nameToSpawnNumber.insert({IMAGEN_ENEMIGO,0});
-  nameToSpawnNumber.insert({IMAGEN_JUGADOR,1});
+  nameToSpawnNumber.insert({IMAGEN_JUGADOR,0});
+  nameToSpawnNumber.insert({IMAGEN_BUMPY,1});
+  nameToSpawnNumber.insert({IMAGEN_MET,2});
+  nameToSpawnNumber.insert({IMAGEN_SNIPER,3});
   /*Relacion entre nombre de la imagen con tipo de spawn*/
-  nameToSpawnType.insert({IMAGEN_ENEMIGO,"enemy"});
+  nameToSpawnType.insert({IMAGEN_BUMPY,"enemy"});
+  nameToSpawnType.insert({IMAGEN_MET,"enemy"});
+  nameToSpawnType.insert({IMAGEN_SNIPER,"enemy"});
   nameToSpawnType.insert({IMAGEN_JUGADOR,"player"});
   /*Relacion entre nombre de la imagen con la fisica*/
   nameToPhysics.insert({IMAGEN_TERRENO,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGEN_JUGADOR,"void"});
-  nameToPhysics.insert({IMAGEN_ENEMIGO,"void"});
+  nameToPhysics.insert({IMAGEN_BUMPY,"void"});
+  nameToPhysics.insert({IMAGEN_ESCALERA,"stair"});
   /*Relacion entre nombre en ddl con la imagen*/
-  ddlToName.insert({"Enemigo 1", IMAGEN_ENEMIGO});
+  ddlToName.insert({"Bumpy", IMAGEN_BUMPY});
+  ddlToName.insert({"Met", IMAGEN_MET});
+  ddlToName.insert({"Sniper", IMAGEN_SNIPER});
 }
 
 void Editor::connectButtonsWithSignals()
@@ -145,10 +161,10 @@ void Editor::connectButtonsWithSignals()
         sigc::mem_fun(this,&Editor::on_buttonCrearTerreno_clicked));
   }
 
-  if (pBtnCrearEnemigo)
+  if (pBtnCrearEscalera)
   {
-    pBtnCrearEnemigo->signal_clicked().connect(
-        sigc::mem_fun(this,&Editor::on_buttonCrearEnemigo_clicked));
+    pBtnCrearEscalera->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonCrearEscalera_clicked));
   }
 
   if (pBtnBorrarTile)
@@ -179,6 +195,12 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnEditLevel->signal_clicked().connect(
       sigc::mem_fun(this,&Editor::on_buttonEditLevel_clicked));
+  }
+
+  if (pComboBoxEnemy)
+  {
+    pComboBoxEnemy->signal_changed().connect(
+      sigc::mem_fun(this, &Editor::on_ddlEnemy_changed));
   }
 }
 

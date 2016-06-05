@@ -36,8 +36,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkButton" id="btnCrearJugador">
-                    <property name="label" translatable="yes">Jugador</property>
+                  <object class="GtkButton" id="btnCrearEscalera">
+                    <property name="label" translatable="yes">Escalera</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -52,9 +52,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkComboBoxText" id="ddlEnemy">
+                  <object class="GtkButton" id="btnCrearJugador">
+                    <property name="label" translatable="yes">Jugador</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
                   </object>
                 </child>
               </object>
@@ -66,17 +68,15 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkButton" id="btnCrearEnemigo">
-                    <property name="label" translatable="yes">Enemigo</property>
+                  <object class="GtkComboBoxText" id="ddlEnemy">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can_focus">False</property>
                   </object>
                 </child>
               </object>
             </child>
             <child>
-              <object class="GtkListBoxRow" id="listboxrow5">
+              <object class="GtkListBoxRow" id="listboxrow6">
                 <property name="width_request">100</property>
                 <property name="height_request">80</property>
                 <property name="visible">True</property>
@@ -92,7 +92,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkListBoxRow" id="listboxrow6">
+              <object class="GtkListBoxRow" id="listboxrow11">
                 <property name="width_request">100</property>
                 <property name="height_request">80</property>
                 <property name="visible">True</property>
@@ -239,35 +239,6 @@
             <property name="can_focus">True</property>
             <child>
               <object class="GtkEntry" id="entryExportMapName">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBoxRow" id="listboxrow11">
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <child>
-              <object class="GtkLabel" id="label2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Longitud del nivel</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkListBoxRow" id="listboxrow12">
-            <property name="width_request">100</property>
-            <property name="height_request">80</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <child>
-              <object class="GtkEntry" id="entryLevelLength">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
               </object>

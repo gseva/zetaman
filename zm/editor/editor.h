@@ -17,20 +17,14 @@
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
-#define ANCHO 12
-
-typedef struct createNewScreen{
-    Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
-    Gtk::Image imageMatrix[ANCHO][ALTO];
-    std::string imageNamesCurrent[ANCHO][ALTO];
-};
+#define ANCHO 12*4
 
 class Editor {
   private:
     std::string imagenSeleccionada;
     Gtk::Button* pBtnCrearTerreno;
-    Gtk::Button* pBtnCrearEnemigo;
     Gtk::Button* pBtnCrearJugador;
+    Gtk::Button* pBtnCrearEscalera;
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
     Gtk::Window* pWindowEditor;
@@ -43,7 +37,6 @@ class Editor {
     Gtk::Window* pWindowNewLevel;
     Gtk::Button* pBtnAcceptExport;
     Gtk::Entry* pEntryExportMapName;
-    Gtk::Entry* pEntryLevelLength;
 
     Gtk::Window* pWindowMenu;
     Gtk::Button* pBtnCreateLevel;
@@ -60,18 +53,18 @@ class Editor {
     std::map<std::string, std::string> nameToPhysics;
     std::map<std::string, std::string> ddlToName;
 
-    int mapLength;
     std::string mapName;
 
   public:
     void on_buttonCrearJugador_clicked();
     void on_buttonCrearTerreno_clicked();
-    void on_buttonCrearEnemigo_clicked();
+    void on_buttonCrearEscalera_clicked();
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
     void on_buttonAcceptExport_clicked();
     void on_buttonCreateLevel_clicked();
     void on_buttonEditLevel_clicked();
+    void on_ddlEnemy_changed();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);
