@@ -35,9 +35,17 @@ void Editor::on_buttonBorrarTile_clicked()
 
 void Editor::on_buttonSaveMap_clicked()
 {
-  std::cout << "Guardando mapa" << std::endl;
+  pWindowPopupExportar->show();
+}
 
-  exportCreatedMap();
+void Editor::on_buttonAcceptExport_clicked()
+{
+  if (pEntryExportMapName->get_text_length()>0)
+  {
+    std::cout << "Guardando mapa" << std::endl;
+    exportCreatedMap(pEntryExportMapName->get_text());
+    pWindowPopupExportar->hide();  
+  }
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -45,7 +53,6 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
 {
   imagen->set_from_resource(imagenSeleccionada);
   imageNamesCurrent[col][row] = imagenSeleccionada;
-  std::cout << "Clickeo en division" << col << " "<< row << std::endl;
   return true;
 }
 
@@ -65,13 +72,15 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
+  
+  builder->get_widget("window1", pWindowPopupExportar);
+  builder->get_widget("btnAcceptExport", pBtnAcceptExport);
+  builder->get_widget("entryExportMapName", pEntryExportMapName);
 
   pwindow->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
 
   pComboBoxEnemy->append("Enemigo 1");
-  pComboBoxEnemy->append("Enemigo 2");
-  pComboBoxEnemy->append("Enemigo 3");
   pComboBoxEnemy->set_active(0);
 
   connectButtonsWithSignals();
@@ -131,6 +140,12 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnSaveMap->signal_clicked().connect(
       sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
+  }
+
+  if (pBtnAcceptExport)
+  {
+    pBtnAcceptExport->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonAcceptExport_clicked));
   }
 }
 
@@ -192,7 +207,7 @@ void Editor::runEditor()
   app->run(*pwindow);
 }
 
-void Editor::exportCreatedMap()
+void Editor::exportCreatedMap(std::string path)
 {
   JsonSerializer s;
   
@@ -200,7 +215,7 @@ void Editor::exportCreatedMap()
 
   jMap = createJsonMap();
 
-  s.exportMap("exportandoEditor.json", jMap);
+  s.exportMap(path, jMap);
 }
 
 JsonMap Editor::createJsonMap()

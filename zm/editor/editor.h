@@ -8,6 +8,7 @@
 #include <gtkmm/viewport.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/entry.h>
 #include <glibmm/refptr.h>
 #include <string>
 #include <iostream>
@@ -34,6 +35,10 @@ class Editor {
     Gtk::Viewport* pViewPort;
     Glib::RefPtr<Gtk::Application> app;
 
+    Gtk::Window* pWindowPopupExportar;
+    Gtk::Button* pBtnAcceptExport;
+    Gtk::Entry* pEntryExportMapName;
+
     Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
     Gtk::Image imageMatrix[ANCHO][ALTO];
 
@@ -50,6 +55,7 @@ class Editor {
     void on_buttonCrearEnemigo_clicked();
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
+    void on_buttonAcceptExport_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);
@@ -57,7 +63,7 @@ class Editor {
     void createEmptyGrid();
     void runEditor();
     void createNewScreen();
-    void exportCreatedMap();
+    void exportCreatedMap(std::string path);
     JsonMap createJsonMap();
     void initializeRelationships();
 };
