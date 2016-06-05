@@ -27,12 +27,13 @@ public:
 
 enum EnemyType { Met, Bumby, Sniper, JumpingSniper };
 
-enum class EnemyState { movingLeft, movingRight, idle, shooting, jumping };
+enum class EnemyState { movingLeft, movingRight, idle, shooting, jumping, guarded, unguarded };
 
 class Enemy {
 public:
   Position pos;
-  EnemyState ps;
+  EnemyState es;
+  EnemyType enemyType;
   int health;
 };
 

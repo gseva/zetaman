@@ -11,7 +11,8 @@
 
 #define PPM 64
 #define PLAYER "player"
-#define ENEMY "enemy"
+#define MET "met"
+#define BUMBY "bumby"
 
 #define XMAX 47
 #define XMIN 0
@@ -25,8 +26,11 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   unsigned int amountPlayers = 0;
   for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
     i != jm.spawnsData.end(); ++i ) {
-    if ( jm.spawnTypes[(*i).type] == ENEMY ) {
+    if ( jm.spawnTypes[(*i).type] == BUMBY ) {
       Enemy* enemy = new Bumby(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == MET ) {
+      Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
@@ -92,9 +96,7 @@ zm::proto::Game Level::getState(){
 
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
-    zm::proto::Enemy protoEnemy;
-    protoEnemy.pos.x = (*enemy)->getPosition().x* PPM - xo * PPM;
-    protoEnemy.pos.y = (*enemy)->getPosition().y * -PPM + 768;
+    zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
     gs.enemies.push_back(protoEnemy);
   }
 

@@ -4,6 +4,7 @@
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/thread.h"
+#include "zm/game_protocol.h"
 
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
@@ -20,6 +21,7 @@
 #define ENEMY_BULLET_TYPE 0x0006
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
+#define PPM 64
 
 
 Physics::Physics() {}//: ground(world){}
@@ -251,6 +253,14 @@ bool Enemy::collide(Bullet* bullet){
   return bullet->collide(this);
 }
 
+zm::proto::Enemy Enemy::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy;
+  protoEnemy.pos.x = this->getPosition().x* PPM - xo * PPM;
+  protoEnemy.pos.y = this->getPosition().y * -PPM + 768;
+  return protoEnemy;
+}
+
+
 Met::Met(Physics& physics, float32 x, float32 y) : 
   Enemy(physics, x, y), period(60*3){
     shoots = 0;
@@ -284,6 +294,20 @@ EnemyBullet* Met::shoot(){
   int signo = vel.x >=0 ? 1 : -1;
   EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
   return bullet;
+}
+
+zm::proto::Enemy Met::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Met;
+  switch ( this->state ) {
+    case MetState::protect:
+      protoEnemy.es = zm::proto::EnemyState::guarded;
+      break;
+    case MetState::notProtect:
+      protoEnemy.es = zm::proto::EnemyState::unguarded;
+      break;
+  }
+  return protoEnemy;
 }
 
 Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y), 
@@ -331,6 +355,12 @@ EnemyBullet* Bumby::shoot(){
   int signo = vel.x >=0 ? 1 : -1;
   EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
   return bullet;
+}
+
+zm::proto::Enemy Bumby::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Bumby;
+  return protoEnemy;
 }
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,

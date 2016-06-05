@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include "zm/json/jsonserializer.h"
 #include "zm/thread.h"
+#include "zm/game_protocol.h"
 
 class PlayerBody;
 class Enemy;
@@ -115,6 +116,7 @@ public:
   virtual ~Enemy();
   virtual EnemyBullet* move()=0;
   virtual bool collide(Bullet* bullet);
+  virtual zm::proto::Enemy toBean(int xo, int yo)=0;
 };
 
 enum MetState{protect, notProtect};
@@ -125,6 +127,7 @@ public:
   virtual ~Met();
   virtual EnemyBullet* move();
   EnemyBullet* shoot();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 private:
   MetState state;
   const float32 period;
@@ -138,6 +141,7 @@ private:
     virtual ~Bumby();
     virtual EnemyBullet* move();
     EnemyBullet* shoot();
+    virtual zm::proto::Enemy toBean(int xo, int yo);
 private:
   int amountMoves;
   const int totalMoves;

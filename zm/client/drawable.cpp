@@ -41,7 +41,15 @@ zm::proto::Position& Player::getPosition() {
 }
 
 
-Enemy::Enemy(zm::proto::Enemy e) : e_(e), imageName_("enemies/bumpy/1.png") {
+Enemy::Enemy(zm::proto::Enemy e) : e_(e) {
+  if ( e.enemyType == zm::proto::EnemyType::Met ){
+    if ( e.es == zm::proto::EnemyState::guarded )
+      imageName_ = "enemies/met/guarded.png";
+    else
+      imageName_ = "enemies/met/unguarded.png";
+  } else if ( e.enemyType == zm::proto::EnemyType::Bumby ) {
+    imageName_ = "enemies/bumpy/1.png";
+  }
 }
 
 std::string& Enemy::getImageName() {
