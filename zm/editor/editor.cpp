@@ -35,17 +35,31 @@ void Editor::on_buttonBorrarTile_clicked()
 
 void Editor::on_buttonSaveMap_clicked()
 {
-  pWindowPopupExportar->show();
+  std::cout << "Guardando mapa" << std::endl;
+  exportCreatedMap();
 }
 
 void Editor::on_buttonAcceptExport_clicked()
 {
-  if (pEntryExportMapName->get_text_length()>0)
+  if (pEntryLevelLength->get_text_length()>0
+    && pEntryExportMapName->get_text_length()>0)
   {
-    std::cout << "Guardando mapa" << std::endl;
-    exportCreatedMap(pEntryExportMapName->get_text());
-    pWindowPopupExportar->hide();  
+    std::stringstream ss;
+    ss << pEntryLevelLength->get_text();
+    ss >> mapLength;
+    mapName = pEntryExportMapName->get_text();
+    pWindowNewLevel->hide();
+    pWindowEditor->show();
   }
+}
+
+void Editor::on_buttonCreateLevel_clicked()
+{
+  pWindowNewLevel->show();
+}
+
+void Editor::on_buttonEditLevel_clicked()
+{
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -62,22 +76,29 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
+  /* Elementos de la ventana del editor*/
   builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearEnemigo", pBtnCrearEnemigo);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
   builder->get_widget("btnSaveMap", pBtnSaveMap);
-  builder->get_widget("applicationwindow1", pwindow);
+  builder->get_widget("applicationwindow1", pWindowEditor);
   builder->get_widget("grid1", pGrid);
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
   
-  builder->get_widget("window1", pWindowPopupExportar);
+  builder->get_widget("windowNewLevel", pWindowNewLevel);
   builder->get_widget("btnAcceptExport", pBtnAcceptExport);
   builder->get_widget("entryExportMapName", pEntryExportMapName);
+  builder->get_widget("entryLevelLength", pEntryLevelLength);
 
-  pwindow->set_default_size(1024, 768);
+  /* Elementos del menu */
+  builder->get_widget("windowMenu", pWindowMenu);
+  builder->get_widget("btnCreateLevel", pBtnCreateLevel);
+  builder->get_widget("btnEditLevel", pBtnEditLevel);
+
+  pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
 
   pComboBoxEnemy->append("Enemigo 1");
@@ -147,6 +168,18 @@ void Editor::connectButtonsWithSignals()
     pBtnAcceptExport->signal_clicked().connect(
       sigc::mem_fun(this,&Editor::on_buttonAcceptExport_clicked));
   }
+
+  if (pBtnCreateLevel)
+  {
+    pBtnCreateLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonCreateLevel_clicked));
+  }
+
+  if (pBtnEditLevel)
+  {
+    pBtnEditLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&Editor::on_buttonEditLevel_clicked));
+  }
 }
 
 void Editor::createEmptyGrid()
@@ -204,10 +237,10 @@ void Editor::runEditor()
 {
   pGrid->show_all_children();
 
-  app->run(*pwindow);
+  app->run(*pWindowMenu);
 }
 
-void Editor::exportCreatedMap(std::string path)
+void Editor::exportCreatedMap()
 {
   JsonSerializer s;
   
@@ -215,7 +248,7 @@ void Editor::exportCreatedMap(std::string path)
 
   jMap = createJsonMap();
 
-  s.exportMap(path, jMap);
+  s.exportMap(mapName + ".json", jMap);
 }
 
 JsonMap Editor::createJsonMap()

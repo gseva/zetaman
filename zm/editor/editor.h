@@ -17,8 +17,13 @@
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
-#define ANCHO 12*3
+#define ANCHO 12
 
+typedef struct createNewScreen{
+    Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
+    Gtk::Image imageMatrix[ANCHO][ALTO];
+    std::string imageNamesCurrent[ANCHO][ALTO];
+};
 
 class Editor {
   private:
@@ -28,26 +33,35 @@ class Editor {
     Gtk::Button* pBtnCrearJugador;
     Gtk::Button* pBtnBorrarTile;
     Gtk::Button* pBtnSaveMap;
-    Gtk::Window* pwindow;
+    Gtk::Window* pWindowEditor;
     Gtk::ComboBoxText* pComboBoxEnemy;
     Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
     Glib::RefPtr<Gtk::Application> app;
 
-    Gtk::Window* pWindowPopupExportar;
+    Gtk::Window* pWindowNewLevel;
     Gtk::Button* pBtnAcceptExport;
     Gtk::Entry* pEntryExportMapName;
+    Gtk::Entry* pEntryLevelLength;
+
+    Gtk::Window* pWindowMenu;
+    Gtk::Button* pBtnCreateLevel;
+    Gtk::Button* pBtnEditLevel;
 
     Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
     Gtk::Image imageMatrix[ANCHO][ALTO];
 
     std::string imageNamesCurrent[ANCHO][ALTO];
 
+
     std::map<std::string, int> nameToSpawnNumber;
     std::map<std::string, std::string> nameToSpawnType;
     std::map<std::string, std::string> nameToPhysics;
     std::map<std::string, std::string> ddlToName;
+
+    int mapLength;
+    std::string mapName;
 
   public:
     void on_buttonCrearJugador_clicked();
@@ -56,6 +70,8 @@ class Editor {
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
     void on_buttonAcceptExport_clicked();
+    void on_buttonCreateLevel_clicked();
+    void on_buttonEditLevel_clicked();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     explicit Editor(Glib::RefPtr<Gtk::Application> appl);
@@ -63,7 +79,7 @@ class Editor {
     void createEmptyGrid();
     void runEditor();
     void createNewScreen();
-    void exportCreatedMap(std::string path);
+    void exportCreatedMap();
     JsonMap createJsonMap();
     void initializeRelationships();
 };
