@@ -231,39 +231,21 @@ bool PlayerBody::collide(Bullet* bullet){
   return bullet->collide(this);
 }
 
+b2Body* PlayerBody::getBody(){
+  return body;
+}
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
-  totalMoves(15) {
+Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y){
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
-  fixtureDef.density = 1.0f;
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_BULLET_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
-  amountMoves = 0;
-  b2Vec2 vel;
-  sig = 1;
-  vel.x = sig * 3;
-  body->SetLinearVelocity(vel);
 }
 
 Enemy::~Enemy(){}
-
-EnemyBullet* Enemy::move(){
-  Lock locker(mutex);
-  if ( amountMoves == totalMoves ) {
-    sig *= -1;
-    amountMoves = 0;
-  } else {
-    amountMoves++;
-  }
-    b2Vec2 vel = body->GetLinearVelocity();
-    vel.x = 3 * sig;
-    body->SetLinearVelocity(vel);
-    return NULL;
-}
 
 bool Enemy::collide(Bullet* bullet){
   return bullet->collide(this);
@@ -297,11 +279,57 @@ EnemyBullet* Met::move(){
 }
 
 EnemyBullet* Met::shoot(){
- b2Vec2 pos = getPosition();
+  b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
   EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
-  //bullet->move();
+  return bullet;
+}
+
+Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y), 
+  totalMoves(15) , period(60*3){
+  shoots = 0;
+  tics = 0;
+  amountMoves = 0;
+  b2Vec2 vel;
+  sig = 1;
+  vel.x = sig * 3;
+  body->SetLinearVelocity(vel);
+}
+
+Bumby::~Bumby(){}
+
+EnemyBullet* Bumby::move(){
+  if ( amountMoves == totalMoves ) {
+    sig *= -1;
+    amountMoves = 0;
+  } else {
+    amountMoves++;
+  }
+  b2Vec2 vel = body->GetLinearVelocity();
+  vel.x = 3 * sig;
+  
+  {
+    Lock locker(mutex);
+    body->SetLinearVelocity(vel);
+    body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y),
+      body->GetWorldCenter(), false);
+  }
+
+  tics++;
+  if ( tics == period )
+    tics = 0;
+  if ( ((tics % 60) == 0 ) ) {
+    return shoot();
+  }
+  return NULL;
+}
+
+EnemyBullet* Bumby::shoot(){
+  b2Vec2 pos = getPosition();
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
   return bullet;
 }
 

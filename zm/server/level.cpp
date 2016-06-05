@@ -17,7 +17,7 @@
 #define XMIN 0
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
-  ServerProxy& sp) : timer(physics, sp, enemies, bullets),
+  ServerProxy& sp) : timer(physics, sp, enemies, bullets, players),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);
@@ -26,7 +26,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
     i != jm.spawnsData.end(); ++i ) {
     if ( jm.spawnTypes[(*i).type] == ENEMY ) {
-      Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
+      Enemy* enemy = new Bumby(physics, (*i).column+0.5f, (*i).row+0.5f);
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
@@ -48,6 +48,11 @@ Level::~Level(){
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     delete (*iPlayer);
   }
+  std::vector<Bullet*>::iterator iBullet;
+  for ( iBullet = bullets.begin(); iBullet != bullets.end(); ++iBullet ) {
+    delete (*iBullet);
+  }
+
   timer.join();
 }
 

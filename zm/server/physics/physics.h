@@ -103,6 +103,7 @@ public:
   void up();
   Bullet* shoot();
   virtual bool collide(Bullet* bullet);
+  b2Body* getBody();
 private:
   bool canGoUp();
   bool idle;
@@ -112,12 +113,8 @@ class Enemy : public Body{
 public:
   explicit Enemy(Physics& physics, float32 x, float32 y);
   virtual ~Enemy();
-  virtual EnemyBullet* move();
+  virtual EnemyBullet* move()=0;
   virtual bool collide(Bullet* bullet);
-private:
-  int amountMoves;
-  const int totalMoves;
-  int sig;
 };
 
 enum MetState{protect, notProtect};
@@ -130,6 +127,21 @@ public:
   EnemyBullet* shoot();
 private:
   MetState state;
+  const float32 period;
+  int tics;
+  int shoots;
+ };
+
+ class Bumby : public Enemy{
+ public:
+    explicit Bumby(Physics& physics, float32 x, float32 y);
+    virtual ~Bumby();
+    virtual EnemyBullet* move();
+    EnemyBullet* shoot();
+private:
+  int amountMoves;
+  const int totalMoves;
+  int sig;
   const float32 period;
   int tics;
   int shoots;

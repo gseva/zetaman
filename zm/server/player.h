@@ -3,6 +3,8 @@
 #include <Box2D/Box2D.h>
 #include "zm/server/physics/physics.h"
 
+class Bullet;
+
 class Player{
 public:
 	Player();
@@ -16,6 +18,8 @@ public:
   void up();
   Bullet* shoot();
   b2Vec2 getPosition();
+  b2Body* getBody();
+  bool collide(Bullet *bullet);
 private:
   PlayerBody *body;
 };
