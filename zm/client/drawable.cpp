@@ -1,5 +1,6 @@
 
 #include <string>
+#include <iostream>
 
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/general.h> // set_source_pixbuf()

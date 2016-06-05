@@ -24,12 +24,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   // int radius = 35;
 
-  map_.draw(cr,game_.camPos.x, game_.camPos.y);
-
- /* proto::PowerUp pu;
-  pu.pos.x = game_.x - 55;
-  pu.pos.y = game_.y - 55;
-  game_.powerUps.push_back(pu);*/
+  map_.draw(cr, game_.camPos.x, game_.camPos.y);
 
 
   for (auto&& player : game_.players) {
@@ -48,16 +43,6 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawing::PowerUp dp(powerUp);
     dp.draw(cr, buff_);
   }
-
-  // cr->set_line_width(10.0);
-
-  // Dibujo de un circulo
-  // cr->save();
-  // cr->arc(game_.x, game_.y, radius, 0.0, 2.0 * M_PI); // Un circulo
-  // cr->set_source_rgba(0.0, 0.0, 0.8, 0.6);    // Parcialmente transparente
-  // cr->fill_preserve();
-  // cr->restore();  // Vuelvo a un negro opaco
-  // cr->stroke();
 
   return true;
 }

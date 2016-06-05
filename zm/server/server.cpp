@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "zm/connection.h"
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
@@ -10,19 +12,40 @@
 
 #define PPM 64
 
-Server::Server(ServerProxy& sp) : sp(sp){
+Server::Server() {
   JsonSerializer js;
   jm = js.importMap(DEFAULT_PATH);
 }
 
 Server::~Server(){
   std::vector<Player*>::iterator playersIterator;
-  for ( playersIterator = players.begin(); playersIterator != players.end(); 
+  for ( playersIterator = players.begin(); playersIterator != players.end();
     ++playersIterator ) {
     delete (*playersIterator);
   }
   if ( level != NULL )
     stopLevel();
+
+  delete cp;
+}
+
+void Server::run() {
+  while (true) {
+    zm::Socket accepter;
+    accepter.bindAndListen("9090");
+    auto playerSock = accepter.accept();
+    playerSock->write(jm.getReducedString());
+
+    cp = new zm::ClientProxy(*this, playerSock);
+    cp->startGame();
+    newPlayer();
+    startLevel();
+    // zm::proto::Game game;
+    // game.x = 300;
+    // game.y = 300;
+    // std::string gameString = game.serialize() + "\n";
+    // playerSock.write(gameString);
+  }
 }
 
 void Server::newPlayer(){
@@ -33,7 +56,7 @@ void Server::newPlayer(){
 
 void Server::startLevel(){
   std::string path(DEFAULT_PATH);
-  level = new Level(players, path, sp);
+  level = new Level(players, path, *cp);
 }
 
 void Server::stopLevel(){

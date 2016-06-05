@@ -17,8 +17,8 @@
 #define XMAX 47
 #define XMIN 0
 
-Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path, 
-  ServerProxy& sp) : timer(physics, sp, enemies, bullets, players),
+Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
+  zm::ClientProxy& cp) : timer(physics, cp, enemies, bullets,players),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);

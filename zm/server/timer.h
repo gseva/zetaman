@@ -4,12 +4,12 @@
 #include <vector>
 #include "zm/server/physics/physics.h"
 #include "zm/server/player.h"
+#include "zm/server/client_proxy.h"
 
-class ServerProxy;
 
-class Timer : public Thread{
+class Timer : public Thread {
 public:
-  explicit Timer(Physics& physics, ServerProxy& sp,
+  explicit Timer(Physics& physics, zm::ClientProxy& cp_,
     std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets,
     std::vector<Player*>& players);
   virtual ~Timer();
@@ -21,7 +21,7 @@ private:
   Mutex mutexRun;
   bool runContinue;
   Physics& physics;
-  ServerProxy& sp;
+  zm::ClientProxy& cp_;
   std::vector<Enemy*>& enemies;
   std::vector<Bullet*>& bullets;
   std::vector<Player*>& players;

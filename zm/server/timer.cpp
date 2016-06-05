@@ -1,17 +1,19 @@
-#include "zm/server/timer.h"
-#include "zm/server/physics/physics.h"
-#include "zm/server_proxy.h"
 #include <iostream>
 #include <vector>
 #include <chrono>
 #include <thread>
 #include <zm/thread.h>
+#include "zm/server/timer.h"
+#include "zm/server/physics/physics.h"
 
-Timer::Timer(Physics& physics, ServerProxy& sp, std::vector<Enemy*>& enemies,
-  std::vector<Bullet*>& bullets, std::vector<Player*>& players) :
-physics(physics), sp(sp), enemies(enemies), bullets(bullets), players(players){
+Timer::Timer(Physics& physics, zm::ClientProxy& cp,
+             std::vector<Enemy*>& enemies,
+             std::vector<Bullet*>& bullets,
+             std::vector<Player*>& players) :
+  physics(physics), cp_(cp), enemies(enemies), bullets(bullets),
+  players(players){
     runContinue = true;
-  }
+}
 
 Timer::~Timer(){}
 
@@ -31,7 +33,7 @@ void Timer::run(){
       (*j)->move();
     }
     collides(enemies, bullets);
-    sp.updateState(sp.getState());
+    cp_.updateState(cp_.getState());
   }
   return;
 }
@@ -41,7 +43,7 @@ void Timer::collides(std::vector<Enemy*>& enemies,
   std::vector<std::vector<Player*>::iterator> playersToDestroy;
   std::vector<std::vector<Enemy*>::iterator> enemiesToDestroy;
   std::vector<std::vector<Bullet*>::iterator> bulletsToDestroy;
-  
+
   for (std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
     for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
@@ -73,13 +75,13 @@ void Timer::collides(std::vector<Enemy*>& enemies,
   std::vector<std::vector<Enemy*>::iterator>::iterator enemyToDestroy;
   for ( enemyToDestroy = enemiesToDestroy.begin();
     enemyToDestroy != enemiesToDestroy.end(); ++enemyToDestroy ) {
-    delete **enemyToDestroy;    
+    delete **enemyToDestroy;
     enemies.erase(*enemyToDestroy);
   }
   std::vector<std::vector<Bullet*>::iterator>::iterator bulletToDestroy;
   for ( bulletToDestroy = bulletsToDestroy.begin();
     bulletToDestroy != bulletsToDestroy.end(); ++bulletToDestroy ) {
-    delete **bulletToDestroy;    
+    delete **bulletToDestroy;
     bullets.erase(*bulletToDestroy);
   }
 }

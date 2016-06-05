@@ -1,4 +1,3 @@
-#include "jsonserializer.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -6,6 +5,26 @@
 #include <map>
 #include <string>
 
+#include "zm/json/jsonserializer.h"
+
+
+std::string JsonMap::getReducedString() {
+  json map;
+
+  map = {{"tiles", imageNumbers}, {"images", imageNames}};
+
+  return map.dump();
+}
+
+void JsonMap::fromReducedString(const std::string& s) {
+  json j = json::parse(s);
+
+  std::vector<int> imageNumbersVector = j["tiles"];
+  std::vector<std::string> imageNamesVector = j["images"];
+
+  imageNumbers = imageNumbersVector;
+  imageNames = imageNamesVector;
+}
 
 
 JsonMap JsonSerializer::importMap(std::string path)
@@ -16,7 +35,6 @@ JsonMap JsonSerializer::importMap(std::string path)
 
   fs >> j; //Carga el json en memoria
 
-  std::cout << j << std::endl;
   fs.close();
 
   JsonMap mapa;
@@ -45,12 +63,12 @@ JsonMap JsonSerializer::importMap(std::string path)
   return mapa;
 }
 
-void JsonSerializer::exportMap(std::string path, JsonMap m)
+void JsonSerializer::exportMap(std::string path, const JsonMap& m)
 {
   json exportable;
 
-  exportable= {{"tiles",m.imageNumbers},{"images",m.imageNames},
-                {"physics",m.physics},{"spawnTypes", m.spawnTypes}};
+  exportable = {{"tiles", m.imageNumbers}, {"images", m.imageNames},
+                {"physics", m.physics}, {"spawnTypes", m.spawnTypes}};
 
   json exportableSpawns = json::array();
 
@@ -64,8 +82,6 @@ void JsonSerializer::exportMap(std::string path, JsonMap m)
   }
 
   exportable["spawns"] = exportableSpawns;
-
-  std::cout << exportable << std::endl;
 
   std::fstream newFile;
 
