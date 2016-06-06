@@ -17,7 +17,7 @@
 #define XMIN 0
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
-  zm::ClientProxy& cp) : timer(physics, cp, enemies, bullets),
+  Server& s) : timer(physics, s, enemies, bullets),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);
@@ -127,12 +127,4 @@ void Level::up(int playerNumber){
 void Level::shoot(int playerNumber){
   Bullet* bullet = players[playerNumber]->shoot();
   bullets.push_back(bullet);
-}
-
-std::vector<std::string> Level::getImageNames(){
-  return jm.imageNames;
-}
-
-std::vector<int> Level::getImages(){
-  return jm.imageNumbers;
 }

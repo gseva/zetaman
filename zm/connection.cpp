@@ -51,7 +51,8 @@ std::shared_ptr<Socket> Socket::accept() {
   struct sockaddr_in cli_addr;
   socklen_t cli_len = sizeof(cli_addr);
   int newfd = ::accept(fd_, (struct sockaddr *) &cli_addr, &cli_len);
-  return std::make_shared<Socket> (newfd);;
+  if (newfd < 0) return NULL;
+  return std::make_shared<Socket> (newfd);
 }
 
 

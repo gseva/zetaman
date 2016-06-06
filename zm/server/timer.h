@@ -8,7 +8,7 @@
 
 class Timer : public Thread {
 public:
-  explicit Timer(Physics& physics, zm::ClientProxy& cp_,
+  explicit Timer(Physics& physics, Server& s_,
     std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
   virtual ~Timer();
   virtual void run();
@@ -16,7 +16,7 @@ private:
   void collides(std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
 
   Physics& physics;
-  zm::ClientProxy& cp_;
+  Server& s_;
   std::vector<Enemy*>& enemies;
   std::vector<Bullet*>& bullets;
 };

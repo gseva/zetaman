@@ -49,6 +49,8 @@ public:
   void updateState(zm::proto::Game gs);
   void dispatchEvent(proto::ClientEvent ce);
 
+  std::shared_ptr<Socket> getSocket();
+
   zm::proto::Game getState();
 };
 

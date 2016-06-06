@@ -3,13 +3,14 @@
 #include <chrono>
 #include <thread>
 
+#include "zm/server/server.h"
 #include "zm/server/timer.h"
 #include "zm/server/physics/physics.h"
 
-Timer::Timer(Physics& physics, zm::ClientProxy& cp,
+Timer::Timer(Physics& physics, Server& s,
              std::vector<Enemy*>& enemies,
              std::vector<Bullet*>& bullets) :
-  physics(physics), cp_(cp), enemies(enemies), bullets(bullets){
+  physics(physics), s_(s), enemies(enemies), bullets(bullets){
 }
 
 Timer::~Timer(){}
@@ -30,7 +31,7 @@ void Timer::run(){
       (*j)->move();
     }
     collides(enemies, bullets);
-    cp_.updateState(cp_.getState());
+    s_.updateState();
   }
   return;
 }

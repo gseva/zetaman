@@ -15,7 +15,7 @@ class Server;
 class Level{
 public:
   explicit Level(std::vector<Player*>& connectedPlayers,
-    const std::string& path, zm::ClientProxy& cp);
+    const std::string& path, Server& s);
   ~Level();
 
   void jump(int playerNumber);
@@ -26,8 +26,6 @@ public:
   void up(int playerNumber);
   void shoot(int playerNumber);
 
-  std::vector<std::string> getImageNames();
-  std::vector<int> getImages();
 private:
   Physics physics;
   Timer timer;

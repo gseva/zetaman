@@ -33,7 +33,17 @@ void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
     case proto::stopMoving: s_.stopHorizontalMove(0); break;
     case proto::shoot: s_.shoot(0); break;
     case proto::shutdown: break;
+
+    case proto::selectLevel1: s_.selectLevel(0); break;
+    case proto::selectLevel2: s_.selectLevel(1); break;
+    case proto::selectLevel3: s_.selectLevel(2); break;
+    case proto::selectLevel4: s_.selectLevel(3); break;
+    case proto::selectLevel5: s_.selectLevel(4); break;
   }
+}
+
+std::shared_ptr<Socket> ClientProxy::getSocket() {
+  return clientSock_;
 }
 
 ClientProxy::~ClientProxy() {
