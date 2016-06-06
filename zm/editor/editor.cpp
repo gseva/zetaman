@@ -322,3 +322,12 @@ JsonMap Editor::createJsonMap()
 
   return jMap;
 }
+
+void Editor::importExistingMap(std::string path)
+{
+  JsonSerializer s;
+  
+  JsonMap jMap;
+
+  jMap = s.importMap(path);
+}

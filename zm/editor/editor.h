@@ -75,4 +75,5 @@ class Editor {
     void exportCreatedMap();
     JsonMap createJsonMap();
     void initializeRelationships();
+    void importExistingMap(std::string path);
 };
