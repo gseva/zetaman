@@ -19,7 +19,7 @@
 class Server{
 private:
   void newPlayer_();
-  void newClientProxy_(std::shared_ptr<zm::Socket> sock);
+  void newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock);
 
 public:
   Server();

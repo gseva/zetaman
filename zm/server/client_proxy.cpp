@@ -8,7 +8,7 @@
 namespace zm {
 
 
-ClientProxy::ClientProxy(Server& s, std::shared_ptr<Socket> sock_)
+ClientProxy::ClientProxy(Server& s, std::shared_ptr<zm::ProtectedSocket> sock_)
                         : s_(s), clientSock_(sock_) {
 }
 
@@ -45,7 +45,7 @@ void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   }
 }
 
-std::shared_ptr<Socket> ClientProxy::getSocket() {
+std::shared_ptr<zm::ProtectedSocket> ClientProxy::getSocket() {
   return clientSock_;
 }
 
@@ -69,7 +69,7 @@ proto::Game ClientProxy::getState() {
 
 
 Sender::Sender(Queue<proto::Game>& eventQueue,
-               std::shared_ptr<Socket> clientSock) :
+               std::shared_ptr<zm::ProtectedSocket> clientSock) :
                eventQueue_(eventQueue), clientSock_(clientSock) {
 }
 
@@ -84,7 +84,7 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ClientProxy& cp, std::shared_ptr<Socket> clientSock)
+Receiver::Receiver(ClientProxy& cp, std::shared_ptr<zm::ProtectedSocket> clientSock)
                   : cp_(cp), clientSock_(clientSock), stop(false) {
 }
 

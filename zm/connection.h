@@ -36,9 +36,25 @@ public:
   int listen();
   int bindAndListen(const std::string& port);
 
+  int shutdown();
   int close();
 
   ~Socket();
+};
+
+class ProtectedSocket {
+  Mutex writeMutex;
+  Mutex readMutex;
+
+  std::shared_ptr<Socket> s_;
+public:
+  ProtectedSocket();
+  ProtectedSocket(std::shared_ptr<Socket> s);
+  int write(const std::string& s);
+  std::string read();
+
+  int connect(const std::string& hostname, const std::string& port);
+  void close();
 };
 
 

@@ -38,7 +38,7 @@ void Server::run() {
   // acceptPlayers(&accepter);
 
   // Acepto el jugador host
-  auto hostSock = accepter_->accept();
+  auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter_->accept());
   newPlayer_();
   newClientProxy_(hostSock);
   zm::proto::ServerEvent event(zm::proto::connectedAsHost);
@@ -53,7 +53,7 @@ void Server::run() {
     if (playerSock == NULL) continue;
     std::cout << "Creo new player!: " << ev << std::endl;
     newPlayer_();
-    newClientProxy_(playerSock);
+    newClientProxy_(std::make_shared<zm::ProtectedSocket>(playerSock));
     zm::proto::ServerEvent event(zm::proto::connected);
     std::string ev = event.serialize();
     std::cout << "Envio evento: " << ev << std::endl;
@@ -74,7 +74,7 @@ void Server::newPlayer_(){
   players.push_back(player);
 }
 
-void Server::newClientProxy_(std::shared_ptr<zm::Socket> sock) {
+void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
   zm::ClientProxy* cp = new zm::ClientProxy(*this, sock);
   proxies.push_back(cp);
   cp->startListening();

@@ -6,7 +6,7 @@
 
 namespace zm {
 
-Client::Client() : serverProxy(*this) {
+Client::Client() {
 }
 
 void Client::run(Glib::RefPtr<Gtk::Application> app) {

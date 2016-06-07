@@ -8,15 +8,15 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy(Client& c) : c_(c), sender_(NULL), isHost(false) {
+ServerProxy::ServerProxy() : sender_(NULL), isHost(false) {
 }
 
 void ServerProxy::connect() {
   serverSock_.connect("127.0.0.1", "9090");
+  getConnection_();
+
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
-
-  getConnection_();
 }
 
 void ServerProxy::getConnection_() {
@@ -32,7 +32,6 @@ void ServerProxy::getMap() {
 
   std::cout << "recibo map " << mapString <<  std::endl;
   map_.fromReducedString(mapString);
-  c_.startGame();
 }
 
 void ServerProxy::startLevel() {
@@ -121,7 +120,8 @@ std::vector<int> ServerProxy::getImages() {
 }
 
 
-Sender::Sender(Queue<proto::ClientEvent>& eventQueue, Socket& serverSock) :
+Sender::Sender(Queue<proto::ClientEvent>& eventQueue,
+               ProtectedSocket& serverSock) :
                eventQueue_(eventQueue), serverSock_(serverSock) {
 }
 
@@ -137,7 +137,7 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ServerProxy& sp, Socket& serverSock)
+Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
                   : sp_(sp), serverSock_(serverSock), stop(false) {
 }
 
@@ -146,7 +146,6 @@ void Receiver::run() {
   do {
     try {
       std::string res = serverSock_.read();
-      std::cout << "Me llega: " << res << std::endl;
       game = proto::Game::deserialize(res);
     }
     catch(const std::exception& e) {

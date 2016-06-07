@@ -17,28 +17,27 @@ class ServerProxy;
 
 class Sender : public Thread {
 Queue<proto::ClientEvent>& eventQueue_;
-Socket& serverSock_;
+ProtectedSocket& serverSock_;
 public:
-  Sender(Queue<proto::ClientEvent>& eventQueue, Socket& serverSock);
+  Sender(Queue<proto::ClientEvent>& eventQueue, ProtectedSocket& serverSock);
   virtual void run();
 };
 
 
 class Receiver : public Thread {
 ServerProxy& sp_;
-Socket& serverSock_;
+ProtectedSocket& serverSock_;
 public:
   bool stop;
-  Receiver(ServerProxy& sp, Socket& serverSock);
+  Receiver(ServerProxy& sp, ProtectedSocket& serverSock);
   virtual void run();
 };
 
 
 
 class ServerProxy {
-Client& c_;
 Queue<proto::ClientEvent> eventQueue_;
-Socket serverSock_;
+ProtectedSocket serverSock_;
 Sender* sender_;
 Receiver* receiver_;
 JsonMap map_;
@@ -49,7 +48,7 @@ public:
   GameUpdateHandler updateHandler;
   bool isHost;
 
-  explicit ServerProxy(Client& c_);
+  ServerProxy();
   ~ServerProxy();
 
   void connect();
