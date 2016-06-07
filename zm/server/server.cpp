@@ -15,8 +15,6 @@
 
 Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
     accepting_(false), playing_(false) {
-  JsonSerializer js;
-  jm = js.importMap(DEFAULT_PATH);
 }
 
 Server::~Server() {
@@ -43,16 +41,28 @@ void Server::run() {
   auto hostSock = accepter_->accept();
   newPlayer_();
   newClientProxy_(hostSock);
+  zm::proto::ServerEvent event(zm::proto::connectedAsHost);
+  std::string ev = event.serialize();
+  std::cout << "Envio evento: " << ev << std::endl;
+  hostSock->write(ev);
 
   accepting_ = true;
   while (accepting_) {
     auto playerSock = accepter_->accept();
+    std::cout << "Acepto un jugador!: " << ev << std::endl;
     if (playerSock == NULL) continue;
+    std::cout << "Creo new player!: " << ev << std::endl;
     newPlayer_();
     newClientProxy_(playerSock);
+    zm::proto::ServerEvent event(zm::proto::connected);
+    std::string ev = event.serialize();
+    std::cout << "Envio evento: " << ev << std::endl;
+    playerSock->write(ev);
   }
 
+  std::cout << "Deleteo accepter: "  << std::endl;
   delete accepter_;
+  std::cout << "Empiezo level: "  << std::endl;
   startLevel();
 }
 
@@ -67,9 +77,11 @@ void Server::newPlayer_(){
 void Server::newClientProxy_(std::shared_ptr<zm::Socket> sock) {
   zm::ClientProxy* cp = new zm::ClientProxy(*this, sock);
   proxies.push_back(cp);
+  cp->startListening();
 }
 
 void Server::selectLevel(int level) {
+  std::cout << "Selecciono nivel " << level << std::endl;
   mapPath_ = DEFAULT_PATH;
   accepting_ = false;
   accepter_->close();
@@ -77,19 +89,25 @@ void Server::selectLevel(int level) {
 
 void Server::startLevel(){
   // envio el mapa
+  JsonSerializer js;
+  jm = js.importMap(DEFAULT_PATH);
+
   std::string map = jm.getReducedString();
-  for(auto&& clientProxy : proxies) {
+
+  std::cout << "Escribo mapa" << std::endl;
+  for(auto clientProxy : proxies) {
     clientProxy->getSocket()->write(map);
   }
-  for(auto&& clientProxy : proxies) {
+  std::cout << "starteo game" << std::endl;
+  for(auto clientProxy : proxies) {
     clientProxy->startGame();
   }
+  std::cout << "Creo new level! " << mapPath_ << std::endl;
+  level = new Level(players, mapPath_, *this);
 
-  std::string path(DEFAULT_PATH);
-  level = new Level(players, path, *this);
-
+  std::cout << "Empiezo a jugar! " << std::endl;
   playing_ = true;
-  while (!playing_) {
+  while (playing_) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
 

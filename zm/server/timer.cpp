@@ -13,9 +13,9 @@ Timer::Timer(Physics& physics, Server& s,
   physics(physics), s_(s), enemies(enemies), bullets(bullets){
 }
 
-Timer::~Timer(){}
+Timer::~Timer() {}
 
-void Timer::run(){
+void Timer::run() {
   while ( true ) {
     physics.step();
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));

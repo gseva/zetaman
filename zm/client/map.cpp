@@ -12,7 +12,6 @@ namespace zm {
 Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
         tiles_(tiles), imageNames_(imageNames) {
   loadImages();
-  // images_ v = {"grass.png", "ladder_mid.png"};
 }
 
 void Map::loadImages() {

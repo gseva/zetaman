@@ -12,6 +12,7 @@
 
 namespace zm {
 
+class Client;
 class ServerProxy;
 
 class Sender : public Thread {
@@ -35,22 +36,24 @@ public:
 
 
 class ServerProxy {
-// Server s_;
+Client& c_;
 Queue<proto::ClientEvent> eventQueue_;
 Socket serverSock_;
 Sender* sender_;
 Receiver* receiver_;
 JsonMap map_;
 
-void getMap_();
+void getConnection_();
 
 public:
   GameUpdateHandler updateHandler;
+  bool isHost;
 
-  ServerProxy();
+  explicit ServerProxy(Client& c_);
   ~ServerProxy();
 
   void connect();
+  void getMap();
   void startLevel();
   void shutdown();
 
@@ -60,6 +63,8 @@ public:
   void stopHorizontalMove();
   void up();
   void shoot();
+
+  void selectLevel(int level);
 
   std::vector<std::string> getImageNames();
   std::vector<int> getImages();

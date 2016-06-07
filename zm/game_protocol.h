@@ -112,6 +112,20 @@ struct ClientEvent {
   static ClientEvent deserialize(const std::string& s);
 };
 
+
+enum ServerEventType { connected, connectedAsHost };
+
+struct ServerEvent {
+  ServerEventType state;
+
+  ServerEvent() {}
+  explicit ServerEvent(ServerEventType s) : state(s) {
+  }
+
+  std::string serialize();
+  static ServerEvent deserialize(const std::string& s);
+};
+
 } // p
 } // zm
 

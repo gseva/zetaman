@@ -44,6 +44,7 @@ public:
   explicit ClientProxy(Server& s, std::shared_ptr<Socket> sock_);
   ~ClientProxy();
 
+  void startListening();
   void startGame();
 
   void updateState(zm::proto::Game gs);

@@ -16,11 +16,14 @@ void ClientProxy::updateState(proto::Game gs) {
   eventQueue_.push(gs);
 }
 
+void ClientProxy::startListening() {
+  receiver_ = new Receiver(*this, clientSock_);
+  receiver_->start();
+}
+
 void ClientProxy::startGame() {
   sender_ = new Sender(eventQueue_, clientSock_);
   sender_->start();
-  receiver_ = new Receiver(*this, clientSock_);
-  receiver_->start();
 }
 
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
@@ -89,7 +92,9 @@ void Receiver::run() {
   proto::ClientEvent event;
   do {
     try {
-      event = proto::ClientEvent::deserialize(clientSock_->read());
+      std::string ev = clientSock_->read();
+      std::cout << "Recibo " << ev << std::endl;
+      event = proto::ClientEvent::deserialize(ev);
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';

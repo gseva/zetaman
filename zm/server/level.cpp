@@ -36,8 +36,10 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       }
     }
   }
+  std::cout << "Empiezo timer!" << std::endl;
   timer.start();
 }
+
 Level::~Level(){
   std::vector<Enemy*>::iterator iEnemy;
   for ( iEnemy = enemies.begin(); iEnemy != enemies.end(); ++iEnemy ) {
