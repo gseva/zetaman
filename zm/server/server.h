@@ -7,25 +7,28 @@
 
 #include "zm/game_protocol.h"
 #include "zm/thread.h"
+#include "zm/json/jsonserializer.h"
 #include "zm/server/player.h"
 #include "zm/server/physics/physics.h"
 #include "zm/server/timer.h"
-#include "zm/json/jsonserializer.h"
 #include "zm/server/level.h"
 
-class ServerProxy;
 
 class Server{
 public:
-	explicit Server(ServerProxy& sp);
+	Server();
 	~Server();
+
+  void run();
+
   void newPlayer();
   void startLevel();
   void stopLevel();
 
-	void jump(int playerNumber);
 	zm::proto::Game getState();
-  void right(int playerNummber);
+
+  void jump(int playerNumber);
+  void right(int playerNumber);
   void left(int playerNumber);
   void stopHorizontalMove(int playerNumber);
   void up(int playerNumber);
@@ -38,7 +41,7 @@ private:
   Level* level;
   std::vector<Player*> players;
   JsonMap jm;
-  ServerProxy& sp;
+  zm::ClientProxy* cp;
 };
 
 #endif

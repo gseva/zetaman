@@ -25,7 +25,7 @@ void Thread::join(){
 }
 
 Mutex::Mutex(){
-	pthread_mutex_init(&this->mutex, NULL);	
+	pthread_mutex_init(&this->mutex, NULL);
 }
 
 void Mutex::lock(){
@@ -47,3 +47,37 @@ Lock::Lock(Mutex &m) : m(m){
 Lock::~Lock(){
 	m.unlock();
 }
+
+namespace zm {
+
+ConditionVariable::ConditionVariable() {
+  pthread_mutex_init(&mutex, 0);
+  pthread_cond_init(&cond, 0);
+}
+
+void ConditionVariable::lock() {
+  pthread_mutex_lock(&mutex);
+}
+
+void ConditionVariable::unlock() {
+  pthread_mutex_unlock(&mutex);
+}
+
+void ConditionVariable::wait() {
+  pthread_cond_wait(&cond, &mutex);
+}
+
+void ConditionVariable::signal() {
+  pthread_cond_signal(&cond);
+}
+
+void ConditionVariable::broadcast() {
+  pthread_cond_broadcast(&cond);
+}
+
+ConditionVariable::~ConditionVariable() {
+  pthread_cond_destroy(&cond);
+  pthread_mutex_destroy(&mutex);
+}
+
+} // zm

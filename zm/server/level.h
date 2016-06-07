@@ -7,6 +7,7 @@
 #include "zm/server/player.h"
 #include "zm/server/physics/physics.h"
 #include "zm/server/timer.h"
+#include "zm/server/client_proxy.h"
 #include "zm/json/jsonserializer.h"
 
 class Server;
@@ -14,7 +15,7 @@ class Server;
 class Level{
 public:
   explicit Level(std::vector<Player*>& connectedPlayers,
-    const std::string& path, ServerProxy& sp);
+    const std::string& path, zm::ClientProxy& cp);
   ~Level();
 
   void jump(int playerNumber);
