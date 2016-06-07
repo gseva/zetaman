@@ -37,12 +37,14 @@ public:
 
 class ClientProxy {
 Server &s_;
+int playerNumber_;
 Queue<proto::Game> eventQueue_;
 std::shared_ptr<zm::ProtectedSocket> clientSock_;
 Sender* sender_;
 Receiver* receiver_;
 public:
-  explicit ClientProxy(Server& s, std::shared_ptr<zm::ProtectedSocket> sock_);
+  explicit ClientProxy(Server& s, int playerNumber,
+                       std::shared_ptr<zm::ProtectedSocket> sock_);
   ~ClientProxy();
 
   void startListening();

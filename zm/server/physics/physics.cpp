@@ -52,7 +52,7 @@ void Physics::setMap(const JsonMap& jm){
           b2Body* stairBody;
           stairBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
           stairBody = world.createBody(stairBodyDef);
-        
+
           b2PolygonShape stairshape;
           stairshape.SetAsBox(0.5f, 0.5f);
           b2FixtureDef stairFixtureDef;
@@ -133,7 +133,7 @@ Body::~Body(){
 }
 
 b2Vec2 Body::getPosition(){
-  Lock locker(mutex);
+  // Lock locker(mutex);
   return body->GetPosition();
 }
 
@@ -154,7 +154,7 @@ PlayerBody::PlayerBody(Physics& physics) : Body(physics){
   fixture = body->CreateFixture(&fixtureDef);
 }
 
-PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) : 
+PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
   Body(physics, x, y){
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
@@ -163,7 +163,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
   fixtureDef.friction = 0.0f;
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
-  fixture = body->CreateFixture(&fixtureDef); 
+  fixture = body->CreateFixture(&fixtureDef);
 }
 
 PlayerBody::~PlayerBody(){}
@@ -232,7 +232,7 @@ bool PlayerBody::collide(Bullet* bullet){
 }
 
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y), 
+Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
   totalMoves(15) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
@@ -269,7 +269,7 @@ bool Enemy::collide(Bullet* bullet){
   return bullet->collide(this);
 }
 
-Met::Met(Physics& physics, float32 x, float32 y) : 
+Met::Met(Physics& physics, float32 x, float32 y) :
   Enemy(physics, x, y), period(60*3){
     shoots = 0;
     tics = 0;
@@ -353,6 +353,6 @@ bool EnemyBullet::collide(Enemy* enemy){
   return false;
 }
 
-bool EnemyBullet::collide(PlayerBody* player){ 
+bool EnemyBullet::collide(PlayerBody* player){
   return true;
 }

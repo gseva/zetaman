@@ -8,8 +8,9 @@
 namespace zm {
 
 
-ClientProxy::ClientProxy(Server& s, std::shared_ptr<zm::ProtectedSocket> sock_)
-                        : s_(s), clientSock_(sock_) {
+ClientProxy::ClientProxy(Server& s, int playerNumber,
+   std::shared_ptr<zm::ProtectedSocket> sock_) :
+    s_(s), playerNumber_(playerNumber), clientSock_(sock_) {
 }
 
 void ClientProxy::updateState(proto::Game gs) {
@@ -28,13 +29,13 @@ void ClientProxy::startGame() {
 
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   switch (ce.state) {
-    case proto::moveLeft: s_.left(0); break;
-    case proto::moveRight: s_.right(0); break;
-    case proto::jump: s_.jump(0); break;
-    case proto::moveUp: s_.up(0); break;
+    case proto::moveLeft: s_.left(playerNumber_); break;
+    case proto::moveRight: s_.right(playerNumber_); break;
+    case proto::jump: s_.jump(playerNumber_); break;
+    case proto::moveUp: s_.up(playerNumber_); break;
     case proto::moveDown: break;
-    case proto::stopMoving: s_.stopHorizontalMove(0); break;
-    case proto::shoot: s_.shoot(0); break;
+    case proto::stopMoving: s_.stopHorizontalMove(playerNumber_); break;
+    case proto::shoot: s_.shoot(playerNumber_); break;
     case proto::shutdown: break;
 
     case proto::selectLevel1: s_.selectLevel(0); break;

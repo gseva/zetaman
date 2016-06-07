@@ -9,7 +9,7 @@
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "assets/maps/mapita.json"
+#define DEFAULT_PATH "build/maps/mapita.json"
 
 #define PPM 64
 
@@ -75,7 +75,7 @@ void Server::newPlayer_(){
 }
 
 void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
-  zm::ClientProxy* cp = new zm::ClientProxy(*this, sock);
+  zm::ClientProxy* cp = new zm::ClientProxy(*this, proxies.size(), sock);
   proxies.push_back(cp);
   cp->startListening();
 }

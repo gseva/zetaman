@@ -37,6 +37,7 @@ JsonMap JsonSerializer::importMap(std::string path)
 
   fs.close();
 
+  std::cout << "Cargo el mapa"  << j << "\n";
   JsonMap mapa;
 
   //Carga en el vector todo lo contenido de "tiles"
