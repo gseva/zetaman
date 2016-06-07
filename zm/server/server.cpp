@@ -24,7 +24,7 @@ Server::~Server() {
     delete (*playersIterator);
   }
 
-  for(auto item : proxies) {
+  for (auto item : proxies) {
     delete item;
   }
 
@@ -95,11 +95,11 @@ void Server::startLevel(){
   std::string map = jm.getReducedString();
 
   std::cout << "Escribo mapa" << std::endl;
-  for(auto clientProxy : proxies) {
+  for (auto clientProxy : proxies) {
     clientProxy->getSocket()->write(map);
   }
   std::cout << "starteo game" << std::endl;
-  for(auto clientProxy : proxies) {
+  for (auto clientProxy : proxies) {
     clientProxy->startGame();
   }
   std::cout << "Creo new level! " << mapPath_ << std::endl;
@@ -110,7 +110,6 @@ void Server::startLevel(){
   while (playing_) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   }
-
 }
 
 void Server::stopLevel(){
@@ -148,7 +147,7 @@ zm::proto::Game Server::getState(){
 
 void Server::updateState() {
   zm::proto::Game game = level->getState();
-  for(auto&& clientProxy : proxies) {
+  for (auto&& clientProxy : proxies) {
     clientProxy->updateState(game);
   }
 }

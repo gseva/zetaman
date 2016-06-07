@@ -84,7 +84,8 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ClientProxy& cp, std::shared_ptr<zm::ProtectedSocket> clientSock)
+Receiver::Receiver(ClientProxy& cp,
+                   std::shared_ptr<zm::ProtectedSocket> clientSock)
                   : cp_(cp), clientSock_(clientSock), stop(false) {
 }
 

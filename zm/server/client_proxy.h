@@ -19,7 +19,8 @@ class Sender : public Thread {
 Queue<proto::Game>& eventQueue_;
 std::shared_ptr<zm::ProtectedSocket> clientSock_;
 public:
-  Sender(Queue<proto::Game>& eventQueue, std::shared_ptr<zm::ProtectedSocket> clientSock);
+  Sender(Queue<proto::Game>& eventQueue,
+         std::shared_ptr<zm::ProtectedSocket> clientSock);
   virtual void run();
 };
 

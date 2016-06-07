@@ -49,7 +49,7 @@ class ProtectedSocket {
   std::shared_ptr<Socket> s_;
 public:
   ProtectedSocket();
-  ProtectedSocket(std::shared_ptr<Socket> s);
+  explicit ProtectedSocket(std::shared_ptr<Socket> s);
   int write(const std::string& s);
   std::string read();
 

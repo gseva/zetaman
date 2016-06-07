@@ -19,7 +19,7 @@ class LevelSelectionPanel : public Gtk::Grid {
 Gtk::Button levelButtons[5];
 Client* c_;
 public:
-  LevelSelectionPanel(Client* c);
+  explicit LevelSelectionPanel(Client* c);
 
 private:
   void on_button_clicked(int i);
@@ -46,8 +46,8 @@ public:
   void showLevelSelection();
   void showWaitingScreen();
   void showCanvas();
-private:
 
+private:
   bool on_key_press_event(GdkEventKey* event) override;
   bool on_key_release_event(GdkEventKey* event) override;
 

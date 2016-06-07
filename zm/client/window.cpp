@@ -90,12 +90,12 @@ void Window::on_startButton_clicked() {
 
 
 LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
-  for(unsigned i = 0; i < 5; ++i) {
+  for (unsigned i = 0; i < 5; ++i) {
     levelButtons[i].set_label("Nivel " + std::to_string(i + 1));
     add(levelButtons[i]);
 
     levelButtons[i].signal_clicked().connect(
-      sigc::bind<int>( sigc::mem_fun(*this,
+      sigc::bind<int>(sigc::mem_fun(*this,
         &LevelSelectionPanel::on_button_clicked), i + 1) );
   }
   show_all_children();
