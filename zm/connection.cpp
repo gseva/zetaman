@@ -131,11 +131,8 @@ int Socket::shutdown() {
 }
 
 int Socket::close() {
-  std::cout << "Cierro el socket!" << std::endl;
   shutdown();
-  int res = ::close(fd_);
-  std::cout << "Lo pude cerrar!" << std::endl;
-  return res;
+  return ::close(fd_);
 }
 
 Socket::~Socket() {

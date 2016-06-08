@@ -23,7 +23,6 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   jm = js.importMap(path);
   physics.setMap(jm);
   unsigned int amountPlayers = 0;
-  std::cout << "Players size! " << players.size() << std::endl;
   for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
     i != jm.spawnsData.end(); ++i ) {
     if ( jm.spawnTypes[(*i).type] == ENEMY ) {
@@ -31,7 +30,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
-        std::cout << "Creo jugador!1 " << amountPlayers << std::endl;
+        std::cout << "Creo jugador: " << amountPlayers << std::endl;
         players[amountPlayers]->createBody(&physics,
           (*i).column+0.5f, (*i).row+0.5f);
         amountPlayers++;

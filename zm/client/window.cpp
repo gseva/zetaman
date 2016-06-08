@@ -29,7 +29,6 @@ void Window::showLevelSelection() {
   box_.pack_start(*panel_);
   selectedWidget_ = panel_;
   panel_->show();
-  // std::cout << "Muestro panel\n";
 }
 
 void Window::showWaitingScreen() {
@@ -87,7 +86,6 @@ void Window::on_startButton_clicked() {
     showWaitingScreen();
   }
 }
-
 
 LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
   for (unsigned i = 0; i < 5; ++i) {
