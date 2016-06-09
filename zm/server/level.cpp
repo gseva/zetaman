@@ -17,7 +17,7 @@
 #define XMIN 0
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
-  zm::ClientProxy& cp) : timer(physics, cp, enemies, bullets),
+  Server& s) : timer(physics, s, enemies, bullets),
   players(connectedPlayers){
   JsonSerializer js;
   jm = js.importMap(path);
@@ -30,14 +30,17 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
+        std::cout << "Creo jugador: " << amountPlayers << std::endl;
         players[amountPlayers]->createBody(&physics,
           (*i).column+0.5f, (*i).row+0.5f);
         amountPlayers++;
       }
     }
   }
+  std::cout << "Empiezo timer!" << std::endl;
   timer.start();
 }
+
 Level::~Level(){
   std::vector<Enemy*>::iterator iEnemy;
   for ( iEnemy = enemies.begin(); iEnemy != enemies.end(); ++iEnemy ) {
@@ -127,12 +130,4 @@ void Level::up(int playerNumber){
 void Level::shoot(int playerNumber){
   Bullet* bullet = players[playerNumber]->shoot();
   bullets.push_back(bullet);
-}
-
-std::vector<std::string> Level::getImageNames(){
-  return jm.imageNames;
-}
-
-std::vector<int> Level::getImages(){
-  return jm.imageNumbers;
 }

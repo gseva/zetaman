@@ -12,7 +12,6 @@ namespace zm {
 Map::Map(std::vector<int> tiles, std::vector<std::string> imageNames) :
         tiles_(tiles), imageNames_(imageNames) {
   loadImages();
-  // images_ v = {"grass.png", "ladder_mid.png"};
 }
 
 void Map::loadImages() {
@@ -39,7 +38,7 @@ void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
 
   for (int i = 0; i < 16; ++i) {
     for (int j = 0; j < 12; ++j) {
-      int tilePos = largo * (j+y) + (i + x);
+      int tilePos = largo * (j + y) + (i + x);
       int imageNum = tiles_[tilePos];
       if (imageNum == 0) continue;
       auto image = images_[imageNum - 1];

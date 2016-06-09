@@ -2,61 +2,114 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 
-#include "zm/connection.h"
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "assets/maps/mapita.json"
+#define DEFAULT_PATH "build/maps/mapita.json"
 
 #define PPM 64
 
-Server::Server() {
-  JsonSerializer js;
-  jm = js.importMap(DEFAULT_PATH);
+Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
+    accepting_(false), playing_(false) {
 }
 
-Server::~Server(){
+Server::~Server() {
   std::vector<Player*>::iterator playersIterator;
   for ( playersIterator = players.begin(); playersIterator != players.end();
     ++playersIterator ) {
     delete (*playersIterator);
   }
+
+  for (auto item : proxies) {
+    delete item;
+  }
+
   if ( level != NULL )
     stopLevel();
-
-  delete cp;
 }
 
 void Server::run() {
-  while (true) {
-    zm::Socket accepter;
-    accepter.bindAndListen("9090");
-    auto playerSock = accepter.accept();
-    playerSock->write(jm.getReducedString());
+  accepter_ = new zm::Socket();
+  accepter_->bindAndListen(port_);
+  // acceptPlayers(&accepter);
 
-    cp = new zm::ClientProxy(*this, playerSock);
-    cp->startGame();
-    newPlayer();
-    startLevel();
-    // zm::proto::Game game;
-    // game.x = 300;
-    // game.y = 300;
-    // std::string gameString = game.serialize() + "\n";
-    // playerSock.write(gameString);
+  // Acepto el jugador host
+  auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter_->accept());
+  newPlayer_();
+  newClientProxy_(hostSock);
+  zm::proto::ServerEvent event(zm::proto::connectedAsHost);
+  std::string ev = event.serialize();
+  std::cout << "Envio evento: " << ev << std::endl;
+  hostSock->write(ev);
+
+  accepting_ = true;
+  while (accepting_) {
+    auto playerSock = accepter_->accept();
+    std::cout << "Acepto un jugador!: " << ev << std::endl;
+    if (playerSock == NULL) continue;
+    std::cout << "Creo new player!: " << ev << std::endl;
+    newPlayer_();
+    newClientProxy_(std::make_shared<zm::ProtectedSocket>(playerSock));
+    zm::proto::ServerEvent event(zm::proto::connected);
+    std::string ev = event.serialize();
+    std::cout << "Envio evento: " << ev << std::endl;
+    playerSock->write(ev);
   }
+
+  std::cout << "Deleteo accepter: "  << std::endl;
+  delete accepter_;
+  std::cout << "Empiezo level: "  << std::endl;
+  startLevel();
 }
 
-void Server::newPlayer(){
+void acceptHost_(zm::Socket& accepter) {
+}
+
+void Server::newPlayer_(){
   Player* player = new Player();
   players.push_back(player);
 }
 
+void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
+  zm::ClientProxy* cp = new zm::ClientProxy(*this, proxies.size(), sock);
+  proxies.push_back(cp);
+  cp->startListening();
+}
+
+void Server::selectLevel(int level) {
+  std::cout << "Selecciono nivel " << level << std::endl;
+  mapPath_ = DEFAULT_PATH;
+  accepting_ = false;
+  accepter_->close();
+}
 
 void Server::startLevel(){
-  std::string path(DEFAULT_PATH);
-  level = new Level(players, path, *cp);
+  // envio el mapa
+  JsonSerializer js;
+  jm = js.importMap(DEFAULT_PATH);
+
+  std::string map = jm.getReducedString();
+
+  std::cout << "Escribo mapa" << std::endl;
+  for (auto clientProxy : proxies) {
+    clientProxy->getSocket()->write(map);
+  }
+  std::cout << "starteo game" << std::endl;
+  for (auto clientProxy : proxies) {
+    clientProxy->startGame();
+  }
+  std::cout << "Creo new level! " << mapPath_ << std::endl;
+  level = new Level(players, mapPath_, *this);
+
+  std::cout << "Empiezo a jugar! " << std::endl;
+  playing_ = true;
+  while (playing_) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  }
 }
 
 void Server::stopLevel(){
@@ -92,10 +145,9 @@ zm::proto::Game Server::getState(){
   return level->getState();
 }
 
-std::vector<std::string> Server::getImageNames(){
-  return jm.imageNames;
-}
-
-std::vector<int> Server::getImages() {
-  return jm.imageNumbers;
+void Server::updateState() {
+  zm::proto::Game game = level->getState();
+  for (auto&& clientProxy : proxies) {
+    clientProxy->updateState(game);
+  }
 }

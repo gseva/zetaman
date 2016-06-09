@@ -12,6 +12,7 @@ namespace zm {
 
 
 Canvas::Canvas(ServerProxy& sp) : map_(sp.getImages(), sp.getImageNames()) {
+  std::cout << "Creo canvas" << std::endl;
 }
 
 Canvas::~Canvas() {

@@ -98,7 +98,8 @@ struct Game {
 
 
 enum ClientEventType { moveLeft, moveRight, jump, moveUp, moveDown,
-                       stopMoving, shoot, shutdown };
+                       stopMoving, shoot, shutdown, selectLevel1, selectLevel2,
+                       selectLevel3, selectLevel4, selectLevel5 };
 
 struct ClientEvent {
   ClientEventType state;
@@ -109,6 +110,20 @@ struct ClientEvent {
 
   std::string serialize();
   static ClientEvent deserialize(const std::string& s);
+};
+
+
+enum ServerEventType { connected, connectedAsHost };
+
+struct ServerEvent {
+  ServerEventType state;
+
+  ServerEvent() {}
+  explicit ServerEvent(ServerEventType s) : state(s) {
+  }
+
+  std::string serialize();
+  static ServerEvent deserialize(const std::string& s);
 };
 
 } // p

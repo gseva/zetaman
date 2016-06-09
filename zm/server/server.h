@@ -3,8 +3,10 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 #include <Box2D/Box2D.h>
 
+#include "zm/connection.h"
 #include "zm/game_protocol.h"
 #include "zm/thread.h"
 #include "zm/json/jsonserializer.h"
@@ -15,17 +17,23 @@
 
 
 class Server{
+private:
+  void newPlayer_();
+  void newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock);
+
 public:
-	Server();
-	~Server();
+  Server();
+  ~Server();
 
   void run();
 
-  void newPlayer();
   void startLevel();
   void stopLevel();
 
 	zm::proto::Game getState();
+  void updateState();
+
+  void selectLevel(int level);
 
   void jump(int playerNumber);
   void right(int playerNumber);
@@ -34,14 +42,16 @@ public:
   void up(int playerNumber);
   void shoot(int playerNumber);
 
-  std::vector<std::string> getImageNames();
-  std::vector<int> getImages();
-
 private:
   Level* level;
+  zm::Socket* accepter_;
   std::vector<Player*> players;
   JsonMap jm;
-  zm::ClientProxy* cp;
+  std::vector<zm::ClientProxy*> proxies;
+  std::string port_;
+  std::string mapPath_;
+  bool accepting_;
+  bool playing_;
 };
 
 #endif

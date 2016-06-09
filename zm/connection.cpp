@@ -51,7 +51,8 @@ std::shared_ptr<Socket> Socket::accept() {
   struct sockaddr_in cli_addr;
   socklen_t cli_len = sizeof(cli_addr);
   int newfd = ::accept(fd_, (struct sockaddr *) &cli_addr, &cli_len);
-  return std::make_shared<Socket> (newfd);;
+  if (newfd < 0) return NULL;
+  return std::make_shared<Socket> (newfd);
 }
 
 
@@ -125,9 +126,12 @@ std::string Socket::read() {
   return result;
 }
 
+int Socket::shutdown() {
+  return ::shutdown(fd_, SHUT_RDWR);
+}
 
 int Socket::close() {
-  ::shutdown(fd_, SHUT_RDWR);
+  shutdown();
   return ::close(fd_);
 }
 
@@ -135,5 +139,27 @@ Socket::~Socket() {
   close();
 }
 
+ProtectedSocket::ProtectedSocket() {
+  s_ = std::make_shared<Socket>();
+}
+ProtectedSocket::ProtectedSocket(std::shared_ptr<Socket> s) : s_(s) {
+}
+
+
+int ProtectedSocket::write(const std::string& s){
+  Lock l(writeMutex);
+  return s_->write(s);
+}
+std::string ProtectedSocket::read() {
+  Lock l(readMutex);
+  return s_->read();
+}
+int ProtectedSocket::connect(const std::string& hostname,
+                             const std::string& port) {
+  return s_->connect(hostname, port);
+}
+void ProtectedSocket::close() {
+  s_->close();
+}
 
 } // zm

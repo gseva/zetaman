@@ -172,5 +172,19 @@ ClientEvent ClientEvent::deserialize(const std::string& s) {
   return ce;
 }
 
+
+std::string ServerEvent::serialize() {
+  json j = {{"e", static_cast<int>(state)}};
+  std::string ev = j.dump();
+  return ev;
+}
+
+ServerEvent ServerEvent::deserialize(const std::string& s) {
+  json j = json::parse(s);
+  int state = j["e"];
+  ServerEvent ce(static_cast<ServerEventType>(state));
+  return ce;
+}
+
 } // proto
 } // zm

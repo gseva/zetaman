@@ -1,28 +1,36 @@
 
 #include "zm/client/server_proxy.h"
+#include "zm/client/client.h"
 
 #include <iostream>
 #include <string>
 #include <vector>
-#
 
 namespace zm {
 
-ServerProxy::ServerProxy() : sender_(NULL) {
+ServerProxy::ServerProxy() : sender_(NULL), isHost(false) {
 }
 
-void ServerProxy::connect(){
+void ServerProxy::connect() {
   serverSock_.connect("127.0.0.1", "9090");
-
-
-  getMap_();
+  getConnection_();
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
 }
 
-void ServerProxy::getMap_() {
+void ServerProxy::getConnection_() {
+  std::cout << "Leyendo evento" << std::endl;
+  std::string eventString = serverSock_.read();
+  proto::ServerEvent ev = proto::ServerEvent::deserialize(eventString);
+  isHost = ev.state == proto::connectedAsHost;
+  std::cout << "recibo evento, isHost: " << isHost <<  std::endl;
+}
+
+void ServerProxy::getMap() {
   std::string mapString = serverSock_.read();
+
+  std::cout << "recibo map " << mapString <<  std::endl;
   map_.fromReducedString(mapString);
 }
 
@@ -45,28 +53,41 @@ void ServerProxy::jump() {
   eventQueue_.push(ce);
 }
 
-void ServerProxy::moveRight(){
+void ServerProxy::moveRight() {
   proto::ClientEvent ce(proto::ClientEventType::moveRight);
   eventQueue_.push(ce);
 }
 
-void ServerProxy::moveLeft(){
+void ServerProxy::moveLeft() {
   proto::ClientEvent ce(proto::ClientEventType::moveLeft);
   eventQueue_.push(ce);
 }
 
-void ServerProxy::stopHorizontalMove(){
+void ServerProxy::stopHorizontalMove() {
   proto::ClientEvent ce(proto::ClientEventType::stopMoving);
   eventQueue_.push(ce);
 }
 
-void ServerProxy::up(){
+void ServerProxy::up() {
   proto::ClientEvent ce(proto::ClientEventType::moveUp);
   eventQueue_.push(ce);
 }
 
-void ServerProxy::shoot(){
+void ServerProxy::shoot() {
   proto::ClientEvent ce(proto::ClientEventType::shoot);
+  eventQueue_.push(ce);
+}
+
+void ServerProxy::selectLevel(int level) {
+  proto::ClientEventType type;
+  switch (level) {
+    case 1: type = proto::selectLevel1; break;
+    case 2: type = proto::selectLevel2; break;
+    case 3: type = proto::selectLevel3; break;
+    case 4: type = proto::selectLevel4; break;
+    case 5: type = proto::selectLevel5; break;
+  }
+  proto::ClientEvent ce(type);
   eventQueue_.push(ce);
 }
 
@@ -99,7 +120,8 @@ std::vector<int> ServerProxy::getImages() {
 }
 
 
-Sender::Sender(Queue<proto::ClientEvent>& eventQueue, Socket& serverSock) :
+Sender::Sender(Queue<proto::ClientEvent>& eventQueue,
+               ProtectedSocket& serverSock) :
                eventQueue_(eventQueue), serverSock_(serverSock) {
 }
 
@@ -109,12 +131,13 @@ void Sender::run() {
     client = eventQueue_.pop();
     if (client.state == proto::ClientEventType::shutdown) continue;
     std::string s = client.serialize();
+    std::cout << "Enviando evento :" << s << std::endl;
     serverSock_.write(s);
   } while (client.state != proto::ClientEventType::shutdown);
 }
 
 
-Receiver::Receiver(ServerProxy& sp, Socket& serverSock)
+Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
                   : sp_(sp), serverSock_(serverSock), stop(false) {
 }
 
@@ -122,7 +145,8 @@ void Receiver::run() {
   proto::Game game;
   do {
     try {
-      game = proto::Game::deserialize(serverSock_.read());
+      std::string res = serverSock_.read();
+      game = proto::Game::deserialize(res);
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';
