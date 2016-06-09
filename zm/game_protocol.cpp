@@ -62,6 +62,8 @@ json Enemy::getJson() {
     case EnemyState::idle: state = 2; break;
     case EnemyState::shooting: state = 3; break;
     case EnemyState::jumping: state = 4; break;
+    case EnemyState::guarded: state = 5; break;
+    case EnemyState::unguarded: state = 6; break;
   }
   j["st"] = state;
 

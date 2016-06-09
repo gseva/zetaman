@@ -11,7 +11,7 @@ namespace zm {
 ServerProxy::ServerProxy() : sender_(NULL), isHost(false) {
 }
 
-void ServerProxy::connect() {
+void ServerProxy::connect(){
   serverSock_.connect("127.0.0.1", "9090");
   getConnection_();
 
@@ -131,7 +131,6 @@ void Sender::run() {
     client = eventQueue_.pop();
     if (client.state == proto::ClientEventType::shutdown) continue;
     std::string s = client.serialize();
-    std::cout << "Enviando evento :" << s << std::endl;
     serverSock_.write(s);
   } while (client.state != proto::ClientEventType::shutdown);
 }

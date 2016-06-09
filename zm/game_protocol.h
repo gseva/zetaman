@@ -40,11 +40,12 @@ struct Player : JsonSerializable {
 enum EnemyType { Met=0, Bumby=1, Sniper=2, JumpingSniper=3 };
 
 enum class EnemyState { movingLeft=0, movingRight=1, idle=2,
-                        shooting=3, jumping=4 };
+                        shooting=3, jumping=4, guarded=5, unguarded=6 };
 
 struct Enemy : JsonSerializable {
   Position pos;
   EnemyState es;
+  EnemyType enemyType;
   int health;
   explicit Enemy(EnemyState state=EnemyState::idle);
 
