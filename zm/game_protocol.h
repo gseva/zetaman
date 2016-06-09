@@ -44,7 +44,7 @@ enum class EnemyState { movingLeft=0, movingRight=1, idle=2,
 
 struct Enemy : JsonSerializable {
   Position pos;
-  EnemyState es;
+  EnemyState enemyState;
   EnemyType enemyType;
   int health;
   explicit Enemy(EnemyState state=EnemyState::idle);

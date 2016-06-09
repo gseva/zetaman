@@ -48,7 +48,7 @@ Player Player::deserialize(const json& j) {
   return p;
 }
 
-Enemy::Enemy(EnemyState state) : es(state) {
+Enemy::Enemy(EnemyState state) : enemyState(state) {
 }
 
 json Enemy::getJson() {
@@ -56,7 +56,7 @@ json Enemy::getJson() {
   j["h"] = health;
 
   int state;
-  switch (es) {
+  switch (enemyState) {
     case EnemyState::movingLeft: state = 0; break;
     case EnemyState::movingRight: state = 1; break;
     case EnemyState::idle: state = 2; break;
@@ -65,7 +65,9 @@ json Enemy::getJson() {
     case EnemyState::guarded: state = 5; break;
     case EnemyState::unguarded: state = 6; break;
   }
-  j["st"] = state;
+  j["s"] = state;
+
+  j["t"] = static_cast<int>(enemyType);
 
   return j;
 }
@@ -74,8 +76,12 @@ Enemy Enemy::deserialize(const json& j) {
   Enemy p;
   p.pos.x = j["x"];
   p.pos.y = j["y"];
-  int state = j["st"];
-  p.es = static_cast<EnemyState>(state);
+
+  int state = j["s"];
+  p.enemyState = static_cast<EnemyState>(state);
+
+  int type = j["t"];
+  p.enemyType = static_cast<EnemyType>(type);
   return p;
 }
 

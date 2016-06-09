@@ -301,16 +301,16 @@ zm::proto::Enemy Met::toBean(int xo, int yo){
   protoEnemy.enemyType = zm::proto::EnemyType::Met;
   switch ( this->state ) {
     case MetState::protect:
-      protoEnemy.es = zm::proto::EnemyState::guarded;
+      protoEnemy.enemyState = zm::proto::EnemyState::guarded;
       break;
     case MetState::notProtect:
-      protoEnemy.es = zm::proto::EnemyState::unguarded;
+      protoEnemy.enemyState = zm::proto::EnemyState::unguarded;
       break;
   }
   return protoEnemy;
 }
 
-Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y), 
+Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y),
   totalMoves(15) , period(60*3){
   shoots = 0;
   tics = 0;
@@ -332,7 +332,7 @@ EnemyBullet* Bumby::move(){
   }
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 3 * sig;
-  
+
   {
     Lock locker(mutex);
     body->SetLinearVelocity(vel);

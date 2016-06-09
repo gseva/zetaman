@@ -20,7 +20,7 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
   int width = image->get_width();
   int height = image->get_height();
 
-  zm::proto::Position pos = getPosition();
+  proto::Position pos = getPosition();
 
   Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
                                 pos.y - height / 2);
@@ -30,41 +30,39 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 }
 
 
-Player::Player(zm::proto::Player p) : p_(p), imageName_("player/megaman.png") {
+Player::Player(proto::Player p) : p_(p), imageName_("player/megaman.png") {
 }
 
 std::string& Player::getImageName() {
   return imageName_;
 }
 
-zm::proto::Position& Player::getPosition() {
+proto::Position& Player::getPosition() {
   return p_.pos;
 }
 
 
-Enemy::Enemy(zm::proto::Enemy e) : e_(e) {
-  std::cout << "Intengo crear enemigou" << std::endl;
-  if ( e.enemyType == zm::proto::EnemyType::Met ){
-    if ( e.es == zm::proto::EnemyState::guarded )
+Enemy::Enemy(proto::Enemy e) : e_(e) {
+  if ( e.enemyType == proto::EnemyType::Met ){
+    if ( e.enemyState == proto::EnemyState::guarded )
       imageName_ = "enemies/met/guarded.png";
     else
       imageName_ = "enemies/met/unguarded.png";
-  } else if ( e.enemyType == zm::proto::EnemyType::Bumby ) {
+  } else if ( e.enemyType == proto::EnemyType::Bumby ) {
     imageName_ = "enemies/bumpy/1.png";
   }
-  std::cout << "Pude crear enemigou" << std::endl;
 }
 
 std::string& Enemy::getImageName() {
   return imageName_;
 }
 
-zm::proto::Position& Enemy::getPosition() {
+proto::Position& Enemy::getPosition() {
   return e_.pos;
 }
 
 
-Proyectile::Proyectile(zm::proto::Proyectile p) : p_(p),
+Proyectile::Proyectile(proto::Proyectile p) : p_(p),
     imageName_("proyectiles/normal.png") {
 }
 
@@ -72,12 +70,12 @@ std::string& Proyectile::getImageName() {
   return imageName_;
 }
 
-zm::proto::Position& Proyectile::getPosition() {
+proto::Position& Proyectile::getPosition() {
   return p_.pos;
 }
 
 
-PowerUp::PowerUp(zm::proto::PowerUp p) : p_(p),
+PowerUp::PowerUp(proto::PowerUp p) : p_(p),
   imageName_("powerups/life.png") {
 }
 
@@ -85,7 +83,7 @@ std::string& PowerUp::getImageName() {
   return imageName_;
 }
 
-zm::proto::Position& PowerUp::getPosition() {
+proto::Position& PowerUp::getPosition() {
   return p_.pos;
 }
 
