@@ -17,10 +17,12 @@
 #include "zm/json/jsonserializer.h"
 
 #define ALTO 9
-#define ANCHO 12*4
+#define ANCHO 12
 
 class Editor {
   private:
+    unsigned int mapLen;
+
     std::string imagenSeleccionada;
     Gtk::Button* pBtnCrearTerreno;
     Gtk::Button* pBtnCrearJugador;
@@ -42,10 +44,9 @@ class Editor {
     Gtk::Button* pBtnCreateLevel;
     Gtk::Button* pBtnEditLevel;
 
-    Gtk::EventBox eventBoxMatrix[ANCHO][ALTO];
-    Gtk::Image imageMatrix[ANCHO][ALTO];
-
-    std::string imageNamesCurrent[ANCHO][ALTO];
+    Gtk::EventBox** eventBoxMatrix;
+    Gtk::Image** imageMatrix;
+    std::string** imageNamesCurrent;
 
 
     std::map<std::string, int> nameToSpawnNumber;
@@ -67,7 +68,9 @@ class Editor {
     void on_ddlEnemy_changed();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
-    explicit Editor(Glib::RefPtr<Gtk::Application> appl);
+    void on_windowEditor_hidden();
+    Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len);
+    ~Editor();
     void connectButtonsWithSignals();
     void createEmptyGrid();
     void runEditor();
