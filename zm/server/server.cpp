@@ -93,9 +93,8 @@ void Server::startLevel(){
   // envio el mapa
   JsonSerializer js;
   char curPath[255];
-  getcwd(cur_path, 255);
-  std::cout << cur_path << std::endl;
-  std::string path(cur_path);
+  getcwd(curPath, 255);
+  std::string path(curPath);
   path += "/" + mapPath_;
   std::cout << "Importo path " << path << std::endl;
   jm = js.importMap(path);
