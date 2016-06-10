@@ -109,8 +109,8 @@ void Server::startLevel(){
   for (auto clientProxy : proxies) {
     clientProxy->startGame();
   }
-  std::cout << "Creo new level! " << mapPath_ << std::endl;
-  level = new Level(players, mapPath_, *this);
+  std::cout << "Creo new level! " << path << std::endl;
+  level = new Level(players, path, *this);
 
   std::cout << "Empiezo a jugar! " << std::endl;
   playing_ = true;
