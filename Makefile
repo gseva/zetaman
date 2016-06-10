@@ -151,7 +151,7 @@ editor_dir = $(zm_dir)editor/
 assets_dir = assets/
 images_config = $(assets_dir)image.gresource.xml
 editor_config = $(assets_dir)editor.gresource.xml
-maps_dir = $(assets_dir)maps/
+maps_dir = $(assets_dir)maps
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))

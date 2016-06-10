@@ -4,6 +4,8 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <unistd.h>
+
 
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
@@ -90,7 +92,13 @@ void Server::selectLevel(int level) {
 void Server::startLevel(){
   // envio el mapa
   JsonSerializer js;
-  jm = js.importMap(DEFAULT_PATH);
+  char curPath[255];
+  getcwd(cur_path, 255);
+  std::cout << cur_path << std::endl;
+  std::string path(cur_path);
+  path += "/" + mapPath_;
+  std::cout << "Importo path " << path << std::endl;
+  jm = js.importMap(path);
 
   std::string map = jm.getReducedString();
 
