@@ -17,6 +17,7 @@ std::string JsonMap::getReducedString() {
 }
 
 void JsonMap::fromReducedString(const std::string& s) {
+  setlocale(LC_NUMERIC, "C");
   json j = json::parse(s);
 
   std::vector<int> imageNumbersVector = j["tiles"];

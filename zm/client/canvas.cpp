@@ -14,7 +14,7 @@ namespace zm {
 Canvas::Canvas(ServerProxy& sp) : map_(sp.getImages(), sp.getImageNames()) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
-              &Canvas::on_timeout), 1000/60);
+              &Canvas::on_timeout), 1000/30);
 }
 
 Canvas::~Canvas() {
