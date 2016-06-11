@@ -20,8 +20,8 @@ public:
   b2Vec2 getPosition();
   b2Body* getBody();
   bool collide(Bullet *bullet);
-private:
   PlayerBody *body;
+private:
 };
 
 #endif

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "zm/server/server.h"
+#include "zm/server/camera.h"
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/server/level.h"
@@ -19,7 +20,7 @@
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   Server& s) : timer(physics, s, enemies, bullets, connectedPlayers),
-  players(connectedPlayers) {
+  players(connectedPlayers), camera(players) {
   JsonSerializer js;
   jm = js.importMap(path);
   physics.setMap(jm);
@@ -66,7 +67,7 @@ Level::~Level(){
 zm::proto::Game Level::getState(){
   zm::proto::Game gs;
 
-  int xmin, xmax, xo;
+  /*int xmin, xmax, xo;
   int yo = 0;
 
   xmin = (*players.begin())->getPosition().x;
@@ -84,9 +85,12 @@ zm::proto::Game Level::getState(){
     xo = XMAX;
   if ( xo < XMIN )
     xo = XMIN;
-
-  gs.camPos.x = xo;
-  gs.camPos.y = yo;
+*/
+  gs.camPos = camera.calculatePosition();
+  int xo = gs.camPos.x;
+  int yo = gs.camPos.y;
+ // gs.camPos.x = xo;
+ // gs.camPos.y = yo;
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {

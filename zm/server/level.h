@@ -5,6 +5,7 @@
 #include <string>
 
 #include "zm/server/player.h"
+#include "zm/server/camera.h"
 #include "zm/server/physics/physics.h"
 #include "zm/server/timer.h"
 #include "zm/server/client_proxy.h"
@@ -33,5 +34,6 @@ private:
   std::vector<Enemy*> enemies;
   std::vector<Bullet*> bullets;
   JsonMap jm;
+  Camera camera;
 };
 #endif
