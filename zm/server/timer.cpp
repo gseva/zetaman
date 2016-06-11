@@ -9,16 +9,20 @@
 
 Timer::Timer(Physics& physics, Server& s,
              std::vector<Enemy*>& enemies,
-             std::vector<Bullet*>& bullets) :
-  physics(physics), s_(s), enemies(enemies), bullets(bullets){
+             std::vector<Bullet*>& bullets,
+             std::vector<Player*>& players) :
+  physics(physics), s_(s), enemies(enemies), bullets(bullets),
+  players(players) {
+    runContinue = true;
 }
 
-Timer::~Timer() {}
+Timer::~Timer(){}
 
-void Timer::run() {
-  // int i = 3;
-  while ( true ) {
-  // while ( i-- ) {
+void Timer::run(){
+  // Unused
+  players.size();
+
+  while ( runLevel() ) {
     physics.step();
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;
@@ -40,6 +44,7 @@ void Timer::run() {
 
 void Timer::collides(std::vector<Enemy*>& enemies,
   std::vector<Bullet*>& bullets){
+  std::vector<std::vector<Player*>::iterator> playersToDestroy;
   std::vector<std::vector<Enemy*>::iterator> enemiesToDestroy;
   std::vector<std::vector<Bullet*>::iterator> bulletsToDestroy;
 
@@ -57,6 +62,19 @@ void Timer::collides(std::vector<Enemy*>& enemies,
         bulletsToDestroy.push_back(bullet);
       }
     }
+    /*for ( std::vector<Player*>::iterator player = players.begin();
+      player != players.end(); ++player ) {
+      if ( b2TestOverlap(
+        (*player)->getBody()->GetFixtureList()[0].GetShape(), 0,
+        (*bullet)->body->GetFixtureList()[0].GetShape(),0,
+        (*player)->getBody()->GetTransform(),
+        (*bullet)->body->GetTransform())
+        &&
+        (*player)->collide(*bullet) ) {
+        playersToDestroy.push_back(player);
+        bulletsToDestroy.push_back(bullet);
+      }
+    } */
   }
   std::vector<std::vector<Enemy*>::iterator>::iterator enemyToDestroy;
   for ( enemyToDestroy = enemiesToDestroy.begin();
@@ -70,4 +88,14 @@ void Timer::collides(std::vector<Enemy*>& enemies,
     delete **bulletToDestroy;
     bullets.erase(*bulletToDestroy);
   }
+}
+
+bool Timer::runLevel(){
+  Lock locker(mutexRun);
+  return runContinue;
+}
+
+void Timer::finish(){
+  Lock locker(mutexRun);
+  runContinue = false;
 }

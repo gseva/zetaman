@@ -4,6 +4,7 @@
 #include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/thread.h"
+#include "zm/game_protocol.h"
 
 #define DEFAULT_GRAVITY_X 0.0f
 #define DEFAULT_GRAVITY_Y -10.0f
@@ -20,6 +21,7 @@
 #define ENEMY_BULLET_TYPE 0x0006
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
+#define PPM 64
 
 
 Physics::Physics() {}//: ground(world){}
@@ -231,43 +233,33 @@ bool PlayerBody::collide(Bullet* bullet){
   return bullet->collide(this);
 }
 
+b2Body* PlayerBody::getBody(){
+  return body;
+}
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y),
-  totalMoves(15) {
+Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y){
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
-  fixtureDef.density = 1.0f;
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_BULLET_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
-  amountMoves = 0;
-  b2Vec2 vel;
-  sig = 1;
-  vel.x = sig * 3;
-  body->SetLinearVelocity(vel);
 }
 
 Enemy::~Enemy(){}
 
-EnemyBullet* Enemy::move(){
-  Lock locker(mutex);
-  if ( amountMoves == totalMoves ) {
-    sig *= -1;
-    amountMoves = 0;
-  } else {
-    amountMoves++;
-  }
-    b2Vec2 vel = body->GetLinearVelocity();
-    vel.x = 3 * sig;
-    body->SetLinearVelocity(vel);
-    return NULL;
-}
-
 bool Enemy::collide(Bullet* bullet){
   return bullet->collide(this);
 }
+
+zm::proto::Enemy Enemy::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy;
+  protoEnemy.pos.x = this->getPosition().x* PPM - xo * PPM;
+  protoEnemy.pos.y = this->getPosition().y * -PPM + 768;
+  return protoEnemy;
+}
+
 
 Met::Met(Physics& physics, float32 x, float32 y) :
   Enemy(physics, x, y), period(60*3){
@@ -297,12 +289,78 @@ EnemyBullet* Met::move(){
 }
 
 EnemyBullet* Met::shoot(){
- b2Vec2 pos = getPosition();
+  b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
   EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
-  //bullet->move();
   return bullet;
+}
+
+zm::proto::Enemy Met::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Met;
+  switch ( this->state ) {
+    case MetState::protect:
+      protoEnemy.enemyState = zm::proto::EnemyState::guarded;
+      break;
+    case MetState::notProtect:
+      protoEnemy.enemyState = zm::proto::EnemyState::unguarded;
+      break;
+  }
+  return protoEnemy;
+}
+
+Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y),
+  totalMoves(15) , period(60*3){
+  shoots = 0;
+  tics = 0;
+  amountMoves = 0;
+  b2Vec2 vel;
+  sig = 1;
+  vel.x = sig * 3;
+  body->SetLinearVelocity(vel);
+}
+
+Bumby::~Bumby(){}
+
+EnemyBullet* Bumby::move(){
+  if ( amountMoves == totalMoves ) {
+    sig *= -1;
+    amountMoves = 0;
+  } else {
+    amountMoves++;
+  }
+  b2Vec2 vel = body->GetLinearVelocity();
+  vel.x = 3 * sig;
+
+  {
+    Lock locker(mutex);
+    body->SetLinearVelocity(vel);
+    body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y),
+      body->GetWorldCenter(), false);
+  }
+
+  tics++;
+  if ( tics == period )
+    tics = 0;
+  if ( ((tics % 60) == 0 ) ) {
+    return shoot();
+  }
+  return NULL;
+}
+
+EnemyBullet* Bumby::shoot(){
+  b2Vec2 pos = getPosition();
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
+  return bullet;
+}
+
+zm::proto::Enemy Bumby::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Bumby;
+  return protoEnemy;
 }
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
