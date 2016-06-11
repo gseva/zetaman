@@ -54,13 +54,7 @@ void Canvas::updateGameState(proto::Game game) {
 }
 
 void Canvas::redraw() {
-  Glib::RefPtr<Gdk::Window> win = get_window();
-  if (win)
-  {
-      Gdk::Rectangle r(0, 0, get_allocation().get_width(),
-              get_allocation().get_height());
-      win->invalidate_rect(r, false);
-  }
+  queue_draw();
 }
 
 } // zm
