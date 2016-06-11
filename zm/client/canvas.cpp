@@ -13,6 +13,8 @@ namespace zm {
 
 Canvas::Canvas(ServerProxy& sp) : map_(sp.getImages(), sp.getImageNames()) {
   std::cout << "Creo canvas" << std::endl;
+  sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
+              &Canvas::on_timeout), 1000/60);
 }
 
 Canvas::~Canvas() {
@@ -49,8 +51,14 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 }
 
 void Canvas::updateGameState(proto::Game game) {
+  Lock l(m_);
   game_ = game;
+  // redraw();
+}
+
+bool Canvas::on_timeout() {
   redraw();
+  return true;
 }
 
 void Canvas::redraw() {

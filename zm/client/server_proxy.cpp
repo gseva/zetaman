@@ -149,7 +149,7 @@ void Receiver::run() {
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';
-      continue;
+      throw;
     }
     sp_.updateState(game);
   } while (!stop);
