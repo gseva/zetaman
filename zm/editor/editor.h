@@ -8,6 +8,7 @@
 #include <gtkmm/viewport.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
 #include <gtkmm/entry.h>
 #include <glibmm/refptr.h>
 #include <string>
@@ -31,6 +32,7 @@ class Editor {
     Gtk::Button* pBtnSaveMap;
     Gtk::Window* pWindowEditor;
     Gtk::ComboBoxText* pComboBoxEnemy;
+    Gtk::SpinButton* pSpinLength;
     Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
@@ -69,7 +71,7 @@ class Editor {
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     void on_windowEditor_hidden();
-    Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len);
+    explicit Editor(Glib::RefPtr<Gtk::Application> appl);
     ~Editor();
     void connectButtonsWithSignals();
     void createEmptyGrid();

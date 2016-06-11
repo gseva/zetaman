@@ -50,6 +50,21 @@ void Editor::on_buttonAcceptExport_clicked()
   if (pEntryExportMapName->get_text_length()>0)
   {
     mapName = pEntryExportMapName->get_text();
+    mapLen = pSpinLength->get_value();
+
+    eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
+
+  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageMatrix[i] = new Gtk::Image[ALTO];
+
+  imageNamesCurrent = new std::string*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageNamesCurrent[i] = new std::string[ALTO];
+
+    createEmptyGrid();
     pWindowNewLevel->hide();
     pWindowEditor->show();
   }
@@ -73,6 +88,11 @@ void Editor::on_windowEditor_hidden()
 {
   std::cout << "Cierro editor" << std::endl;
 
+  /*for (unsigned int i = 0; i < ALTO; i++)
+      {
+          pGrid -> remove_row(0);
+      }*/
+
   for ( size_t i = 0; i < ANCHO * mapLen; ++i )
     delete [] eventBoxMatrix[i];
   delete [] eventBoxMatrix;
@@ -94,21 +114,8 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
   return true;
 }
 
-Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len): 
-mapLen(len), app(appl)
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl): app(appl)
 {
-  eventBoxMatrix = new Gtk::EventBox*[ANCHO * len];
-  for ( size_t i = 0; i < ANCHO * len; ++i )
-    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
-
-  imageMatrix = new Gtk::Image*[ANCHO * len];
-  for ( size_t i = 0; i < ANCHO * len; ++i )
-    imageMatrix[i] = new Gtk::Image[ALTO];
-
-  imageNamesCurrent = new std::string*[ANCHO * len];
-  for ( size_t i = 0; i < ANCHO * len; ++i )
-    imageNamesCurrent[i] = new std::string[ALTO];
-
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
@@ -127,6 +134,9 @@ mapLen(len), app(appl)
   builder->get_widget("windowNewLevel", pWindowNewLevel);
   builder->get_widget("btnAcceptExport", pBtnAcceptExport);
   builder->get_widget("entryExportMapName", pEntryExportMapName);
+  builder->get_widget("spinLength", pSpinLength);
+  pSpinLength -> set_range(1,10);
+  pSpinLength -> set_increments(1,1);
 
   /* Elementos del menu */
   builder->get_widget("windowMenu", pWindowMenu);
@@ -144,7 +154,7 @@ mapLen(len), app(appl)
 
   connectButtonsWithSignals();
 
-  createEmptyGrid();
+  //createEmptyGrid();
 
   initializeRelationships();
 
@@ -302,12 +312,12 @@ void Editor::createEmptyGrid()
       }
     }
   }
+
+  pGrid->show_all_children();
 }
 
 void Editor::runEditor()
 {
-  pGrid->show_all_children();
-
   app->run(*pWindowMenu);
 }
 
