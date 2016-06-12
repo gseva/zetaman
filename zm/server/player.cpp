@@ -36,11 +36,15 @@ void Player::setCamera(Camera* camera){
 void Player::right(){
   if ( camera->canMoveRight(this) )
     body->right();
+  else
+    this->stopHorizontalMove();
 }
 
 void Player::left(){
   if ( camera->canMoveLeft(this) )
     body->left();
+  else
+    this->stopHorizontalMove();
 }
 
 void Player::stopHorizontalMove(){
