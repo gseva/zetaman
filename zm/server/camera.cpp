@@ -2,20 +2,34 @@
 #include <vector>
 #define XMAX 47
 #define XMIN 0
+#define INITIAL_X 4
+#define INITIAL_Y 0
 
 Camera::Camera(std::vector<Player*>& players) : players(players){
-  position.x=4;
-  position.y=0; //= getPosition();
+  position.x = INITIAL_X;
+  position.y = INITIAL_Y;
 }
 
 Camera::~Camera(){}
 
 bool Camera::canMoveRight(Player* player){
-  return true;
+  bool canMove = true;
+  std::vector<Player*>::iterator iPlayer;
+  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
+    int dist = player->getPosition().x - (*iPlayer)->getPosition().x;
+    canMove &= dist < 10;
+  }
+  return canMove;
 }
 
 bool Camera::canMoveLeft(Player* player){
-  return true;
+ bool canMove = true;
+  std::vector<Player*>::iterator iPlayer;
+  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
+    int dist = player->getPosition().x - (*iPlayer)->getPosition().x;
+    canMove &= dist > -10;
+  }
+  return canMove;
 }
 
 bool Camera::isInFrame(Body* body){

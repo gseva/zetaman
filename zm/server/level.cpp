@@ -38,6 +38,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
         std::cout << "Creo jugador: " << amountPlayers << std::endl;
         players[amountPlayers]->createBody(&physics,
           (*i).column+0.5f, (*i).row+0.5f);
+        players[amountPlayers]->setCamera(&camera);
         amountPlayers++;
       }
     }
@@ -67,30 +68,9 @@ Level::~Level(){
 zm::proto::Game Level::getState(){
   zm::proto::Game gs;
 
-  /*int xmin, xmax, xo;
-  int yo = 0;
-
-  xmin = (*players.begin())->getPosition().x;
-  xmax = xmin;
-
-  for ( std::vector<Player*>::iterator player = players.begin();
-    player != players.end(); ++player ) {
-    if ( ((*player)->getPosition().x ) < xmin )
-      xmin = (*player)->getPosition().x;
-    if ( ((*player)->getPosition().x ) > xmax )
-      xmax = (*player)->getPosition().x;
-  }
-  xo = (xmax + xmin) / 2 - 8;// * PPM;
-  if ( xo > XMAX )
-    xo = XMAX;
-  if ( xo < XMIN )
-    xo = XMIN;
-*/
   gs.camPos = camera.calculatePosition();
   int xo = gs.camPos.x;
   int yo = gs.camPos.y;
- // gs.camPos.x = xo;
- // gs.camPos.y = yo;
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
