@@ -2,7 +2,7 @@
 #define __CAMARA_H__
 #include <vector>
 #include "zm/server/player.h"
-#include "zm/server/physics/physics.h" //body.h
+#include "zm/server/physics/world.h" //body.h
 
 class Camera
 {

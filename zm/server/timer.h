@@ -1,10 +1,13 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
-#include <zm/thread.h>
 #include <vector>
-#include "zm/server/physics/physics.h"
+
+#include <zm/thread.h>
 #include "zm/server/player.h"
 #include "zm/server/client_proxy.h"
+#include "zm/server/physics/world.h"
+#include "zm/server/physics/enemies.h"
+#include "zm/server/physics/bullets.h"
 
 
 class Timer : public Thread {

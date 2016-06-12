@@ -1,7 +1,7 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #include <Box2D/Box2D.h>
-#include "zm/server/physics/physics.h"
+#include "zm/server/physics/world.h"
 
 class Camera;
 

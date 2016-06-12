@@ -1,8 +1,10 @@
-#include "zm/server/player.h"
-#include "zm/server/physics/physics.h"
 #include <Box2D/Box2D.h>
 #include <iostream>
 #include "zm/server/camera.h"
+
+#include "zm/server/player.h"
+#include "zm/server/physics/players.h"
+#include "zm/server/physics/bullets.h"
 
 Player::Player(){}
 

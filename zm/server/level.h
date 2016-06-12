@@ -4,12 +4,14 @@
 #include <vector>
 #include <string>
 
-#include "zm/server/player.h"
-#include "zm/server/camera.h"
-#include "zm/server/physics/physics.h"
-#include "zm/server/timer.h"
-#include "zm/server/client_proxy.h"
 #include "zm/json/jsonserializer.h"
+#include "zm/server/player.h"
+#include "zm/server/timer.h"
+#include "zm/server/camera.h"
+#include "zm/server/client_proxy.h"
+#include "zm/server/physics/world.h"
+#include "zm/server/physics/enemies.h"
+#include "zm/server/physics/bullets.h"
 
 class Server;
 
