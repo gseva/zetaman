@@ -11,7 +11,7 @@
 #include "zm/thread.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/server/player.h"
-#include "zm/server/physics/physics.h"
+#include "zm/server/physics/world.h"
 #include "zm/server/timer.h"
 #include "zm/server/level.h"
 

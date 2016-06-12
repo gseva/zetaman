@@ -1,5 +1,9 @@
-#include "camera.h"
+
 #include <vector>
+
+#include "zm/server/camera.h"
+#include "zm/server/physics/players.h"
+
 #define XMAX 47
 #define XMIN 0
 #define INITIAL_X 4
@@ -75,7 +79,7 @@ zm::proto::Position Camera::getPosition(){
 zm::proto::Position Camera::calculatePosition(){
   bool areInCenter = true;
   std::vector<Player*>::iterator iPlayer;
-  
+
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     areInCenter &= isInCenter((*iPlayer)->body);
   }
