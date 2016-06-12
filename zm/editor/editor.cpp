@@ -45,22 +45,26 @@ void Editor::on_buttonSaveMap_clicked()
   exportCreatedMap();
 }
 
-void Editor::on_buttonAcceptExport_clicked()
+void EditorMenu::on_buttonAcceptExport_clicked()
 {
   if (pEntryExportMapName->get_text_length()>0)
   {
     mapName = pEntryExportMapName->get_text();
+    mapLen = pSpinLength->get_value();
+
     pWindowNewLevel->hide();
-    pWindowEditor->show();
+    auto appl = Gtk::Application::create("Editor.nuevo.app");
+    Editor editor(appl, mapLen, mapName);
+    editor.runEditor();
   }
 }
 
-void Editor::on_buttonCreateLevel_clicked()
+void EditorMenu::on_buttonCreateLevel_clicked()
 {
   pWindowNewLevel->show();
 }
 
-void Editor::on_buttonEditLevel_clicked()
+void EditorMenu::on_buttonEditLevel_clicked()
 {
 }
 
@@ -77,9 +81,30 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
   return true;
 }
 
-Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
+EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
 {
-  app = appl;
+  Glib::RefPtr<Gtk::Builder> builder =
+      Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
+      
+  /*Elementos de la ventana crear nuevo nivel*/    
+  builder->get_widget("windowNewLevel", pWindowNewLevel);
+  builder->get_widget("btnAcceptExport", pBtnAcceptExport);
+  builder->get_widget("entryExportMapName", pEntryExportMapName);
+  builder->get_widget("spinLength", pSpinLength);
+  pSpinLength -> set_range(1,10);
+  pSpinLength -> set_increments(1,1);
+
+  /* Elementos del menu */
+  builder->get_widget("windowMenu", pWindowMenu);
+  builder->get_widget("btnCreateLevel", pBtnCreateLevel);
+  builder->get_widget("btnEditLevel", pBtnEditLevel);
+
+  connectButtonsWithSignals();
+}
+
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
+  std::string mapName): mapLen(len),app(appl),mapName(mapName) 
+{
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
@@ -94,15 +119,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
-  
-  builder->get_widget("windowNewLevel", pWindowNewLevel);
-  builder->get_widget("btnAcceptExport", pBtnAcceptExport);
-  builder->get_widget("entryExportMapName", pEntryExportMapName);
-
-  /* Elementos del menu */
-  builder->get_widget("windowMenu", pWindowMenu);
-  builder->get_widget("btnCreateLevel", pBtnCreateLevel);
-  builder->get_widget("btnEditLevel", pBtnEditLevel);
 
   pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
@@ -114,6 +130,18 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl)
   pComboBoxEnemy->set_active(0);
 
   connectButtonsWithSignals();
+
+  eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
+
+  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageMatrix[i] = new Gtk::Image[ALTO];
+
+  imageNamesCurrent = new std::string*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageNamesCurrent[i] = new std::string[ALTO];
 
   createEmptyGrid();
 
@@ -145,6 +173,27 @@ void Editor::initializeRelationships()
   ddlToName.insert({"Bumpy", IMAGEN_BUMPY});
   ddlToName.insert({"Met", IMAGEN_MET});
   ddlToName.insert({"Sniper", IMAGEN_SNIPER});
+}
+
+void EditorMenu::connectButtonsWithSignals()
+{
+  if (pBtnAcceptExport)
+  {
+    pBtnAcceptExport->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonAcceptExport_clicked));
+  }
+
+  if (pBtnCreateLevel)
+  {
+    pBtnCreateLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonCreateLevel_clicked));
+  }
+
+  if (pBtnEditLevel)
+  {
+    pBtnEditLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonEditLevel_clicked));
+  }
 }
 
 void Editor::connectButtonsWithSignals()
@@ -179,24 +228,6 @@ void Editor::connectButtonsWithSignals()
       sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
   }
 
-  if (pBtnAcceptExport)
-  {
-    pBtnAcceptExport->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonAcceptExport_clicked));
-  }
-
-  if (pBtnCreateLevel)
-  {
-    pBtnCreateLevel->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonCreateLevel_clicked));
-  }
-
-  if (pBtnEditLevel)
-  {
-    pBtnEditLevel->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonEditLevel_clicked));
-  }
-
   if (pComboBoxEnemy)
   {
     pComboBoxEnemy->signal_changed().connect(
@@ -207,36 +238,41 @@ void Editor::connectButtonsWithSignals()
 void Editor::createEmptyGrid()
 {
   /*Agrego los event box a la grid*/
-  for (int i = 0; i < ANCHO; i++)
+  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
   {
-      for (int j = 0; j < ALTO; j++)
+      for (unsigned int j = 0; j < ALTO; j++)
       {
           pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
       }
   }
 
   /*Agrego las imagenes a los event box*/
-  for (int i = 0; i < ANCHO; i++)
+  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
   {
-      for (int j = 0; j < ALTO; j++)
+      for (unsigned int j = 0; j < ALTO; j++)
       {
           eventBoxMatrix[i][j].add(imageMatrix[i][j]);
       }
   }
 
   /*Seteo las imagenes*/
-  for (int i = 0; i < ANCHO; i++)
+  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
   {
-      for (int j = 0; j < ALTO; j++)
+      for (unsigned int j = 0; j < ALTO; j++)
       {
+        if (j == ALTO-1)
+        {
+         imageMatrix[i][j].set_from_resource(IMAGEN_TERRENO); 
+        } else {
           imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
+        }
       }
   }
 
   /*Seteo el evento en los event box*/
-  for (int i=0; i<ANCHO; i++)
+  for (unsigned int i=0; i<ANCHO * mapLen; i++)
   {
-    for (int j=0; j<ALTO; j++)
+    for (unsigned int j=0; j<ALTO; j++)
     {
       eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
       eventBoxMatrix[i][j].signal_button_press_event().connect(
@@ -246,20 +282,32 @@ void Editor::createEmptyGrid()
   }
 
   /*Seteo datos de esta pantalla*/
-  for (int i=0; i<ANCHO; i++)
+  for (unsigned int i=0; i<ANCHO * mapLen; i++)
   {
-    for (int j=0; j<ALTO; j++)
+    for (unsigned int j=0; j<ALTO; j++)
     {
-      imageNamesCurrent[i][j] = IMAGEN_BLANCO;
+      if (j==ALTO-1)
+      {
+        imageNamesCurrent[i][j] = IMAGEN_TERRENO;  
+      } else {
+        imageNamesCurrent[i][j] = IMAGEN_BLANCO;  
+      }
     }
   }
+
+  pGrid->show_all_children();
+}
+
+void EditorMenu::runEditorMenu()
+{
+  app->run(*pWindowMenu);
 }
 
 void Editor::runEditor()
 {
-  pGrid->show_all_children();
-
-  app->run(*pWindowMenu);
+  std::cout << "Por correr" << std::endl;
+  app->run(*pWindowEditor, 0, 0);
+  std::cout << "Corriendo" << std::endl;
 }
 
 void Editor::exportCreatedMap()
@@ -280,9 +328,9 @@ JsonMap Editor::createJsonMap()
   int numeroImagen = 1;
   nameToNumber.insert({IMAGEN_BLANCO,0});
 
-  for (int i=0; i<ALTO; i++)
+  for (unsigned int i=0; i<ALTO; i++)
   {
-    for (int j=0; j<ANCHO; j++)
+    for (unsigned int j=0; j<ANCHO * mapLen; j++)
     {
       std::string image = imageNamesCurrent[j][i];
 
