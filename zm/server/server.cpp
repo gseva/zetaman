@@ -4,6 +4,8 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <unistd.h>
+
 
 #include "zm/server/server.h"
 #include "zm/server/physics/physics.h"
@@ -90,7 +92,12 @@ void Server::selectLevel(int level) {
 void Server::startLevel(){
   // envio el mapa
   JsonSerializer js;
-  jm = js.importMap(DEFAULT_PATH);
+  char curPath[255];
+  getcwd(curPath, 255);
+  std::string path(curPath);
+  path += "/" + mapPath_;
+  std::cout << "Importo path " << path << std::endl;
+  jm = js.importMap(path);
 
   std::string map = jm.getReducedString();
 
@@ -102,8 +109,8 @@ void Server::startLevel(){
   for (auto clientProxy : proxies) {
     clientProxy->startGame();
   }
-  std::cout << "Creo new level! " << mapPath_ << std::endl;
-  level = new Level(players, mapPath_, *this);
+  std::cout << "Creo new level! " << path << std::endl;
+  level = new Level(players, path, *this);
 
   std::cout << "Empiezo a jugar! " << std::endl;
   playing_ = true;

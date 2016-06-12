@@ -3,11 +3,6 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
 
-
-#define T 10
-#define VY_MIN_LIM -10
-#define VY_MAX_LIM 10
-
 Player::Player(){}
 
 Player::~Player(){
@@ -51,3 +46,12 @@ Bullet* Player::shoot(){
   Bullet* bullet = body->shoot();
   return bullet;
 }
+
+b2Body* Player::getBody(){
+  return body->getBody();
+}
+
+bool Player::collide(Bullet *bullet){
+  return body->collide(bullet);
+}
+
