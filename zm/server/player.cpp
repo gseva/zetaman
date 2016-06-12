@@ -1,7 +1,10 @@
-#include "zm/server/player.h"
-#include "zm/server/physics/physics.h"
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include "zm/server/camera.h"
+
+#include "zm/server/player.h"
+#include "zm/server/physics/players.h"
+#include "zm/server/physics/bullets.h"
 
 Player::Player(){}
 
@@ -26,12 +29,22 @@ void Player::setPosition(int x, int y){
   body->setPosition(x,y);
 }
 
+void Player::setCamera(Camera* camera){
+  this->camera = camera;
+}
+
 void Player::right(){
-  body->right();
+  if ( camera->canMoveRight(this) )
+    body->right();
+  else
+    this->stopHorizontalMove();
 }
 
 void Player::left(){
-  body->left();
+  if ( camera->canMoveLeft(this) )
+    body->left();
+  else
+    this->stopHorizontalMove();
 }
 
 void Player::stopHorizontalMove(){

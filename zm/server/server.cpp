@@ -6,9 +6,7 @@
 #include <thread>
 #include <unistd.h>
 
-
 #include "zm/server/server.h"
-#include "zm/server/physics/physics.h"
 #include "zm/json/jsonserializer.h"
 
 #define DEFAULT_PATH "build/maps/mapita.json"

@@ -1,13 +1,15 @@
 
-#include <Box2D/Box2D.h>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "zm/server/server.h"
-#include "zm/server/physics/physics.h"
-#include "zm/json/jsonserializer.h"
-#include "zm/server/level.h"
+
+#include <Box2D/Box2D.h>
+
 #include "zm/game_protocol.h"
+#include "zm/json/jsonserializer.h"
+#include "zm/server/camera.h"
+#include "zm/server/server.h"
+#include "zm/server/level.h"
 
 #define PPM 64
 #define PLAYER "player"
@@ -19,7 +21,7 @@
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   Server& s) : timer(physics, s, enemies, bullets, connectedPlayers),
-  players(connectedPlayers) {
+  players(connectedPlayers), camera(players) {
   JsonSerializer js;
   jm = js.importMap(path);
   physics.setMap(jm);
@@ -37,6 +39,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
         std::cout << "Creo jugador: " << amountPlayers << std::endl;
         players[amountPlayers]->createBody(&physics,
           (*i).column+0.5f, (*i).row+0.5f);
+        players[amountPlayers]->setCamera(&camera);
         amountPlayers++;
       }
     }
@@ -66,27 +69,9 @@ Level::~Level(){
 zm::proto::Game Level::getState(){
   zm::proto::Game gs;
 
-  int xmin, xmax, xo;
-  int yo = 0;
-
-  xmin = (*players.begin())->getPosition().x;
-  xmax = xmin;
-
-  for ( std::vector<Player*>::iterator player = players.begin();
-    player != players.end(); ++player ) {
-    if ( ((*player)->getPosition().x ) < xmin )
-      xmin = (*player)->getPosition().x;
-    if ( ((*player)->getPosition().x ) > xmax )
-      xmax = (*player)->getPosition().x;
-  }
-  xo = (xmax + xmin) / 2 - 8;// * PPM;
-  if ( xo > XMAX )
-    xo = XMAX;
-  if ( xo < XMIN )
-    xo = XMIN;
-
-  gs.camPos.x = xo;
-  gs.camPos.y = yo;
+  gs.camPos = camera.calculatePosition();
+  int xo = gs.camPos.x;
+  int yo = gs.camPos.y;
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
