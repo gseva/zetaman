@@ -5,7 +5,7 @@
   <object class="GtkApplicationWindow" id="applicationwindow1">
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkBox" id="box1">
+      <object class="GtkBox" id="boxEditor">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <child>
@@ -128,6 +128,7 @@
                   <object class="GtkGrid" id="grid1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <placeholder/>
                     </child>

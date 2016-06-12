@@ -45,65 +45,32 @@ void Editor::on_buttonSaveMap_clicked()
   exportCreatedMap();
 }
 
-void Editor::on_buttonAcceptExport_clicked()
+void EditorMenu::on_buttonAcceptExport_clicked()
 {
   if (pEntryExportMapName->get_text_length()>0)
   {
     mapName = pEntryExportMapName->get_text();
     mapLen = pSpinLength->get_value();
 
-    eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
-
-  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    imageMatrix[i] = new Gtk::Image[ALTO];
-
-  imageNamesCurrent = new std::string*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    imageNamesCurrent[i] = new std::string[ALTO];
-
-    createEmptyGrid();
     pWindowNewLevel->hide();
-    pWindowEditor->show();
+    auto appl = Gtk::Application::create("Editor.app");
+    Editor editor(appl, mapLen);
+    editor.runEditor();
   }
 }
 
-void Editor::on_buttonCreateLevel_clicked()
+void EditorMenu::on_buttonCreateLevel_clicked()
 {
   pWindowNewLevel->show();
 }
 
-void Editor::on_buttonEditLevel_clicked()
+void EditorMenu::on_buttonEditLevel_clicked()
 {
 }
 
 void Editor::on_ddlEnemy_changed()
 {
   imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
-}
-
-void Editor::on_windowEditor_hidden()
-{
-  std::cout << "Cierro editor" << std::endl;
-
-  /*for (unsigned int i = 0; i < ALTO; i++)
-      {
-          pGrid -> remove_row(0);
-      }*/
-
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    delete [] eventBoxMatrix[i];
-  delete [] eventBoxMatrix;
-
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    delete [] imageMatrix[i];
-  delete [] imageMatrix;
-
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    delete [] imageNamesCurrent[i];
-  delete [] imageNamesCurrent;
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -114,7 +81,29 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
   return true;
 }
 
-Editor::Editor(Glib::RefPtr<Gtk::Application> appl): app(appl)
+EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
+{
+  Glib::RefPtr<Gtk::Builder> builder =
+      Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
+      
+  /*Elementos de la ventana crear nuevo nivel*/    
+  builder->get_widget("windowNewLevel", pWindowNewLevel);
+  builder->get_widget("btnAcceptExport", pBtnAcceptExport);
+  builder->get_widget("entryExportMapName", pEntryExportMapName);
+  builder->get_widget("spinLength", pSpinLength);
+  pSpinLength -> set_range(1,10);
+  pSpinLength -> set_increments(1,1);
+
+  /* Elementos del menu */
+  builder->get_widget("windowMenu", pWindowMenu);
+  builder->get_widget("btnCreateLevel", pBtnCreateLevel);
+  builder->get_widget("btnEditLevel", pBtnEditLevel);
+
+  connectButtonsWithSignals();
+}
+
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len):
+mapLen(len), app(appl)
 {
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
@@ -130,18 +119,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl): app(appl)
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
-  
-  builder->get_widget("windowNewLevel", pWindowNewLevel);
-  builder->get_widget("btnAcceptExport", pBtnAcceptExport);
-  builder->get_widget("entryExportMapName", pEntryExportMapName);
-  builder->get_widget("spinLength", pSpinLength);
-  pSpinLength -> set_range(1,10);
-  pSpinLength -> set_increments(1,1);
-
-  /* Elementos del menu */
-  builder->get_widget("windowMenu", pWindowMenu);
-  builder->get_widget("btnCreateLevel", pBtnCreateLevel);
-  builder->get_widget("btnEditLevel", pBtnEditLevel);
 
   pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
@@ -154,16 +131,24 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl): app(appl)
 
   connectButtonsWithSignals();
 
-  //createEmptyGrid();
+  eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
+
+  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageMatrix[i] = new Gtk::Image[ALTO];
+
+  imageNamesCurrent = new std::string*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageNamesCurrent[i] = new std::string[ALTO];
+
+  createEmptyGrid();
 
   initializeRelationships();
 
 
   imagenSeleccionada = IMAGEN_TERRENO;
-}
-
-Editor::~Editor()
-{
 }
 
 void Editor::initializeRelationships()
@@ -188,6 +173,27 @@ void Editor::initializeRelationships()
   ddlToName.insert({"Bumpy", IMAGEN_BUMPY});
   ddlToName.insert({"Met", IMAGEN_MET});
   ddlToName.insert({"Sniper", IMAGEN_SNIPER});
+}
+
+void EditorMenu::connectButtonsWithSignals()
+{
+  if (pBtnAcceptExport)
+  {
+    pBtnAcceptExport->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonAcceptExport_clicked));
+  }
+
+  if (pBtnCreateLevel)
+  {
+    pBtnCreateLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonCreateLevel_clicked));
+  }
+
+  if (pBtnEditLevel)
+  {
+    pBtnEditLevel->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_buttonEditLevel_clicked));
+  }
 }
 
 void Editor::connectButtonsWithSignals()
@@ -222,34 +228,10 @@ void Editor::connectButtonsWithSignals()
       sigc::mem_fun(this,&Editor::on_buttonSaveMap_clicked));
   }
 
-  if (pBtnAcceptExport)
-  {
-    pBtnAcceptExport->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonAcceptExport_clicked));
-  }
-
-  if (pBtnCreateLevel)
-  {
-    pBtnCreateLevel->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonCreateLevel_clicked));
-  }
-
-  if (pBtnEditLevel)
-  {
-    pBtnEditLevel->signal_clicked().connect(
-      sigc::mem_fun(this,&Editor::on_buttonEditLevel_clicked));
-  }
-
   if (pComboBoxEnemy)
   {
     pComboBoxEnemy->signal_changed().connect(
       sigc::mem_fun(this, &Editor::on_ddlEnemy_changed));
-  }
-
-  if (pWindowEditor)
-  {
-    pWindowEditor->signal_hide().connect(
-      sigc::mem_fun(this, &Editor::on_windowEditor_hidden));
   }
 }
 
@@ -316,9 +298,16 @@ void Editor::createEmptyGrid()
   pGrid->show_all_children();
 }
 
-void Editor::runEditor()
+void EditorMenu::runEditorMenu()
 {
   app->run(*pWindowMenu);
+}
+
+void Editor::runEditor()
+{
+  std::cout << "Por correr" << std::endl;
+  app->run(*pWindowEditor, 0, 0);
+  std::cout << "Corriendo" << std::endl;
 }
 
 void Editor::exportCreatedMap()

@@ -3,11 +3,11 @@
 
 int main(int argc, char **argv)
 {
-  auto appl = Gtk::Application::create(argc, argv, "");
+  auto appl = Gtk::Application::create(argc, argv, "Editor.Menu.app");
 
-  Editor editor(appl);
+  EditorMenu editorMenu(appl);
 
-  editor.runEditor();
+  editorMenu.runEditorMenu();
 
   return 0;
 }
