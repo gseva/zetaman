@@ -106,7 +106,6 @@ void World::step() {
 }
 
 void World::clean() {
-
 }
 
 Ground::Ground(){}
@@ -117,18 +116,14 @@ void Ground::addBlock(b2Body* blockBody){
   blocks.push_back(blockBody);
 }
 
-Body::Body(Physics& physics) : physics(physics){
-  bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(2.5f, 1.5f);
-  body = this->physics.createBody(bodyDef);
-  // Intento de hacer que los cuerpos sean un poco mas platformers
-  body->SetFixedRotation(true);
-}
-
-Body::Body(Physics& physics, float32 x, float32 y) : physics(physics){
+Body::Body(Physics& physics, float32 x, float32 y, BodyType t)
+  : type(t), physics(physics) {
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
   body = this->physics.createBody(bodyDef);
+  // Intento de hacer que los cuerpos sean un poco mas platformers
+  body->SetFixedRotation(true);
+  destroyed = false;
  }
 
 Body::~Body(){
@@ -144,4 +139,16 @@ b2Vec2 Body::getPosition(){
 void Body::setPosition(int x, int y){
   Lock locker(mutex);
   body->SetTransform(b2Vec2(x,y), body->GetAngle());
+}
+
+void Body::impact() {
+  markAsDestroyed();
+}
+
+void Body::markAsDestroyed() {
+  destroyed = true;
+}
+
+bool Body::isDestroyed() {
+  return destroyed;
 }

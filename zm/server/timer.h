@@ -6,8 +6,6 @@
 #include "zm/server/player.h"
 #include "zm/server/client_proxy.h"
 #include "zm/server/physics/world.h"
-#include "zm/server/physics/enemies.h"
-#include "zm/server/physics/bullets.h"
 
 
 class Level;
@@ -18,7 +16,6 @@ public:
   virtual ~Timer();
   virtual void run();
 private:
-  void collides(std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets);
   bool runLevel();
   void finish();
   Mutex mutexRun;

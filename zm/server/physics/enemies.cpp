@@ -4,7 +4,8 @@
 #define PPM 64
 
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y){
+Enemy::Enemy(Physics& physics, float32 x, float32 y)
+    : Body(physics, x, y, BodyType::Enemy) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
@@ -12,6 +13,7 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y) : Body(physics, x, y){
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_BULLET_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
+  body->SetUserData(this);
 }
 
 Enemy::~Enemy(){}

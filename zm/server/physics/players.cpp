@@ -5,20 +5,8 @@
 #include "zm/server/physics/bullets.h"
 
 
-PlayerBody::PlayerBody(Physics& physics) : Body(physics){
-  b2PolygonShape shape;
-  shape.SetAsBox(0.4f, 0.4f);
-  shape.m_radius = 0.1f;
-  fixtureDef.shape = &shape;
-  fixtureDef.density = 100.0f;
-  fixtureDef.friction = 100.0f;
-  fixtureDef.filter.categoryBits = PLAYER_TYPE;
-  fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_BULLET_TYPE;
-  fixture = body->CreateFixture(&fixtureDef);
-}
-
 PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
-    Body(physics, x, y) {
+    Body(physics, x, y, BodyType::Player) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;

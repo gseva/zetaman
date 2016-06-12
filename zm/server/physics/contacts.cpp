@@ -1,41 +1,37 @@
 
+
+#include "zm/server/physics/world.h"
 #include "zm/server/physics/contacts.h"
 #include "zm/server/physics/bullets.h"
+#include "zm/server/physics/enemies.h"
 
 namespace zm {
 
 
 void ContactListener::BeginContact(b2Contact* contact) {
-
   void* bodyUserDataA = contact->GetFixtureA()->GetBody()->GetUserData();
   void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-  if (bodyUserDataA && !bodyUserDataB) {
-    std::cout << "Deleteo body A\n";
-    static_cast<Bullet*>( bodyUserDataA )->destroy();
+  if (bodyUserDataB &&
+      static_cast<Body*>(bodyUserDataB)->type == BodyType::Bullet) {
+    void* aux = bodyUserDataA;
+    bodyUserDataA = bodyUserDataB;
+    bodyUserDataB = aux;
   }
 
- if (!bodyUserDataA && bodyUserDataB) {
-    std::cout << "Deleteo body B\n";
-    static_cast<Bullet*>( bodyUserDataB )->destroy();
- }
-
-  //check if fixture B was a ball
-
+  if (bodyUserDataA &&
+      static_cast<Body*>(bodyUserDataA)->type == BodyType::Bullet) {
+    std::cout << "Deleteo bala\n";
+    static_cast<Body*>(bodyUserDataA)->markAsDestroyed();
+    if (bodyUserDataB &&
+        static_cast<Body*>(bodyUserDataB)->type == BodyType::Enemy) {
+      std::cout << "Deleteo enemigo\n";
+      static_cast<Body*>(bodyUserDataB)->impact();
+    }
+  }
 }
 
 void ContactListener::EndContact(b2Contact* contact) {
-
-  //check if fixture A was a ball
-  // void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-  // if ( bodyUserData )
-  //   static_cast<Ball*>( bodyUserData )->endContact();
-
-  //check if fixture B was a ball
-  // bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
-  // if ( bodyUserData )
-  //   static_cast<Ball*>( bodyUserData )->endContact();
-
 }
 
 

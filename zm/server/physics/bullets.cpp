@@ -5,7 +5,7 @@
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
   int mask, int category)
-    : Body(physics, x, y), vel(6*signo,0), destroyed(false) {
+    : Body(physics, x, y, BodyType::Bullet), vel(6*signo,0) {
   b2PolygonShape shape;
   shape.SetAsBox(0.01f, 0.01f);
   fixtureDef.shape = &shape;
@@ -15,14 +15,6 @@ Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
   body->SetLinearVelocity(vel);
   body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
   body->SetUserData(this);
-}
-
-void Bullet::destroy() {
-  destroyed = true;
-}
-
-bool Bullet::isDestroyed() {
-  return destroyed;
 }
 
 Bullet::~Bullet(){

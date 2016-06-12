@@ -27,7 +27,7 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
   jm = js.importMap(path);
   physics.setMap(jm);
   unsigned int amountPlayers = 0;
-  for(auto&& spawn : jm.spawnsData) {
+  for (auto&& spawn : jm.spawnsData) {
     std::string type = jm.spawnTypes[spawn.type];
     float32 x = spawn.column + 0.5f;
     float32 y = spawn.row + 0.5f;
@@ -58,6 +58,16 @@ void Level::clean() {
       iBullet = bullets.erase(iBullet);
     } else {
       ++iBullet;
+    }
+  }
+
+  std::vector<Enemy*>::iterator iEnemy;
+  for (iEnemy = enemies.begin(); iEnemy != enemies.end();) {
+    if ((*iEnemy)->isDestroyed()) {
+      delete (*iEnemy);
+      iEnemy = enemies.erase(iEnemy);
+    } else {
+      ++iEnemy;
     }
   }
 }
