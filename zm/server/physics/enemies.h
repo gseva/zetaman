@@ -16,7 +16,6 @@ public:
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
 };
 
-enum MetState{protect, notProtect};
 
 class Met : public Enemy{
 public:
@@ -26,11 +25,12 @@ public:
   EnemyBullet* shoot();
   virtual zm::proto::Enemy toBean(int xo, int yo);
 private:
-  MetState state;
+  bool protected_;
   const float32 period;
   int tics;
   int shoots;
  };
+
 
  class Bumby : public Enemy{
  public:

@@ -1,4 +1,6 @@
 
+#include <vector>
+
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/bullets.h"
 
@@ -16,7 +18,7 @@ PlayerBody::PlayerBody(Physics& physics) : Body(physics){
 }
 
 PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
-  Body(physics, x, y){
+    Body(physics, x, y) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
@@ -30,30 +32,25 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
 PlayerBody::~PlayerBody(){}
 
 void PlayerBody::jump(){
-  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   if ( vel.y == 0 ) {
     vel.y += 6;
     body->SetLinearVelocity(vel);
-    idle = false;
   }
 }
 
 void PlayerBody::right(){
-  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 6;
   body->SetLinearVelocity(vel);
 }
 void PlayerBody::left(){
-  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = -6;
   body->SetLinearVelocity(vel);
 }
 
 void PlayerBody::stopHorizontalMove(){
-  Lock locker(mutex);
   b2Vec2 vel = body->GetLinearVelocity();
   vel.x = 0;
   body->SetLinearVelocity(vel);
@@ -63,13 +60,11 @@ void PlayerBody::up(){
   if ( canGoUp() ) {
     b2Vec2 v = body->GetLinearVelocity();
     v.y = 3;
-    Lock locker(mutex);
     body->SetLinearVelocity(v);
   }
 }
 
 bool PlayerBody::canGoUp(){
-  Lock locker(mutex);
   std::vector<b2Body*>::iterator i;
   std::vector<b2Body*> stairways = this->physics.stairways;
   for ( i = stairways.begin(); i != stairways.end(); ++i ) {
@@ -84,7 +79,7 @@ Bullet* PlayerBody::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y,signo);
+  Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y, signo);
   return bullet;
 }
 

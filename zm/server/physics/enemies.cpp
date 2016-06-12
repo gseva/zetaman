@@ -22,17 +22,17 @@ bool Enemy::collide(Bullet* bullet){
 
 zm::proto::Enemy Enemy::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy;
-  protoEnemy.pos.x = this->getPosition().x* PPM - xo * PPM;
+  protoEnemy.pos.x = this->getPosition().x * PPM - xo * PPM;
   protoEnemy.pos.y = this->getPosition().y * -PPM + 768;
   return protoEnemy;
 }
 
 
 Met::Met(Physics& physics, float32 x, float32 y) :
-  Enemy(physics, x, y), period(60*3){
+  Enemy(physics, x, y), period(60*3) {
     shoots = 0;
     tics = 0;
-    state = notProtect;
+    protected_ = false;
 }
 
 Met::~Met(){}
@@ -42,14 +42,9 @@ EnemyBullet* Met::move(){
   if ( tics == period )
     tics = 0;
   if ( tics == 0 ){
-    switch ( state ) {
-      case notProtect: state = protect;
-      break;
-      case protect: state = notProtect;
-      break;
-    }
+    protected_ = !protected_;
   }
-  if ( state == notProtect && ((tics % 60) == 0 ) ) {
+  if ( !protected_ && ((tics % 60) == 0 ) ) {
     return shoot();
   }
   return NULL;
@@ -66,13 +61,10 @@ EnemyBullet* Met::shoot(){
 zm::proto::Enemy Met::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Met;
-  switch ( this->state ) {
-    case MetState::protect:
-      protoEnemy.enemyState = zm::proto::EnemyState::guarded;
-      break;
-    case MetState::notProtect:
-      protoEnemy.enemyState = zm::proto::EnemyState::unguarded;
-      break;
+  if (protected_) {
+    protoEnemy.enemyState = zm::proto::EnemyState::guarded;
+  } else {
+    protoEnemy.enemyState = zm::proto::EnemyState::unguarded;
   }
   return protoEnemy;
 }
@@ -120,7 +112,7 @@ EnemyBullet* Bumby::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
+  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y, signo);
   return bullet;
 }
 

@@ -23,7 +23,6 @@ public:
   b2Body* getBody();
 private:
   bool canGoUp();
-  bool idle;
 };
 
 #endif
