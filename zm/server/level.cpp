@@ -1,13 +1,14 @@
 
-#include <Box2D/Box2D.h>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "zm/server/server.h"
-#include "zm/server/physics/physics.h"
-#include "zm/json/jsonserializer.h"
-#include "zm/server/level.h"
+
+#include <Box2D/Box2D.h>
+
 #include "zm/game_protocol.h"
+#include "zm/json/jsonserializer.h"
+#include "zm/server/server.h"
+#include "zm/server/level.h"
 
 #define PPM 64
 #define PLAYER "player"
