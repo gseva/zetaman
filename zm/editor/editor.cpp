@@ -53,8 +53,8 @@ void EditorMenu::on_buttonAcceptExport_clicked()
     mapLen = pSpinLength->get_value();
 
     pWindowNewLevel->hide();
-    auto appl = Gtk::Application::create("Editor.app");
-    Editor editor(appl, mapLen);
+    auto appl = Gtk::Application::create("Editor.nuevo.app");
+    Editor editor(appl, mapLen, mapName);
     editor.runEditor();
   }
 }
@@ -102,8 +102,8 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
   connectButtonsWithSignals();
 }
 
-Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len):
-mapLen(len), app(appl)
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
+  std::string mapName): mapLen(len),app(appl),mapName(mapName) 
 {
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");

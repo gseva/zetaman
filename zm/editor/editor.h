@@ -60,7 +60,7 @@ class Editor {
                                    Gtk::Image* imagen, int col, int row);
     void on_windowEditor_hidden();
     explicit Editor(Glib::RefPtr<Gtk::Application> appl,
-    unsigned int len);
+    unsigned int len, std::string mapName);
     void connectButtonsWithSignals();
     void createEmptyGrid();
     void runEditor();
