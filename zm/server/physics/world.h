@@ -28,9 +28,12 @@ class World{
 public:
   World();
   ~World();
-  void step();
+
   b2Body* createBody(const b2BodyDef& bodyDef);
   void destroyBody(b2Body* body);
+
+  void step();
+  void clean();
 private:
   b2World* world;
   b2Vec2* gravity;

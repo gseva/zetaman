@@ -20,32 +20,46 @@
 #define XMIN 0
 
 Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
-  Server& s) : timer(physics, s, enemies, bullets, connectedPlayers),
-  players(connectedPlayers), camera(players) {
+    Server& s) :
+    players(connectedPlayers), timer(physics, s, *this), camera(players)
+{
   JsonSerializer js;
   jm = js.importMap(path);
   physics.setMap(jm);
   unsigned int amountPlayers = 0;
-  for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
-    i != jm.spawnsData.end(); ++i ) {
-    if ( jm.spawnTypes[(*i).type] == BUMBY ) {
-      Enemy* enemy = new Bumby(physics, (*i).column+0.5f, (*i).row+0.5f);
+  for(auto&& spawn : jm.spawnsData) {
+    std::string type = jm.spawnTypes[spawn.type];
+    float32 x = spawn.column + 0.5f;
+    float32 y = spawn.row + 0.5f;
+
+    if (type == BUMBY) {
+        Enemy* enemy = new Bumby(physics, x, y);
+        enemies.push_back(enemy);
+    } else if (type == MET) {
+      Enemy* enemy = new Met(physics, x, y);
       enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == MET ) {
-      Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
-      if ( amountPlayers < players.size() ){
-        std::cout << "Creo jugador: " << amountPlayers << std::endl;
-        players[amountPlayers]->createBody(&physics,
-          (*i).column+0.5f, (*i).row+0.5f);
-        players[amountPlayers]->setCamera(&camera);
-        amountPlayers++;
-      }
+    } else if ((type == PLAYER) && (amountPlayers < players.size())) {
+      std::cout << "Creo jugador: " << amountPlayers << std::endl;
+      players[amountPlayers]->createBody(&physics, x, y);
+      players[amountPlayers]->setCamera(&camera);
+      amountPlayers++;
     }
   }
+
   std::cout << "Empiezo timer!" << std::endl;
   timer.start();
+}
+
+void Level::clean() {
+  std::vector<Bullet*>::iterator iBullet;
+  for (iBullet = bullets.begin(); iBullet != bullets.end();) {
+    if ((*iBullet)->isDestroyed()) {
+      delete (*iBullet);
+      iBullet = bullets.erase(iBullet);
+    } else {
+      ++iBullet;
+    }
+  }
 }
 
 Level::~Level(){
@@ -58,6 +72,7 @@ Level::~Level(){
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     delete (*iPlayer);
   }
+
   std::vector<Bullet*>::iterator iBullet;
   for ( iBullet = bullets.begin(); iBullet != bullets.end(); ++iBullet ) {
     delete (*iBullet);

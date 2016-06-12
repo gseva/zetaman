@@ -10,11 +10,11 @@
 #include "zm/server/physics/bullets.h"
 
 
+class Level;
+
 class Timer : public Thread {
 public:
-  explicit Timer(Physics& physics, Server& s_,
-    std::vector<Enemy*>& enemies, std::vector<Bullet*>& bullets,
-    std::vector<Player*>& players);
+  explicit Timer(Physics& physics, Server& s_, Level& l_);
   virtual ~Timer();
   virtual void run();
 private:
@@ -25,9 +25,7 @@ private:
   bool runContinue;
   Physics& physics;
   Server& s_;
-  std::vector<Enemy*>& enemies;
-  std::vector<Bullet*>& bullets;
-  std::vector<Player*>& players;
+  Level& l_;
 };
 
 #endif

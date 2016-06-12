@@ -4,7 +4,8 @@
 
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
-  int mask, int category) : Body(physics, x, y), vel(6*signo,0) {
+  int mask, int category)
+    : Body(physics, x, y), vel(6*signo,0), destroyed(false) {
   b2PolygonShape shape;
   shape.SetAsBox(0.01f, 0.01f);
   fixtureDef.shape = &shape;
@@ -13,13 +14,25 @@ Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
   fixture = body->CreateFixture(&fixtureDef);
   body->SetLinearVelocity(vel);
   body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
+  body->SetUserData(this);
 }
 
-Bullet::~Bullet(){}
+void Bullet::destroy() {
+  destroyed = true;
+}
 
-void Bullet::move(){
-  Lock locker(mutex);
-  body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
+bool Bullet::isDestroyed() {
+  return destroyed;
+}
+
+Bullet::~Bullet(){
+}
+
+void Bullet::move() {
+  if (!destroyed) {
+    body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y),
+                     body->GetWorldCenter(), false);
+  }
 }
 
 bool Bullet::collide(Bullet* bullet){

@@ -6,12 +6,16 @@
 #include "zm/game_protocol.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/server/physics/world.h"
+#include "zm/server/physics/contacts.h"
 
 #define ALTO_TOTAL 12
 #define ANCHO_TOTAL 64
 #define AIRE 0
 #define SOLID "solid"
 #define STAIR "stair"
+
+
+zm::ContactListener GlobalContextListener;
 
 
 Physics::Physics() {}//: ground(world){}
@@ -78,6 +82,7 @@ void Physics::destroyBody(b2Body* body){
 World::World(){
   gravity = new b2Vec2(DEFAULT_GRAVITY_X, DEFAULT_GRAVITY_Y);
   world = new b2World(*gravity);
+  world->SetContactListener(&GlobalContextListener);
 }
 
 World::~World(){
@@ -93,11 +98,15 @@ void World::destroyBody(b2Body* body){
   world->DestroyBody(body);
 }
 
-void World::step(){
+void World::step() {
   float32 timeStep = 1.0f / 60.0f; //60Hz
   int32 velocityIterations = 8; //valores sugeridos
   int32 positionIterations = 3;
   world->Step(timeStep, velocityIterations, positionIterations);
+}
+
+void World::clean() {
+
 }
 
 Ground::Ground(){}
@@ -112,6 +121,8 @@ Body::Body(Physics& physics) : physics(physics){
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(2.5f, 1.5f);
   body = this->physics.createBody(bodyDef);
+  // Intento de hacer que los cuerpos sean un poco mas platformers
+  body->SetFixedRotation(true);
 }
 
 Body::Body(Physics& physics, float32 x, float32 y) : physics(physics){
@@ -122,6 +133,7 @@ Body::Body(Physics& physics, float32 x, float32 y) : physics(physics){
 
 Body::~Body(){
   this->physics.destroyBody(body);
+  std::cout << "Toy en el destructor de body\n";
 }
 
 b2Vec2 Body::getPosition(){

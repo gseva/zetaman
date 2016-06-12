@@ -29,12 +29,14 @@ public:
   void up(int playerNumber);
   void shoot(int playerNumber);
 
-private:
-  Physics physics;
-  Timer timer;
+  void clean();
+
   std::vector<Player*>& players;
   std::vector<Enemy*> enemies;
   std::vector<Bullet*> bullets;
+private:
+  Physics physics;
+  Timer timer;
   JsonMap jm;
   Camera camera;
 };

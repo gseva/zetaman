@@ -19,8 +19,12 @@ public:
   virtual bool collide(Enemy* enemy)=0;
   virtual bool collide(PlayerBody* player)=0;
   virtual bool collide(Bullet* bullet);
+
+  bool isDestroyed();
+  void destroy();
 protected:
   const b2Vec2 vel;
+  bool destroyed;
 };
 
 class PlayerBullet : public Bullet {

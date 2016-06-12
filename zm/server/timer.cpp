@@ -3,63 +3,61 @@
 #include <chrono>
 #include <thread>
 
-#include "zm/server/server.h"
 #include "zm/server/timer.h"
+#include "zm/server/level.h"
+#include "zm/server/server.h"
 
 
-Timer::Timer(Physics& physics, Server& s,
-             std::vector<Enemy*>& enemies,
-             std::vector<Bullet*>& bullets,
-             std::vector<Player*>& players) :
-  physics(physics), s_(s), enemies(enemies), bullets(bullets),
-  players(players) {
+Timer::Timer(Physics& physics, Server& s, Level& l) :
+  physics(physics), s_(s), l_(l) {
     runContinue = true;
 }
 
 Timer::~Timer(){}
 
 void Timer::run(){
-  // Unused
-  players.size();
 
   while ( runLevel() ) {
     physics.step();
+    l_.clean();
+
     std::this_thread::sleep_for(std::chrono::milliseconds(1000/60));
     std::vector<Enemy*>::iterator i;
-    for ( i = enemies.begin(); i != enemies.end(); ++i ) {
+    for ( i = l_.enemies.begin(); i != l_.enemies.end(); ++i ) {
       Bullet* bullet = (*i)->move();
       if ( bullet != NULL ) {
-        bullets.push_back(bullet);
+        l_.bullets.push_back(bullet);
       }
     }
     std::vector<Bullet*>::iterator j;
-    for ( j = bullets.begin(); j != bullets.end(); ++j ) {
+    for ( j = l_.bullets.begin(); j != l_.bullets.end(); ++j ) {
       (*j)->move();
     }
-    collides(enemies, bullets);
+    collides(l_.enemies, l_.bullets);
     s_.updateState();
   }
   return;
 }
 
 void Timer::collides(std::vector<Enemy*>& enemies,
-  std::vector<Bullet*>& bullets){
+  std::vector<Bullet*>& bullets) {
   std::vector<std::vector<Player*>::iterator> playersToDestroy;
   std::vector<std::vector<Enemy*>::iterator> enemiesToDestroy;
-  std::vector<std::vector<Bullet*>::iterator> bulletsToDestroy;
+  // std::vector<std::vector<Bullet*>::iterator> bulletsToDestroy;
 
   for (std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
+    // if ((*bullet)->isDestroyed()) continue;
     for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
       enemy != enemies.end(); ++enemy ) {
       if ( b2TestOverlap(
         (*enemy)->body->GetFixtureList()[0].GetShape(), 0,
-        (*bullet)->body->GetFixtureList()[0].GetShape(),0,
+        (*bullet)->body->GetFixtureList()[0].GetShape(), 0,
         (*enemy)->body->GetTransform(), (*bullet)->body->GetTransform())
         &&
         (*enemy)->collide(*bullet) ) {
         enemiesToDestroy.push_back(enemy);
-        bulletsToDestroy.push_back(bullet);
+        // bulletsToDestroy.push_back(bullet);
       }
     }
     /*for ( std::vector<Player*>::iterator player = players.begin();
@@ -82,12 +80,12 @@ void Timer::collides(std::vector<Enemy*>& enemies,
     delete **enemyToDestroy;
     enemies.erase(*enemyToDestroy);
   }
-  std::vector<std::vector<Bullet*>::iterator>::iterator bulletToDestroy;
-  for ( bulletToDestroy = bulletsToDestroy.begin();
-    bulletToDestroy != bulletsToDestroy.end(); ++bulletToDestroy ) {
-    delete **bulletToDestroy;
-    bullets.erase(*bulletToDestroy);
-  }
+  // std::vector<std::vector<Bullet*>::iterator>::iterator bulletToDestroy;
+  // for ( bulletToDestroy = bulletsToDestroy.begin();
+  //   bulletToDestroy != bulletsToDestroy.end(); ++bulletToDestroy ) {
+  //   delete **bulletToDestroy;
+  //   bullets.erase(*bulletToDestroy);
+  // }
 }
 
 bool Timer::runLevel(){
