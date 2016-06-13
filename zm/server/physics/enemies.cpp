@@ -37,7 +37,7 @@ Met::Met(Physics& physics, float32 x, float32 y) :
 
 Met::~Met(){}
 
-EnemyBullet* Met::move(){
+Bullet* Met::move(){
   tics++;
   if ( tics == period )
     tics = 0;
@@ -50,11 +50,11 @@ EnemyBullet* Met::move(){
   return NULL;
 }
 
-EnemyBullet* Met::shoot(){
+Bullet* Met::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y,signo);
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y,signo, true);
   return bullet;
 }
 
@@ -82,7 +82,7 @@ Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y),
 
 Bumby::~Bumby(){}
 
-EnemyBullet* Bumby::move(){
+Bullet* Bumby::move(){
   if ( amountMoves == totalMoves ) {
     sig *= -1;
     amountMoves = 0;
@@ -108,11 +108,11 @@ EnemyBullet* Bumby::move(){
   return NULL;
 }
 
-EnemyBullet* Bumby::shoot(){
+Bullet* Bumby::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  EnemyBullet* bullet = new EnemyBullet(this->physics, pos.x, pos.y, signo);
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
   return bullet;
 }
 

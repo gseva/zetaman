@@ -11,7 +11,7 @@ class Enemy : public Body {
 public:
   explicit Enemy(Physics& physics, float32 x, float32 y);
   virtual ~Enemy();
-  virtual EnemyBullet* move()=0;
+  virtual Bullet* move()=0;
   virtual bool collide(Bullet* bullet);
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
 };
@@ -21,8 +21,8 @@ class Met : public Enemy{
 public:
   explicit Met(Physics& physics, float32 x, float32 y);
   virtual ~Met();
-  virtual EnemyBullet* move();
-  EnemyBullet* shoot();
+  virtual Bullet* move();
+  Bullet* shoot();
   virtual zm::proto::Enemy toBean(int xo, int yo);
 private:
   bool protected_;
@@ -36,8 +36,8 @@ private:
  public:
     explicit Bumby(Physics& physics, float32 x, float32 y);
     virtual ~Bumby();
-    virtual EnemyBullet* move();
-    EnemyBullet* shoot();
+    virtual Bullet* move();
+    Bullet* shoot();
     virtual zm::proto::Enemy toBean(int xo, int yo);
 private:
   int amountMoves;

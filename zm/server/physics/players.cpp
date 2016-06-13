@@ -79,7 +79,8 @@ Bullet* PlayerBody::shoot(){
   b2Vec2 pos = getPosition();
   b2Vec2 vel = body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y, signo);
+  //Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y, signo);
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, false);
   return bullet;
 }
 
