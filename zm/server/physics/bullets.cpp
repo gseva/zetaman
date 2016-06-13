@@ -13,7 +13,7 @@ Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo,
   fixtureDef.filter.maskBits = mask;
   fixture = body->CreateFixture(&fixtureDef);
   body->SetLinearVelocity(vel);
-  body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
+  body->ApplyForce(b2Vec2(0, -DEFAULT_GRAVITY_Y), body->GetWorldCenter(), false);
   body->SetUserData(this);
 }
 
@@ -22,7 +22,7 @@ Bullet::~Bullet(){
 
 void Bullet::move() {
   if (!destroyed) {
-    body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y),
+    body->ApplyForce(b2Vec2(0, -DEFAULT_GRAVITY_Y),
                      body->GetWorldCenter(), false);
   }
 }

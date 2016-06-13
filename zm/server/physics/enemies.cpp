@@ -1,8 +1,6 @@
 
 #include "zm/server/physics/enemies.h"
 
-#define PPM 64
-
 
 Enemy::Enemy(Physics& physics, float32 x, float32 y)
     : Body(physics, x, y, BodyType::Enemy) {
@@ -24,8 +22,8 @@ bool Enemy::collide(Bullet* bullet){
 
 zm::proto::Enemy Enemy::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy;
-  protoEnemy.pos.x = this->getPosition().x * PPM - xo * PPM;
-  protoEnemy.pos.y = this->getPosition().y * -PPM + 768;
+  protoEnemy.pos.x = this->getPosition().x - xo;
+  protoEnemy.pos.y = this->getPosition().y;
   return protoEnemy;
 }
 
@@ -43,7 +41,7 @@ EnemyBullet* Met::move(){
   tics++;
   if ( tics == period )
     tics = 0;
-  if ( tics == 0 ){
+  if ( tics == 0 ) {
     protected_ = !protected_;
   }
   if ( !protected_ && ((tics % 60) == 0 ) ) {

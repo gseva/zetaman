@@ -42,8 +42,9 @@ void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
       int imageNum = tiles_[tilePos];
       if (imageNum == 0) continue;
       auto image = images_[imageNum - 1];
-      Gdk::Cairo::set_source_pixbuf(context, image,
-       image->get_width() * i, image->get_height() * j);
+      int width = image->get_width();
+      int height = image->get_height();
+      Gdk::Cairo::set_source_pixbuf(context, image, width * i, height * j);
       context->paint();
     }
   }

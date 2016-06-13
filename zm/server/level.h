@@ -18,7 +18,7 @@ class Server;
 class Level{
 public:
   explicit Level(std::vector<Player*>& connectedPlayers,
-    const std::string& path, Server& s);
+    JsonMap& jsonMap, Server& s);
   ~Level();
 
   void jump(int playerNumber);
@@ -37,7 +37,7 @@ public:
 private:
   Physics physics;
   Timer timer;
-  JsonMap jm;
+  JsonMap& jm;
   Camera camera;
 };
 #endif

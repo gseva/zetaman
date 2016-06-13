@@ -9,7 +9,7 @@
 #define INITIAL_X 4
 #define INITIAL_Y 0
 
-Camera::Camera(std::vector<Player*>& players) : players(players){
+Camera::Camera(std::vector<Player*>& players) : players(players) {
   position.x = INITIAL_X;
   position.y = INITIAL_Y;
 }
@@ -71,8 +71,8 @@ zm::proto::Position Camera::getPosition(){
     xo = XMIN;
 
   zm::proto::Position newPos;
-  newPos.x=xo;
-  newPos.y=yo;
+  newPos.x = xo;
+  newPos.y = yo;
   return newPos;
 }
 

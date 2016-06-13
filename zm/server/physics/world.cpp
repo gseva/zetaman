@@ -29,7 +29,7 @@ void Physics::setMap(const JsonMap& jm){
       if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == SOLID ) {
           b2BodyDef blockBodyDef;// = new b2BodyDef();
           b2Body* blockBody;
-          blockBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
+          blockBodyDef.position.Set(i, ALTO_TOTAL - j); //centro
           blockBody = world.createBody(blockBodyDef);
 
           b2PolygonShape blockBox;// = new b2PolygonShape();
@@ -46,7 +46,7 @@ void Physics::setMap(const JsonMap& jm){
       } else if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == STAIR ) {
           b2BodyDef stairBodyDef;// = new b2BodyDef();
           b2Body* stairBody;
-          stairBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
+          stairBodyDef.position.Set(i, ALTO_TOTAL - j); //centro
           stairBody = world.createBody(stairBodyDef);
 
           b2PolygonShape stairshape;
@@ -128,7 +128,6 @@ Body::Body(Physics& physics, float32 x, float32 y, BodyType t)
 
 Body::~Body(){
   this->physics.destroyBody(body);
-  std::cout << "Toy en el destructor de body\n";
 }
 
 b2Vec2 Body::getPosition(){
