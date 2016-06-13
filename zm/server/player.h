@@ -19,11 +19,13 @@ public:
   void stopHorizontalMove();
 	void jump();
   void up();
+  void disconnect();
   Bullet* shoot();
   b2Vec2 getPosition();
   b2Body* getBody();
   bool collide(Bullet *bullet);
   PlayerBody *body;
+  bool connected;
 private:
   Camera* camera;
 };

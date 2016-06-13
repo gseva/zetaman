@@ -146,6 +146,16 @@ void Server::shoot(int playerNumber){
   level->shoot(playerNumber);
 }
 
+void Server::shutdown(int playerNumber)
+{
+  std::cout << "1" << std::endl;
+  proxies[playerNumber]->shutdown();
+  std::cout << "2" << std::endl;
+  proxies.erase(proxies.begin() + playerNumber);
+  std::cout << "3" << std::endl;
+  level->disconnect(playerNumber);
+}
+
 zm::proto::Game Server::getState(){
   return level->getState();
 }

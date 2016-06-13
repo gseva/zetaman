@@ -50,7 +50,7 @@ public:
 private:
   bool on_key_press_event(GdkEventKey* event) override;
   bool on_key_release_event(GdkEventKey* event) override;
-
+  void on_hide() override;
   void on_startButton_clicked();
 };
 

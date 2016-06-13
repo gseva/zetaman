@@ -36,7 +36,9 @@ void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
     case proto::moveDown: break;
     case proto::stopMoving: s_.stopHorizontalMove(playerNumber_); break;
     case proto::shoot: s_.shoot(playerNumber_); break;
-    case proto::shutdown: break;
+    case proto::shutdown: s_.shutdown(playerNumber_);
+                          receiver_->stop=true;
+                           break;
 
     case proto::selectLevel1: s_.selectLevel(0); break;
     case proto::selectLevel2: s_.selectLevel(1); break;
@@ -50,12 +52,14 @@ std::shared_ptr<zm::ProtectedSocket> ClientProxy::getSocket() {
   return clientSock_;
 }
 
-ClientProxy::~ClientProxy() {
+void ClientProxy::shutdown() {
+  receiver_->stop = true;
+
   proto::Game game(proto::GameState::lost);
   eventQueue_.push(game);
 
   clientSock_->close();
-  receiver_->stop = true;
+  
 
   sender_->join();
   receiver_->join();

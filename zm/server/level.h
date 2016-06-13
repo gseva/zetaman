@@ -28,6 +28,7 @@ public:
   void stopHorizontalMove(int playerNumber);
   void up(int playerNumber);
   void shoot(int playerNumber);
+  void disconnect(int playerNumber);
 
 private:
   Physics physics;

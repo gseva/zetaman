@@ -45,7 +45,7 @@ Receiver* receiver_;
 public:
   explicit ClientProxy(Server& s, int playerNumber,
                        std::shared_ptr<zm::ProtectedSocket> sock_);
-  ~ClientProxy();
+  void shutdown();
 
   void startListening();
   void startGame();
