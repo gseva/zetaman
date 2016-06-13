@@ -100,7 +100,8 @@ zm::proto::Game Level::getState(){
     zm::proto::Player protoPlayer;
     protoPlayer.pos.x = (*player)->getPosition().x - xo;
     protoPlayer.pos.y = (*player)->getPosition().y;
-    // std::cout << "Player: " << protoPlayer.pos.x << " " << protoPlayer.pos.y <<  std::endl;
+    // std::cout << "Player: " << protoPlayer.pos.x << " "
+    // << protoPlayer.pos.y <<  std::endl;
     gs.players.push_back(protoPlayer);
   }
 
@@ -108,7 +109,8 @@ zm::proto::Game Level::getState(){
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
-    // std::cout << "Enemy: " << protoEnemy.pos.x << " " << protoEnemy.pos.y <<  std::endl;
+    // std::cout << "Enemy: " << protoEnemy.pos.x << " "
+    // << protoEnemy.pos.y <<  std::endl;
     gs.enemies.push_back(protoEnemy);
   }
 
