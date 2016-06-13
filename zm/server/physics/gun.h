@@ -21,10 +21,10 @@ protected:
   Physics& physics;
 };
 
-class Boombgun : public Gun{
+class Bombgun : public Gun{
 public:
-  explicit Boombgun(Body* proprietor, bool isEnemy, Physics& physics);
-  virtual ~Boombgun();
+  explicit Bombgun(Body* proprietor, bool isEnemy, Physics& physics);
+  virtual ~Bombgun();
   virtual Bullet* fire();
 };
 

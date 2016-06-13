@@ -1,7 +1,5 @@
-
 #ifndef __ZM_SERVER_PHYSICS_BULLETS_H__
 #define __ZM_SERVER_PHYSICS_BULLETS_H__
-
 
 #include "zm/server/physics/world.h"
 
@@ -24,54 +22,42 @@ protected:
   const bool isEnemy;
 };
 
-/*class PlayerBullet : public Bullet {
+class Bomb : public Bullet{
 public:
-  explicit PlayerBullet(Physics& physics, float32 x, float32 y, int signo);
-  virtual ~PlayerBullet();
-  virtual bool collide(Enemy* enemy);
-  virtual bool collide(PlayerBody* player);
-};
-
-class EnemyBullet : public Bullet {
-public:
-  explicit EnemyBullet(Physics& physics, float32 x, float32 y, int signo);
-  ~EnemyBullet();
-  virtual bool collide(Enemy* enemy);
-  virtual bool collide(PlayerBody* player);
-};
-*/
-
-class Boomb : public Bullet{
-public:
-  explicit Boomb(Physics& physics, float32 x, float32 y, int signo);
-  virtual ~Boomb();
+  explicit Bomb(Physics& physics, float32 x, float32 y, int signo,
+    bool isEnemy);
+  virtual ~Bomb();
   
 };
 
 class Magnet : public Bullet{
 public:
-  explicit Magnet(Physics& physics, float32 x, float32 y, int signo);
+  explicit Magnet(Physics& physics, float32 x, float32 y, int signo,
+    bool isEnemy);
   virtual ~Magnet();
   
 };
 
 class Spark : public Bullet{
 public:
-  Spark(Physics& physics, float32 x, float32 y, int signo);
+  Spark(Physics& physics, float32 x, float32 y, int signo,
+    bool isEnemy);
   ~Spark();
   
 };
 
 class Ring : public Bullet{
 public:
-  explicit Ring(Physics& physics, float32 x, float32 y, int signo);
+  explicit Ring(Physics& physics, float32 x, float32 y, int signo,
+    bool isEnemy);
   virtual ~Ring();
   
 };
 
 class Fire : public Bullet{
 public:
-  explicit Fire(Physics& physics, float32 x, float32 y, int signo);
+  explicit Fire(Physics& physics, float32 x, float32 y, int signo,
+    bool isEnemy);
   virtual ~Fire();
   
 };

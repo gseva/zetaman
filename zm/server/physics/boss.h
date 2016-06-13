@@ -20,34 +20,39 @@ private:
   unsigned int tics; 
 };
 
-class Boombman : public Boss{
+class Bombman : public Boss{
 public:
-  explicit Boombman(Physics& physics, float32 x, float32 y);
-  virtual ~Boombman();
+  explicit Bombman(Physics& physics, float32 x, float32 y);
+  virtual ~Bombman();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 };
 
 class Magnetman: public Boss{
 public:
   explicit Magnetman(Physics& physics, float32 x, float32 y);
   virtual ~Magnetman();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 };
 
 class Sparkman : public Boss{
 public:
   explicit Sparkman(Physics& physics, float32 x, float32 y);
   virtual ~Sparkman();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 };
 
 class Ringman : public Boss{
 public:
   explicit Ringman(Physics& physics, float32 x, float32 y);
   virtual ~Ringman();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 };
 
 class Fireman : public Boss{
 public:
   explicit Fireman(Physics& physics, float32 x, float32 y);
   virtual ~Fireman();
+  virtual zm::proto::Enemy toBean(int xo, int yo);
 };
 
 #endif

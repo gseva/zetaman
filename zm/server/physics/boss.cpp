@@ -2,10 +2,10 @@
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
-#define BOOMBMAN_VEL        2
-#define BOOMBMAN_JUMP_F     5 * 60
-#define BOOMBMAN_SHOOT_F    5 * 60
-#define BOOMBMAN_JUMP       6
+#define BOMBMAN_VEL        2
+#define BOMBMAN_JUMP_F     5 * 60
+#define BOMBMAN_SHOOT_F    5 * 60
+#define BOMBMAN_JUMP       6
 
 #define MAGNETMAN_VEL       4
 #define MAGNETMAN_JUMP_F    15 * 60
@@ -57,11 +57,20 @@ Bullet* Boss::move(){
   return bullet;
 }
 
-Boombman::Boombman(Physics& physics, float32 x, float32 y) : 
-Boss(physics, x, y, BOOMBMAN_VEL, BOOMBMAN_JUMP,
-  BOOMBMAN_SHOOT_F, BOOMBMAN_JUMP_F){
-  gun = new Boombgun(this, true, physics);
+Bombman::Bombman(Physics& physics, float32 x, float32 y) : 
+Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
+  BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F){
+  gun = new Bombgun(this, true, physics);
 }
+
+Bombman::~Bombman(){}
+
+zm::proto::Enemy Bombman::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Bombman;
+  return protoEnemy;
+}
+
 
 Magnetman::Magnetman(Physics& physics, float32 x, float32 y) : 
 Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
@@ -69,11 +78,29 @@ Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
   gun = new Magnetgun(this, true, physics);
 }
 
+Magnetman::~Magnetman(){}
+
+zm::proto::Enemy Magnetman::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Magnetman;
+  return protoEnemy;
+}
+
+
 Sparkman::Sparkman(Physics& physics, float32 x, float32 y) : 
 Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
   SPARKMAN_SHOOT_F, SPARKMAN_JUMP_F){
   gun = new Sparkgun(this, true, physics);
 }
+
+Sparkman::~Sparkman(){}
+
+zm::proto::Enemy Sparkman::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Sparkman;
+  return protoEnemy;
+}
+
 
 Ringman::Ringman(Physics& physics, float32 x, float32 y) : 
 Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
@@ -81,8 +108,26 @@ Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
   gun = new Ringgun(this, true, physics);
 }
 
+Ringman::~Ringman(){}
+
+zm::proto::Enemy Ringman::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Ringman;
+  return protoEnemy;
+}
+
+
 Fireman::Fireman(Physics& physics, float32 x, float32 y) : 
 Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
   FIREMAN_SHOOT_F, FIREMAN_JUMP_F){
   gun = new Firegun(this, true, physics);
 }
+
+Fireman::~Fireman(){}
+
+zm::proto::Enemy Fireman::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Fireman;
+  return protoEnemy;
+}
+

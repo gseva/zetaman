@@ -50,6 +50,8 @@ Enemy::Enemy(proto::Enemy e) : e_(e) {
       imageName_ = "enemies/met/unguarded.png";
   } else if ( e.enemyType == proto::EnemyType::Bumby ) {
     imageName_ = "enemies/bumpy/1.png";
+  } else {
+    imageName_ = "enemies/sniper/guarded.png";
   }
 }
 

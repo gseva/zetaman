@@ -1,5 +1,3 @@
-
-
 #include "zm/server/physics/bullets.h"
 
 
@@ -44,32 +42,27 @@ bool Bullet::collide(Bullet* bullet){
   return false;
 }
 
-/*PlayerBullet::PlayerBullet(Physics& physics, float32 x, float32 y, int signo) :
-  Bullet(physics, x, y, signo,
-    ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE, PLAYER_BULLET_TYPE){}
+Bomb::Bomb(Physics& physics, float32 x, float32 y, int signo,
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
-PlayerBullet::~PlayerBullet(){}
+Bomb::~Bomb(){}
 
+Magnet::Magnet(Physics& physics, float32 x, float32 y, int signo,
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
-bool PlayerBullet::collide(Enemy* enemy){
-  return true;
-}
+Magnet::~Magnet(){}
 
-bool PlayerBullet::collide(PlayerBody* player){
-  return false;
-}
+Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
-EnemyBullet::EnemyBullet(Physics& physics, float32 x, float32 y, int signo) :
-  Bullet(physics, x, y, signo,
-    ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_TYPE, ENEMY_BULLET_TYPE){}
+Spark::~Spark(){}
 
-EnemyBullet::~EnemyBullet(){}
+Ring::Ring(Physics& physics, float32 x, float32 y, int signo,
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
-bool EnemyBullet::collide(Enemy* enemy){
-  return false;
-}
+Ring::~Ring(){}
 
-bool EnemyBullet::collide(PlayerBody* player){
-  return true;
-}
-*/
+Fire::Fire(Physics& physics, float32 x, float32 y, int signo,
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
+
+Fire::~Fire(){}

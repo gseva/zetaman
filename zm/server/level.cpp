@@ -10,11 +10,13 @@
 #include "zm/server/camera.h"
 #include "zm/server/server.h"
 #include "zm/server/level.h"
+#include "zm/server/physics/boss.h"
 
 #define PPM 64
 #define PLAYER "player"
 #define MET "met"
 #define BUMBY "bumby"
+#define BOMBMAN "bombman"
 
 #define XMAX 47
 #define XMIN 0
@@ -42,6 +44,9 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
         players[amountPlayers]->setCamera(&camera);
         amountPlayers++;
       }
+    } else if ( jm.spawnTypes[(*i).type] == BOMBMAN ) {
+      Enemy* enemy = new Bombman(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
     }
   }
   std::cout << "Empiezo timer!" << std::endl;
