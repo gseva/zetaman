@@ -121,3 +121,76 @@ zm::proto::Enemy Bumby::toBean(int xo, int yo){
   protoEnemy.enemyType = zm::proto::EnemyType::Bumby;
   return protoEnemy;
 }
+
+Sniper::Sniper(Physics& physics, float32 x, float32 y) :
+Enemy(physics,x,y){
+  protected_ = false;
+  tics = 0;
+}
+
+Sniper::~Sniper(){}
+
+Bullet* Sniper::move(){
+  tics++;
+  Bullet* bullet = NULL;
+  if ( tics%(60*3) == 0 )
+    protected_ = !protected_;
+  if ( tics%(60*2) == 0 && !protected_ ) {
+    bullet = shoot();
+  }
+  return bullet;
+}
+
+Bullet* Sniper::shoot(){
+  b2Vec2 pos = getPosition();
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
+  return bullet;
+}
+
+zm::proto::Enemy Sniper::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
+  protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
+                                      zm::proto::EnemyState::unguarded; 
+  return protoEnemy;
+}
+
+JumpingSniper::JumpingSniper(Physics& physics, float32 x, float32 y) :
+Enemy(physics,x,y){
+  protected_ = false;
+  tics = 0;
+}
+
+JumpingSniper::~JumpingSniper(){}
+
+Bullet* JumpingSniper::move(){
+  tics++;
+  if ( tics%(60) == 0 ){
+    b2Vec2 vel = body->GetLinearVelocity();
+    vel.y = 7;
+    body->SetLinearVelocity(vel);
+  }
+  Bullet* bullet = NULL;
+  if ( tics%(60*2) == 0 ) {
+    bullet = shoot();
+  }
+  return bullet;
+}
+
+Bullet* JumpingSniper::shoot(){
+  b2Vec2 pos = getPosition();
+  b2Vec2 vel = body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
+  return bullet;
+}
+
+zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
+  protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
+                                      zm::proto::EnemyState::unguarded; 
+  return protoEnemy;
+}

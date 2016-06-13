@@ -48,4 +48,28 @@ private:
   int shoots;
  };
 
+ class Sniper : public Enemy{
+ public:
+   explicit Sniper(Physics& physics, float32 x, float32 y);
+   virtual ~Sniper();
+   virtual Bullet* move();
+    Bullet* shoot();
+    virtual zm::proto::Enemy toBean(int xo, int yo);
+  private:
+    bool protected_;
+    int tics;
+ };
+
+ class JumpingSniper : public Enemy{
+ public:
+   explicit JumpingSniper(Physics& physics, float32 x, float32 y);
+   virtual ~JumpingSniper();
+   virtual Bullet* move();
+    Bullet* shoot();
+    virtual zm::proto::Enemy toBean(int xo, int yo);
+ private:
+    bool protected_;
+    int tics;
+ };
+
 #endif

@@ -16,6 +16,8 @@
 #define PLAYER "player"
 #define MET "met"
 #define BUMBY "bumby"
+#define SNIPER "sniper"
+#define JUMPINGSNIPER "jumpingsniper"
 #define BOMBMAN "bombman"
 
 #define XMAX 47
@@ -35,6 +37,13 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == MET ) {
       Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == SNIPER ) {
+      Enemy* enemy = new Sniper(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == JUMPINGSNIPER ) {
+      Enemy* enemy = new JumpingSniper(physics, (*i).column+0.5f,
+        (*i).row+0.5f);
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
       if ( amountPlayers < players.size() ){
