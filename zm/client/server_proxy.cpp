@@ -99,9 +99,9 @@ void ServerProxy::shutdown() {
   eventQueue_.push(ce);
 
   sender_->join();
+  receiver_->join();
 
   serverSock_.close();
-  receiver_->join();
 
   delete sender_;
   delete receiver_;

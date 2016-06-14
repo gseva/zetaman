@@ -148,12 +148,26 @@ void Server::shoot(int playerNumber){
 
 void Server::shutdown(int playerNumber)
 {
-  std::cout << "1" << std::endl;
-  proxies[playerNumber]->shutdown();
-  std::cout << "2" << std::endl;
-  proxies.erase(proxies.begin() + playerNumber);
-  std::cout << "3" << std::endl;
-  level->disconnect(playerNumber);
+  if (playerNumber!=0)
+  {
+    std::cout << "1" << std::endl;
+    proxies[playerNumber]->shutdown();
+    std::cout << "2" << std::endl;
+    proxies.erase(proxies.begin() + playerNumber);
+    std::cout << "3" << std::endl;
+    level->disconnect(playerNumber);
+    std::cout << proxies.size() << std::endl;  
+  } else {
+    for (unsigned int i=proxies.size(); i > 0; i--)
+    {
+      proxies[i-1]->shutdown();
+      std::cout << "4" << std::endl;
+      proxies.erase(proxies.begin() + i - 1);
+      std::cout << "5" << std::endl;
+      level->disconnect(i - 1);
+      std::cout << "6" << std::endl;
+    }
+  }
 }
 
 zm::proto::Game Server::getState(){
