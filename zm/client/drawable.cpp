@@ -63,8 +63,12 @@ Enemy::Enemy(proto::Enemy e) : e_(e) {
         break;
       default: break;
     }
-  } else {
-    imageName_ = "enemies/sniper/guarded.png";
+  } else if ( e.enemyType == proto::EnemyType::Fireman ) {
+    imageName_ = "enemies/fireman/charmeleon.png";
+  } else if ( e.enemyType == proto::EnemyType::Magnetman ) {
+    imageName_ = "enemies/magnetman/magneton.png";
+  } else if ( e.enemyType == proto::EnemyType::Sparkman ) {
+    imageName_ = "enemies/sparkman/voltorb.png";
   }
 }
  

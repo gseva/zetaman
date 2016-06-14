@@ -25,6 +25,10 @@
     <file>images/powerups/bigplasma.png</file>
     <file>images/powerups/plasma.png</file>
 
+    <file>images/enemies/fireman/charmeleon.png</file>
+    <file>images/enemies/magnetman/magneton.png</file>
+    <file>images/enemies/sparkman/voltorb.png</file>
+
 
   </gresource>
 </gresources>

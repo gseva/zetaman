@@ -19,6 +19,9 @@
 #define SNIPER "sniper"
 #define JUMPINGSNIPER "jumpingsniper"
 #define BOMBMAN "bombman"
+#define FIREMAN "fireman"
+#define MAGNETMAN "magnetman"
+#define SPARKMAN "sparkman"
 
 #define XMAX 47
 #define XMIN 0
@@ -55,6 +58,15 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       }
     } else if ( jm.spawnTypes[(*i).type] == BOMBMAN ) {
       Enemy* enemy = new Bombman(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == FIREMAN ) {
+      Enemy* enemy = new Fireman(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == MAGNETMAN ) {
+      Enemy* enemy = new Magnetman(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == SPARKMAN ) {
+      Enemy* enemy = new Sparkman(physics, (*i).column+0.5f, (*i).row+0.5f);
       enemies.push_back(enemy);
     }
   }
