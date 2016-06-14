@@ -11,7 +11,8 @@
 std::string JsonMap::getReducedString() {
   json map;
 
-  map = {{"tiles", imageNumbers}, {"images", imageNames}};
+  map = {{"tiles", imageNumbers}, {"images", imageNames},
+         {"background", backgroundImage}};
 
   return map.dump();
 }
@@ -25,6 +26,12 @@ void JsonMap::fromReducedString(const std::string& s) {
 
   imageNumbers = imageNumbersVector;
   imageNames = imageNamesVector;
+
+  if (j.find("background") != j.end()) {
+    backgroundImage = j["background"];
+  } else {
+    backgroundImage = "";
+  }
 }
 
 
@@ -61,6 +68,12 @@ JsonMap JsonSerializer::importMap(std::string path)
   mapa.physics = physicsVector;
   mapa.spawnTypes = spawnTypesVector;
 
+  if (j.find("background") != j.end()) {
+    mapa.backgroundImage = j["background"];
+  } else {
+    mapa.backgroundImage = "";
+  }
+
   return mapa;
 }
 
@@ -68,7 +81,8 @@ void JsonSerializer::exportMap(std::string path, const JsonMap& m)
 {
   json exportable;
 
-  exportable = {{"tiles", m.imageNumbers}, {"images", m.imageNames},
+  exportable = {{"background", ""},
+                {"tiles", m.imageNumbers}, {"images", m.imageNames},
                 {"physics", m.physics}, {"spawnTypes", m.spawnTypes}};
 
   json exportableSpawns = json::array();

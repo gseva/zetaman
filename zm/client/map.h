@@ -8,19 +8,21 @@
 #include <glibmm/refptr.h>
 #include <cairomm/context.h>
 
+#include "zm/json/jsonserializer.h"
+
 #define N_IMAGES 4
 
 namespace zm {
 
 class Map {
-std::vector<int> tiles_;
-std::vector<std::string> imageNames_;
+JsonMap& jsonMap_;
 Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
-
+Glib::RefPtr<Gdk::Pixbuf> background_;
+bool hasBackground;
 void loadImages();
 
 public:
-  Map(std::vector<int> tiles, std::vector<std::string> imageNames);
+  explicit Map(JsonMap& jsonMap_);
 
   void draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y);
 };

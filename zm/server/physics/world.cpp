@@ -6,12 +6,16 @@
 #include "zm/game_protocol.h"
 #include "zm/json/jsonserializer.h"
 #include "zm/server/physics/world.h"
+#include "zm/server/physics/contacts.h"
 
 #define ALTO_TOTAL 12
 #define ANCHO_TOTAL 64
 #define AIRE 0
 #define SOLID "solid"
 #define STAIR "stair"
+
+
+zm::ContactListener GlobalContextListener;
 
 
 Physics::Physics() {}//: ground(world){}
@@ -25,7 +29,7 @@ void Physics::setMap(const JsonMap& jm){
       if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == SOLID ) {
           b2BodyDef blockBodyDef;// = new b2BodyDef();
           b2Body* blockBody;
-          blockBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
+          blockBodyDef.position.Set(i, ALTO_TOTAL - j); //centro
           blockBody = world.createBody(blockBodyDef);
 
           b2PolygonShape blockBox;// = new b2PolygonShape();
@@ -42,7 +46,7 @@ void Physics::setMap(const JsonMap& jm){
       } else if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == STAIR ) {
           b2BodyDef stairBodyDef;// = new b2BodyDef();
           b2Body* stairBody;
-          stairBodyDef.position.Set(i - 0.5f, ALTO_TOTAL - j - 0.5f); //centro
+          stairBodyDef.position.Set(i, ALTO_TOTAL - j); //centro
           stairBody = world.createBody(stairBodyDef);
 
           b2PolygonShape stairshape;
@@ -78,6 +82,7 @@ void Physics::destroyBody(b2Body* body){
 World::World(){
   gravity = new b2Vec2(DEFAULT_GRAVITY_X, DEFAULT_GRAVITY_Y);
   world = new b2World(*gravity);
+  world->SetContactListener(&GlobalContextListener);
 }
 
 World::~World(){
@@ -93,11 +98,14 @@ void World::destroyBody(b2Body* body){
   world->DestroyBody(body);
 }
 
-void World::step(){
+void World::step() {
   float32 timeStep = 1.0f / 60.0f; //60Hz
   int32 velocityIterations = 8; //valores sugeridos
   int32 positionIterations = 3;
   world->Step(timeStep, velocityIterations, positionIterations);
+}
+
+void World::clean() {
 }
 
 Ground::Ground(){}
@@ -108,16 +116,14 @@ void Ground::addBlock(b2Body* blockBody){
   blocks.push_back(blockBody);
 }
 
-Body::Body(Physics& physics) : physics(physics){
-  bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(2.5f, 1.5f);
-  body = this->physics.createBody(bodyDef);
-}
-
-Body::Body(Physics& physics, float32 x, float32 y) : physics(physics){
+Body::Body(Physics& physics, float32 x, float32 y, BodyType t)
+  : type(t), physics(physics) {
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
   body = this->physics.createBody(bodyDef);
+  // Intento de hacer que los cuerpos sean un poco mas platformers
+  body->SetFixedRotation(true);
+  destroyed = false;
  }
 
 Body::~Body(){
@@ -132,4 +138,16 @@ b2Vec2 Body::getPosition(){
 void Body::setPosition(int x, int y){
   Lock locker(mutex);
   body->SetTransform(b2Vec2(x,y), body->GetAngle());
+}
+
+void Body::impact() {
+  markAsDestroyed();
+}
+
+void Body::markAsDestroyed() {
+  destroyed = true;
+}
+
+bool Body::isDestroyed() {
+  return destroyed;
 }

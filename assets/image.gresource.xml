@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/zm">
+    <file>images/tiles/beam.png</file>
+    <file>images/tiles/beam_holes.png</file>
+    <file>images/tiles/box.png</file>
+    <file>images/tiles/brown.png</file>
+    <file>images/tiles/brown_box.png</file>
     <file>images/tiles/grass.png</file>
     <file>images/tiles/grass_half.png</file>
     <file>images/tiles/grass_mid.png</file>
+    <file>images/tiles/dirt.png</file>
+    <file>images/tiles/ice.png</file>
     <file>images/tiles/ladder_mid.png</file>
+    <file>images/tiles/metal_mid.png</file>
+    <file>images/tiles/sand.png</file>
+    <file>images/tiles/snow.png</file>
+    <file>images/tiles/stone_mid.png</file>
+    <file>images/tiles/tundra_mid.png</file>
+
+    <file>images/backgrounds/background_1.png</file>
+    <file>images/backgrounds/background_2.png</file>
+    <file>images/backgrounds/background_3.png</file>
+    <file>images/backgrounds/background_4.png</file>
 
     <file>images/player/megaman.png</file>
     <file>images/player/megaman_running.png</file>

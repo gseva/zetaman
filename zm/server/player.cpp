@@ -6,7 +6,9 @@
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/bullets.h"
 
-Player::Player(){}
+Player::Player(){
+  connected = true;
+}
 
 Player::~Player(){
   if ( body != NULL )
@@ -68,3 +70,6 @@ bool Player::collide(Bullet *bullet){
   return body->collide(bullet);
 }
 
+void Player::disconnect(){
+  connected = false;
+}

@@ -93,30 +93,28 @@ void ServerProxy::selectLevel(int level) {
 
 
 void ServerProxy::shutdown() {
+  receiver_->stop = true;
+
   proto::ClientEvent ce(proto::ClientEventType::shutdown);
   eventQueue_.push(ce);
 
-  receiver_->stop = true;
   sender_->join();
 
   serverSock_.close();
   receiver_->join();
+
 
   delete sender_;
   delete receiver_;
 }
 
 ServerProxy::~ServerProxy() {
-  shutdown();
+  //shutdown();
 }
 
 
-std::vector<std::string> ServerProxy::getImageNames() {
-  return map_.imageNames;
-}
-
-std::vector<int> ServerProxy::getImages() {
-  return map_.imageNumbers;
+JsonMap& ServerProxy::getJsonMap() {
+  return map_;
 }
 
 
@@ -129,7 +127,7 @@ void Sender::run() {
   proto::ClientEvent client;
   do {
     client = eventQueue_.pop();
-    if (client.state == proto::ClientEventType::shutdown) continue;
+    //if (client.state == proto::ClientEventType::shutdown) continue;
     std::string s = client.serialize();
     serverSock_.write(s);
   } while (client.state != proto::ClientEventType::shutdown);

@@ -12,7 +12,6 @@
 #include "zm/server/level.h"
 #include "zm/server/physics/boss.h"
 
-#define PPM 64
 #define PLAYER "player"
 #define MET "met"
 #define BUMBY "bumby"
@@ -27,55 +26,75 @@
 #define XMAX 47
 #define XMIN 0
 
-Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
-  Server& s) : timer(physics, s, enemies, bullets, connectedPlayers),
-  players(connectedPlayers), camera(players) {
-  JsonSerializer js;
-  jm = js.importMap(path);
+Level::Level(std::vector<Player*>& connectedPlayers, JsonMap& jsonMap,
+    Server& s) : players(connectedPlayers), timer(physics, s, *this),
+    jm(jsonMap), camera(players)
+{
   physics.setMap(jm);
   unsigned int amountPlayers = 0;
-  for ( std::vector<SpawnData>::iterator i = jm.spawnsData.begin();
-    i != jm.spawnsData.end(); ++i ) {
-    if ( jm.spawnTypes[(*i).type] == BUMBY ) {
-      Enemy* enemy = new Bumby(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == MET ) {
-      Enemy* enemy = new Met(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == SNIPER ) {
-      Enemy* enemy = new Sniper(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == JUMPINGSNIPER ) {
-      Enemy* enemy = new JumpingSniper(physics, (*i).column+0.5f,
-        (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == PLAYER ) {
+  for (auto&& spawn : jm.spawnsData) {
+    std::string type = jm.spawnTypes[spawn.type];
+    float32 x = spawn.column + .5f;
+    float32 y = spawn.row + .5f;
+
+    if ( type == PLAYER ) {
       if ( amountPlayers < players.size() ){
         std::cout << "Creo jugador: " << amountPlayers << std::endl;
         players[amountPlayers]->createBody(&physics,
-          (*i).column+0.5f, (*i).row+0.5f);
+          x, y);
         players[amountPlayers]->setCamera(&camera);
         amountPlayers++;
       }
-    } else if ( jm.spawnTypes[(*i).type] == BOMBMAN ) {
-      Enemy* enemy = new Bombman(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == FIREMAN ) {
-      Enemy* enemy = new Fireman(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == MAGNETMAN ) {
-      Enemy* enemy = new Magnetman(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == SPARKMAN ) {
-      Enemy* enemy = new Sparkman(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
-    } else if ( jm.spawnTypes[(*i).type] == RINGMAN ) {
-      Enemy* enemy = new Ringman(physics, (*i).column+0.5f, (*i).row+0.5f);
-      enemies.push_back(enemy);
+      continue;
     }
+
+    Enemy* enemy;
+    if ( type == BUMBY ) {
+      enemy = new Bumby(physics, x, y);
+    } else if ( type == MET ) {
+      enemy = new Met(physics, x, y);
+    } else if ( type == SNIPER ) {
+      enemy = new Sniper(physics, x, y);
+    } else if ( type == JUMPINGSNIPER ) {
+      enemy = new JumpingSniper(physics, x, y);
+    } else if ( type == BOMBMAN ) {
+      enemy = new Bombman(physics, x, y);
+    } else if ( type == FIREMAN ) {
+      enemy = new Fireman(physics, x, y);
+    } else if ( type == MAGNETMAN ) {
+      enemy = new Magnetman(physics, x, y);
+    } else if ( type == SPARKMAN ) {
+      enemy = new Sparkman(physics, x, y);
+    } else if ( type == RINGMAN ) {
+      enemy = new Ringman(physics, x, y);
+    }
+    enemies.push_back(enemy);
   }
+
   std::cout << "Empiezo timer!" << std::endl;
   timer.start();
+}
+
+void Level::clean() {
+  std::vector<Bullet*>::iterator iBullet;
+  for (iBullet = bullets.begin(); iBullet != bullets.end();) {
+    if ((*iBullet)->isDestroyed()) {
+      delete (*iBullet);
+      iBullet = bullets.erase(iBullet);
+    } else {
+      ++iBullet;
+    }
+  }
+
+  std::vector<Enemy*>::iterator iEnemy;
+  for (iEnemy = enemies.begin(); iEnemy != enemies.end();) {
+    if ((*iEnemy)->isDestroyed()) {
+      delete (*iEnemy);
+      iEnemy = enemies.erase(iEnemy);
+    } else {
+      ++iEnemy;
+    }
+  }
 }
 
 Level::~Level(){
@@ -88,6 +107,7 @@ Level::~Level(){
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     delete (*iPlayer);
   }
+
   std::vector<Bullet*>::iterator iBullet;
   for ( iBullet = bullets.begin(); iBullet != bullets.end(); ++iBullet ) {
     delete (*iBullet);
@@ -105,24 +125,28 @@ zm::proto::Game Level::getState(){
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
-    zm::proto::Player protoPlayer;
-    protoPlayer.pos.x = (*player)->getPosition().x* PPM - xo * PPM;
-    protoPlayer.pos.y = (*player)->getPosition().y * -PPM + 768;
-    gs.players.push_back(protoPlayer);
+    if ((*player)->connected) {
+      zm::proto::Player protoPlayer;
+      protoPlayer.pos.x = (*player)->getPosition().x - xo;
+      protoPlayer.pos.y = (*player)->getPosition().y;
+      gs.players.push_back(protoPlayer);
+    }
   }
 
 
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
+    // std::cout << "Enemy: " << protoEnemy.pos.x << " "
+    // << protoEnemy.pos.y <<  std::endl;
     gs.enemies.push_back(protoEnemy);
   }
 
   for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
     zm::proto::Proyectile proyectile;
-    proyectile.pos.x = (*bullet)->getPosition().x * PPM - xo * PPM;
-    proyectile.pos.y = (*bullet)->getPosition().y * -PPM + 768;
+    proyectile.pos.x = (*bullet)->getPosition().x - xo;
+    proyectile.pos.y = (*bullet)->getPosition().y;
     gs.proyectiles.push_back(proyectile);
   }
 
@@ -152,4 +176,8 @@ void Level::up(int playerNumber){
 void Level::shoot(int playerNumber){
   Bullet* bullet = players[playerNumber]->shoot();
   bullets.push_back(bullet);
+}
+
+void Level::disconnect(int playerNumber){
+  players[playerNumber]->disconnect();
 }

@@ -65,8 +65,7 @@ public:
 
   void selectLevel(int level);
 
-  std::vector<std::string> getImageNames();
-  std::vector<int> getImages();
+  JsonMap& getJsonMap();
 
   proto::Game getState();
 

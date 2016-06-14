@@ -10,7 +10,7 @@ class Bullet;
 
 class PlayerBody : public Body {
 public:
-  explicit PlayerBody(Physics& physics);
+  // explicit PlayerBody(Physics& physics);
   explicit PlayerBody(Physics& physics, float32 x, float32 y);
   virtual ~PlayerBody();
   void jump();

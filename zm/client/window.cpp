@@ -78,6 +78,12 @@ bool Window::on_key_release_event(GdkEventKey* event) {
   return Gtk::Window::on_key_release_event(event);
 }
 
+void Window::on_hide()
+{
+  std::cout << "Me cierro" << std::endl;
+  c_->serverProxy.shutdown();
+}
+
 void Window::on_startButton_clicked() {
   c_->startConnection();
   if (c_->serverProxy.isHost) {

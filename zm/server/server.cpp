@@ -9,9 +9,8 @@
 #include "zm/server/server.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "build/maps/mapita.json"
+#define DEFAULT_PATH "build/maps/"
 
-#define PPM 64
 
 Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
     accepting_(false), playing_(false) {
@@ -82,7 +81,14 @@ void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
 
 void Server::selectLevel(int level) {
   std::cout << "Selecciono nivel " << level << std::endl;
-  mapPath_ = DEFAULT_PATH;
+  switch (level) {
+    case 0: mapPath_ = "level_1.json"; break;
+    case 1: mapPath_ = "level_2.json"; break;
+    case 2: mapPath_ = "level_3.json"; break;
+    case 3: mapPath_ = "level_4.json"; break;
+    case 4: mapPath_ = "level_5.json"; break;
+  }
+  mapPath_ = DEFAULT_PATH + mapPath_;
   accepting_ = false;
   accepter_->close();
 }
@@ -108,7 +114,7 @@ void Server::startLevel(){
     clientProxy->startGame();
   }
   std::cout << "Creo new level! " << path << std::endl;
-  level = new Level(players, path, *this);
+  level = new Level(players, jm, *this);
 
   std::cout << "Empiezo a jugar! " << std::endl;
   playing_ = true;
@@ -144,6 +150,30 @@ void Server::up(int playerNumber){
 
 void Server::shoot(int playerNumber){
   level->shoot(playerNumber);
+}
+
+void Server::shutdown(int playerNumber)
+{
+  if (playerNumber!=0)
+  {
+    std::cout << "1" << std::endl;
+    proxies[playerNumber]->shutdown();
+    std::cout << "2" << std::endl;
+    proxies.erase(proxies.begin() + playerNumber);
+    std::cout << "3" << std::endl;
+    level->disconnect(playerNumber);
+    std::cout << proxies.size() << std::endl;  
+  } else {
+    for (unsigned int i=proxies.size(); i > 0; i--)
+    {
+      proxies[i-1]->shutdown();
+      std::cout << "4" << std::endl;
+      proxies.erase(proxies.begin() + i - 1);
+      std::cout << "5" << std::endl;
+      level->disconnect(i - 1);
+      std::cout << "6" << std::endl;
+    }
+  }
 }
 
 zm::proto::Game Server::getState(){
