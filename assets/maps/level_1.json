@@ -19,13 +19,25 @@
 	"met" ,
 	"player",
 	"bumby",
-	"fireman"
+	"fireman",
+	"sniper",
+	"jumpingsniper"
 	],
 "spawns":[
 	{
 		"type": 3,
 		"x": 5,
 		"y": 1
+	},
+	{
+		"type": 4,
+		"x": 20,
+		"y": 3
+	},
+	{
+		"type": 5,
+		"x": 19,
+		"y": 3
 	},
 	{
 		"type": 0 ,
