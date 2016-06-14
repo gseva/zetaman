@@ -229,7 +229,7 @@ create_dirs:
 client: create_dirs client_assets $(o_client_all_files)
 	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(CL_LDFLAGS)
 
-server: create_dirs $(o_server_all_files)
+server: create_dirs client_assets $(o_server_all_files)
 	$(LD) $(o_server_all_files) -o $(server_target) $(SRV_LDFLAGS)
 
 editor: create_dirs editor_assets $(o_editor_all_files)

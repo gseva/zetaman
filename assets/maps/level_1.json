@@ -18,15 +18,15 @@
 "spawnTypes":[
 	"met" ,
 	"player",
-	"bumby"
+	"bumby",
+	"fireman"
 	],
 "spawns":[
 	{
-		"type": 0 ,
-		"x": 5 ,
+		"type": 3,
+		"x": 5,
 		"y": 1
-	} ,
-
+	},
 	{
 		"type": 0 ,
 		"x": 10 ,

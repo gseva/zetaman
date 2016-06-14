@@ -19,14 +19,15 @@
 "spawnTypes":[
 	"met" ,
 	"player",
-	"bumby"
+	"bumby",
+	"ringman"
 	],
 "spawns":[
 	{
-		"type": 0 ,
-		"x": 5 ,
+		"type": 3,
+		"x": 5,
 		"y": 1
-	} ,
+	},
 
 	{
 		"type": 0 ,
