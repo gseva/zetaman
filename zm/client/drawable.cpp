@@ -76,14 +76,14 @@ Enemy::Enemy(proto::Enemy e) : e_(e) {
     imageName_ = "enemies/bumpy/1.png";
   } else if ( e.enemyType == proto::EnemyType::Sniper ){
     switch ( e.enemyState ) {
-      case proto::EnemyState::guarded: 
+      case proto::EnemyState::guarded:
         imageName_ = "enemies/sniper/guarded.png";
         break;
       case proto::EnemyState::jumping:
         imageName_ = "enemies/sniper/jumping.png";
         break;
       case proto::EnemyState::unguarded:
-        imageName_ = "enemies/sniper/jumping.png";
+        imageName_ = "enemies/sniper/unguarded.png";
         break;
       default: break;
     }
@@ -99,7 +99,7 @@ Enemy::Enemy(proto::Enemy e) : e_(e) {
     imageName_ = "enemies/bombman/golem.png";
   }
 }
- 
+
 std::string& Enemy::getImageName() {
   return imageName_;
 }

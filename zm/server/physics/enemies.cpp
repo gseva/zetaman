@@ -153,7 +153,7 @@ zm::proto::Enemy Sniper::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
   protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
-                                      zm::proto::EnemyState::unguarded; 
+                                      zm::proto::EnemyState::unguarded;
   return protoEnemy;
 }
 
@@ -167,8 +167,8 @@ JumpingSniper::~JumpingSniper(){}
 
 Bullet* JumpingSniper::move(){
   tics++;
-  if ( tics%(60) == 0 ){
-    b2Vec2 vel = body->GetLinearVelocity();
+  b2Vec2 vel = body->GetLinearVelocity();
+  if ( tics%(60) == 0 && vel.y == 0 ){
     vel.y = 7;
     body->SetLinearVelocity(vel);
   }
@@ -191,6 +191,6 @@ zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
   protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
-                                      zm::proto::EnemyState::unguarded; 
+                                      zm::proto::EnemyState::unguarded;
   return protoEnemy;
 }
