@@ -19,18 +19,25 @@
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
 
-
 class PlayerBody;
 class Enemy;
 class Bullet;
+
+enum class BodyType {
+  Enemy, Player, Bullet
+};
+
 
 class World{
 public:
   World();
   ~World();
-  void step();
+
   b2Body* createBody(const b2BodyDef& bodyDef);
   void destroyBody(b2Body* body);
+
+  void step();
+  void clean();
 private:
   b2World* world;
   b2Vec2* gravity;
@@ -55,6 +62,7 @@ public:
   b2Body* createBody(const b2BodyDef& bodyDef);
   void destroyBody(b2Body* body);
   std::vector<b2Body*> stairways;
+
 private:
   Mutex mutex;
   World world;
@@ -63,19 +71,26 @@ private:
 
 class Body {
 public:
-  explicit Body(Physics& physics);
-  explicit Body(Physics& physics, float32 x, float32 y);
+  explicit Body(Physics& physics, float32 x, float32 y, BodyType t);
   virtual ~Body();
   void setPosition(int x, int y);
   b2Vec2 getPosition();
   b2Body* body;
   virtual bool collide(Bullet* bullet)=0;
+
+  void markAsDestroyed();
+  bool isDestroyed();
+  void impact();
+
+  BodyType type;
 protected:
   Mutex mutex;
   Physics& physics;
   b2BodyDef bodyDef;
   b2FixtureDef fixtureDef;
   b2Fixture* fixture;
+
+  bool destroyed;
 };
 
 #endif

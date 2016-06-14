@@ -19,7 +19,7 @@ struct JsonSerializable {
 
 struct Position : JsonSerializable {
   Position();
-  int x, y;
+  float x, y;
   virtual json getJson();
 };
 

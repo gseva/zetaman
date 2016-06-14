@@ -7,9 +7,23 @@
 
 #include "zm/client/drawable.h"
 
+// pixels per meter
+#define PPM 64
+
+// Estos offsets hacen falta para que todo se dibuje mas lindo, no se porque
+#define X_OFFSET 0
+#define Y_OFFSET 0
 
 namespace zm {
 namespace drawing {
+
+proto::Position posToScale(const proto::Position& from) {
+  proto::Position result;
+  result.x = from.x * PPM + X_OFFSET;
+  result.y = from.y * -PPM + 768 + Y_OFFSET;
+  return result;
+}
+
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
                     ImageBuffer& buff) {
@@ -20,11 +34,21 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
   int width = image->get_width();
   int height = image->get_height();
 
-  proto::Position pos = getPosition();
+  proto::Position pos = posToScale(getPosition());
 
-  Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
-                                pos.y - height / 2);
+  // Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
+  //                               pos.y - height / 2);
+  Gdk::Cairo::set_source_pixbuf(context, image, pos.x, pos.y);
   context->paint();
+
+  // context->set_source_rgb(0.8, 0.0, 0.0);
+  // context->move_to(pos.x, pos.y);
+  // context->line_to(pos.x + width / 2, pos.y - height / 2);
+  // context->line_to(pos.x + width / 2, pos.y + height / 2);
+  // context->line_to(pos.x - width / 2, pos.y + height / 2);
+  // context->line_to(pos.x - width / 2, pos.y - height / 2);
+  // context->line_to(pos.x + width / 2, pos.y - height / 2);
+  // context->stroke();
 
   context->restore();
 }

@@ -19,6 +19,7 @@ public:
   virtual bool collide(Enemy* enemy)=0;
   virtual bool collide(PlayerBody* player)=0;
   virtual bool collide(Bullet* bullet);
+
 protected:
   const b2Vec2 vel;
 };

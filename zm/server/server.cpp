@@ -11,7 +11,6 @@
 
 #define DEFAULT_PATH "build/maps/mapita.json"
 
-#define PPM 64
 
 Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
     accepting_(false), playing_(false) {
@@ -108,7 +107,7 @@ void Server::startLevel(){
     clientProxy->startGame();
   }
   std::cout << "Creo new level! " << path << std::endl;
-  level = new Level(players, path, *this);
+  level = new Level(players, jm, *this);
 
   std::cout << "Empiezo a jugar! " << std::endl;
   playing_ = true;

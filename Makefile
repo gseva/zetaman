@@ -224,7 +224,7 @@ $(o_editor_resources): $(editor_resources)
 
 create_dirs:
 	@$(foreach file, $(o_all_files) $(resources_dir) , mkdir -p $(dir $(file));)
-	@mkdir -p $(resources_dir)
+	@mkdir -p $(resources_dir) $(maps_dir)
 
 client: create_dirs client_assets $(o_client_all_files)
 	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(CL_LDFLAGS)
