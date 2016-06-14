@@ -111,12 +111,8 @@ ServerProxy::~ServerProxy() {
 }
 
 
-std::vector<std::string> ServerProxy::getImageNames() {
-  return map_.imageNames;
-}
-
-std::vector<int> ServerProxy::getImages() {
-  return map_.imageNumbers;
+JsonMap& ServerProxy::getJsonMap() {
+  return map_;
 }
 
 

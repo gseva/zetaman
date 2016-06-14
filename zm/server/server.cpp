@@ -9,7 +9,7 @@
 #include "zm/server/server.h"
 #include "zm/json/jsonserializer.h"
 
-#define DEFAULT_PATH "build/maps/mapita.json"
+#define DEFAULT_PATH "build/maps/"
 
 
 Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
@@ -81,7 +81,14 @@ void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
 
 void Server::selectLevel(int level) {
   std::cout << "Selecciono nivel " << level << std::endl;
-  mapPath_ = DEFAULT_PATH;
+  switch (level) {
+    case 0: mapPath_ = "level_1.json"; break;
+    case 1: mapPath_ = "level_2.json"; break;
+    case 2: mapPath_ = "level_3.json"; break;
+    case 3: mapPath_ = "level_4.json"; break;
+    case 4: mapPath_ = "level_5.json"; break;
+  }
+  mapPath_ = DEFAULT_PATH + mapPath_;
   accepting_ = false;
   accepter_->close();
 }

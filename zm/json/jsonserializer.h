@@ -22,6 +22,7 @@ struct JsonMap
   std::vector<std::string> physics;
   std::vector<std::string> spawnTypes;
   std::vector<SpawnData> spawnsData;
+  std::string backgroundImage;
 
   // Serializa imageNames e imageNumbers.
   std::string getReducedString();

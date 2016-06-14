@@ -31,8 +31,8 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 
   Glib::RefPtr<Gdk::Pixbuf> image = buff.getImage(getImageName());
 
-  int width = image->get_width();
-  int height = image->get_height();
+  // int width = image->get_width();
+  // int height = image->get_height();
 
   proto::Position pos = posToScale(getPosition());
 

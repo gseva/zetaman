@@ -224,7 +224,7 @@ $(o_editor_resources): $(editor_resources)
 
 create_dirs:
 	@$(foreach file, $(o_all_files) $(resources_dir) , mkdir -p $(dir $(file));)
-	@mkdir -p $(resources_dir) $(maps_dir)
+	@mkdir -p $(resources_dir) $(build_dir)maps
 
 client: create_dirs client_assets $(o_client_all_files)
 	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(CL_LDFLAGS)
@@ -239,7 +239,7 @@ lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
 client_assets: $(client_resources) $(o_client_resources)
-	@cp -r $(maps_dir) $(build_dir)maps
+	@cp -r $(maps_dir)/* $(build_dir)maps
 
 editor_assets: $(editor_resources) $(o_editor_resources)
 
