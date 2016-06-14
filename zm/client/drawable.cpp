@@ -41,14 +41,14 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
   Gdk::Cairo::set_source_pixbuf(context, image, pos.x, pos.y);
   context->paint();
 
-  context->set_source_rgb(0.8, 0.0, 0.0);
-  context->move_to(pos.x, pos.y);
-  context->line_to(pos.x + width / 2, pos.y - height / 2);
-  context->line_to(pos.x + width / 2, pos.y + height / 2);
-  context->line_to(pos.x - width / 2, pos.y + height / 2);
-  context->line_to(pos.x - width / 2, pos.y - height / 2);
-  context->line_to(pos.x + width / 2, pos.y - height / 2);
-  context->stroke();
+  // context->set_source_rgb(0.8, 0.0, 0.0);
+  // context->move_to(pos.x, pos.y);
+  // context->line_to(pos.x + width / 2, pos.y - height / 2);
+  // context->line_to(pos.x + width / 2, pos.y + height / 2);
+  // context->line_to(pos.x - width / 2, pos.y + height / 2);
+  // context->line_to(pos.x - width / 2, pos.y - height / 2);
+  // context->line_to(pos.x + width / 2, pos.y - height / 2);
+  // context->stroke();
 
   context->restore();
 }
