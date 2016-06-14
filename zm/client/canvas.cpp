@@ -11,7 +11,7 @@
 namespace zm {
 
 
-Canvas::Canvas(ServerProxy& sp) : map_(sp.getImages(), sp.getImageNames()) {
+Canvas::Canvas(ServerProxy& sp) : map_(sp.getJsonMap()) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
               &Canvas::on_timeout), 1000/30);
@@ -54,6 +54,11 @@ void Canvas::updateGameState(proto::Game game) {
   Lock l(m_);
   game_ = game;
   // redraw();
+}
+
+bool Canvas::on_expose_event(GdkEventExpose* event) {
+  std::cout << "Expose!" << std::endl;
+  return on_expose_event(event);
 }
 
 bool Canvas::on_timeout() {
