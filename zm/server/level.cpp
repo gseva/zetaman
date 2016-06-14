@@ -97,12 +97,12 @@ zm::proto::Game Level::getState(){
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
-    zm::proto::Player protoPlayer;
-    protoPlayer.pos.x = (*player)->getPosition().x - xo;
-    protoPlayer.pos.y = (*player)->getPosition().y;
-    // std::cout << "Player: " << protoPlayer.pos.x << " "
-    // << protoPlayer.pos.y <<  std::endl;
-    gs.players.push_back(protoPlayer);
+    if ((*player)->connected) {
+      zm::proto::Player protoPlayer;
+      protoPlayer.pos.x = (*player)->getPosition().x - xo;
+      protoPlayer.pos.y = (*player)->getPosition().y;
+      gs.players.push_back(protoPlayer);
+    }
   }
 
 
@@ -148,4 +148,8 @@ void Level::up(int playerNumber){
 void Level::shoot(int playerNumber){
   Bullet* bullet = players[playerNumber]->shoot();
   bullets.push_back(bullet);
+}
+
+void Level::disconnect(int playerNumber){
+  players[playerNumber]->disconnect();
 }

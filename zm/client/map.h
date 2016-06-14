@@ -22,7 +22,7 @@ bool hasBackground;
 void loadImages();
 
 public:
-  Map(JsonMap& jsonMap_);
+  explicit Map(JsonMap& jsonMap_);
 
   void draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y);
 };

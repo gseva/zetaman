@@ -28,12 +28,14 @@ public:
   void stopHorizontalMove(int playerNumber);
   void up(int playerNumber);
   void shoot(int playerNumber);
+  void disconnect(int playerNumber);
 
   void clean();
 
   std::vector<Player*>& players;
   std::vector<Enemy*> enemies;
   std::vector<Bullet*> bullets;
+
 private:
   Physics physics;
   Timer timer;

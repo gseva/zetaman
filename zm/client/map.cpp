@@ -38,7 +38,6 @@ void Map::loadImages() {
 }
 
 void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
-
   context->save();
 
   if (hasBackground) {
