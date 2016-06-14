@@ -57,9 +57,10 @@ void ClientProxy::shutdown() {
   eventQueue_.push(game);
 
   sender_->join();
+  clientSock_->close();
   receiver_->join();
 
-  clientSock_->close();
+  
 
   delete sender_;
   delete receiver_;
