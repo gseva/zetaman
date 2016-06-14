@@ -22,6 +22,7 @@
 #define FIREMAN "fireman"
 #define MAGNETMAN "magnetman"
 #define SPARKMAN "sparkman"
+#define RINGMAN "ringman"
 
 #define XMAX 47
 #define XMIN 0
@@ -67,6 +68,9 @@ Level::Level(std::vector<Player*>& connectedPlayers, const std::string& path,
       enemies.push_back(enemy);
     } else if ( jm.spawnTypes[(*i).type] == SPARKMAN ) {
       Enemy* enemy = new Sparkman(physics, (*i).column+0.5f, (*i).row+0.5f);
+      enemies.push_back(enemy);
+    } else if ( jm.spawnTypes[(*i).type] == RINGMAN ) {
+      Enemy* enemy = new Ringman(physics, (*i).column+0.5f, (*i).row+0.5f);
       enemies.push_back(enemy);
     }
   }

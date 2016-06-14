@@ -69,6 +69,10 @@ Enemy::Enemy(proto::Enemy e) : e_(e) {
     imageName_ = "enemies/magnetman/magneton.png";
   } else if ( e.enemyType == proto::EnemyType::Sparkman ) {
     imageName_ = "enemies/sparkman/voltorb.png";
+  } else if ( e.enemyType == proto::EnemyType::Ringman ) {
+    imageName_ = "enemies/ringman/mewtwo.png";
+  } else if ( e.enemyType == proto::EnemyType::Bombman ) {
+    imageName_ = "enemies/bombman/golem.png";
   }
 }
  

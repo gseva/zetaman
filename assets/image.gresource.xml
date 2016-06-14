@@ -28,6 +28,8 @@
     <file>images/enemies/fireman/charmeleon.png</file>
     <file>images/enemies/magnetman/magneton.png</file>
     <file>images/enemies/sparkman/voltorb.png</file>
+    <file>images/enemies/ringman/mewtwo.png</file>
+    <file>images/enemies/bombman/golem.png</file>
 
 
   </gresource>
