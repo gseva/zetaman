@@ -2,13 +2,34 @@
 <gresources>
   <gresource prefix="/zm/editor">
     <file preprocess="xml-stripblanks">editor.glade</file>
-    <file>images/grass_mid.png</file>
     <file>images/player/megaman.png</file>
-    <file>images/enemy.png</file>
     <file>images/void.png</file>
-    <file>images/tiles/ladder_mid.png</file>
+
     <file>images/enemies/bumpy/1.png</file>
     <file>images/enemies/met/unguarded.png</file>
     <file>images/enemies/sniper/guarded.png</file>
+
+    <file>images/enemies/fireman/charmeleon.png</file>
+    <file>images/enemies/magnetman/magneton.png</file>
+    <file>images/enemies/sparkman/voltorb.png</file>
+    <file>images/enemies/ringman/mewtwo.png</file>
+    <file>images/enemies/bombman/golem.png</file>
+
+    <file>images/tiles/beam.png</file>
+    <file>images/tiles/beam_holes.png</file>
+    <file>images/tiles/box.png</file>
+    <file>images/tiles/brown.png</file>
+    <file>images/tiles/brown_box.png</file>
+    <file>images/tiles/grass.png</file>
+    <file>images/tiles/grass_half.png</file>
+    <file>images/tiles/grass_mid.png</file>
+    <file>images/tiles/dirt.png</file>
+    <file>images/tiles/ice.png</file>
+    <file>images/tiles/ladder_mid.png</file>
+    <file>images/tiles/metal_mid.png</file>
+    <file>images/tiles/sand.png</file>
+    <file>images/tiles/snow.png</file>
+    <file>images/tiles/stone_mid.png</file>
+    <file>images/tiles/tundra_mid.png</file>
   </gresource>
 </gresources>

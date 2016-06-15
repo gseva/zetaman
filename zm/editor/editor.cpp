@@ -5,7 +5,7 @@
 #include <map>
 
 #define IMAGEN_JUGADOR "/zm/editor/images/player/megaman.png"
-#define IMAGEN_TERRENO "/zm/editor/images/grass_mid.png"
+#define IMAGEN_TERRENO "/zm/editor/images/tiles/grass.png"
 #define IMAGEN_BUMPY "/zm/editor/images/enemies/bumpy/1.png"
 #define IMAGEN_BLANCO "/zm/editor/images/void.png"
 #define IMAGEN_ESCALERA "/zm/editor/images/tiles/ladder_mid.png"
@@ -17,6 +17,7 @@ void Editor::on_buttonCrearJugador_clicked()
   pComboBoxEnemy->set_active(0);
   std::cout << "Crear jugador seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_JUGADOR;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 void Editor::on_buttonCrearTerreno_clicked()
@@ -24,6 +25,7 @@ void Editor::on_buttonCrearTerreno_clicked()
   pComboBoxEnemy->set_active(0);
   std::cout << "Crear terreno seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_TERRENO;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 void Editor::on_buttonCrearEscalera_clicked()
@@ -31,12 +33,14 @@ void Editor::on_buttonCrearEscalera_clicked()
   pComboBoxEnemy->set_active(0);
   std::cout << "Crear escalera seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_ESCALERA;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 void Editor::on_buttonBorrarTile_clicked()
 {
   std::cout << "Borrar tile seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_BLANCO;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 void Editor::on_buttonSaveMap_clicked()
@@ -71,6 +75,7 @@ void EditorMenu::on_buttonEditLevel_clicked()
 void Editor::on_ddlEnemy_changed()
 {
   imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
@@ -119,6 +124,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
   builder->get_widget("viewport1", pViewPort);
   builder->get_widget("scrolledwindow1", pScrolledWindow);
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
+  builder->get_widget("imgSelected", pSelectedImage);
 
   pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
@@ -149,6 +155,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
 
 
   imagenSeleccionada = IMAGEN_TERRENO;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
 void Editor::initializeRelationships()

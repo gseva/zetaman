@@ -36,6 +36,7 @@ class Editor {
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
     Glib::RefPtr<Gtk::Application> app;
+    Gtk::Image* pSelectedImage;
 
     Gtk::EventBox** eventBoxMatrix;
     Gtk::Image** imageMatrix;
