@@ -5,33 +5,30 @@
 #include <map>
 
 #define IMAGE_PLAYER "/zm/editor/images/player/megaman.png"
-#define IMAGE_GRASS "/zm/editor/images/tiles/grass.png"
-#define IMAGEN_BUMPY "/zm/editor/images/enemies/bumpy/1.png"
+
 #define IMAGEN_BLANCO "/zm/editor/images/void.png"
 #define IMAGEN_ESCALERA "/zm/editor/images/tiles/ladder_mid.png"
+
+#define IMAGEN_BUMPY "/zm/editor/images/enemies/bumpy/1.png"
 #define IMAGEN_MET "/zm/editor/images/enemies/met/unguarded.png"
 #define IMAGEN_SNIPER "/zm/editor/images/enemies/sniper/guarded.png"
+
 #define IMAGE_BOSS_FIREMAN "/zm/editor/images/enemies/fireman/charmeleon.png"
 #define IMAGE_BOSS_SPARKMAN "/zm/editor/images/enemies/sparkman/voltorb.png"
 #define IMAGE_BOSS_MAGNETMAN "/zm/editor/images/enemies/magnetman/magneton.png"
 #define IMAGE_BOSS_BOMBMAN "/zm/editor/images/enemies/bombman/golem.png"
 #define IMAGE_BOSS_RINGMAN "/zm/editor/images/enemies/ringman/mewtwo.png"
 
+#define IMAGE_GRASS "/zm/editor/images/tiles/grass.png"
+#define IMAGE_TILE_GRASS_HALF "/zm/editor/images/tiles/grass_half.png"
+
 void Editor::on_buttonCrearJugador_clicked()
 {
   pComboBoxEnemy->set_active(0);
   pComboBoxBoss->set_active(0);
+  pComboBoxTile->set_active(0);
   std::cout << "Crear jugador seleccionado" << std::endl;
   imagenSeleccionada = IMAGE_PLAYER;
-  pSelectedImage->set_from_resource(imagenSeleccionada);
-}
-
-void Editor::on_buttonCrearTerreno_clicked()
-{
-  pComboBoxEnemy->set_active(0);
-  pComboBoxBoss->set_active(0);
-  std::cout << "Crear terreno seleccionado" << std::endl;
-  imagenSeleccionada = IMAGE_GRASS;
   pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
@@ -39,6 +36,7 @@ void Editor::on_buttonCrearEscalera_clicked()
 {
   pComboBoxEnemy->set_active(0);
   pComboBoxBoss->set_active(0);
+  pComboBoxTile->set_active(0);
   std::cout << "Crear escalera seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_ESCALERA;
   pSelectedImage->set_from_resource(imagenSeleccionada);
@@ -48,6 +46,7 @@ void Editor::on_buttonBorrarTile_clicked()
 {
   pComboBoxEnemy->set_active(0);
   pComboBoxBoss->set_active(0);
+  pComboBoxTile->set_active(0);
   std::cout << "Borrar tile seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_BLANCO;
   pSelectedImage->set_from_resource(imagenSeleccionada);
@@ -62,6 +61,7 @@ void Editor::on_buttonSaveMap_clicked()
 void Editor::on_ddlEnemy_changed()
 {
   pComboBoxBoss->set_active(0);
+  pComboBoxTile->set_active(0);
   imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
   pSelectedImage->set_from_resource(imagenSeleccionada);
 }
@@ -69,7 +69,16 @@ void Editor::on_ddlEnemy_changed()
 void Editor::on_ddlBoss_changed()
 {
   pComboBoxEnemy->set_active(0);
+  pComboBoxTile->set_active(0);
   imagenSeleccionada = ddlToName[pComboBoxBoss->get_active_text()];
+  pSelectedImage->set_from_resource(imagenSeleccionada);
+}
+
+void Editor::on_ddlTile_changed()
+{
+  pComboBoxEnemy->set_active(0);
+  pComboBoxBoss->set_active(0);
+  imagenSeleccionada = ddlToName[pComboBoxTile->get_active_text()];
   pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
@@ -88,7 +97,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
   /* Elementos de la ventana del editor*/
-  builder->get_widget("btnCrearTerreno", pBtnCrearTerreno);
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
   builder->get_widget("btnCrearEscalera", pBtnCrearEscalera);
   builder->get_widget("btnBorrarTile", pBtnBorrarTile);
@@ -100,6 +108,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
   builder->get_widget("ddlEnemy", pComboBoxEnemy);
   builder->get_widget("imgSelected", pSelectedImage);
   builder->get_widget("ddlBoss", pComboBoxBoss);
+  builder->get_widget("ddlTile", pComboBoxTile);
 
   pWindowEditor->set_default_size(1024, 768);
   pScrolledWindow->set_size_request(768,768);
@@ -125,7 +134,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
   initializeRelationships();
 
 
-  imagenSeleccionada = IMAGE_GRASS;
+  imagenSeleccionada = IMAGE_PLAYER;
   pSelectedImage->set_from_resource(imagenSeleccionada);
 }
 
@@ -145,6 +154,11 @@ void Editor::initializeComboBoxes()
   pComboBoxBoss->append("Ringman");
   pComboBoxBoss->append("Bombman");
   pComboBoxBoss->set_active(0);
+  /*Tiles*/
+  pComboBoxTile->append("Elegir terreno");
+  pComboBoxTile->append("Pasto");
+  pComboBoxTile->append("Pasto reducido");
+  pComboBoxTile->set_active(0);
 }
 
 void Editor::initializeRelationships()
@@ -166,14 +180,19 @@ void Editor::initializeRelationships()
   nameToPhysics.insert({IMAGEN_BUMPY,"void"});
   nameToPhysics.insert({IMAGEN_ESCALERA,"stair"});
   /*Relacion entre nombre en ddl con la imagen*/
+  ddlToName.insert({"Elegir enemigo", IMAGEN_BLANCO});
   ddlToName.insert({"Bumpy", IMAGEN_BUMPY});
   ddlToName.insert({"Met", IMAGEN_MET});
   ddlToName.insert({"Sniper", IMAGEN_SNIPER});
+  ddlToName.insert({"Elegir boss", IMAGEN_BLANCO});
   ddlToName.insert({"Fireman", IMAGE_BOSS_FIREMAN});
   ddlToName.insert({"Sparkman", IMAGE_BOSS_SPARKMAN});
   ddlToName.insert({"Magnetman", IMAGE_BOSS_MAGNETMAN});
   ddlToName.insert({"Ringman", IMAGE_BOSS_RINGMAN});
   ddlToName.insert({"Bombman", IMAGE_BOSS_BOMBMAN});
+  ddlToName.insert({"Elegir terreno", IMAGEN_BLANCO});
+  ddlToName.insert({"Pasto", IMAGE_GRASS});
+  ddlToName.insert({"Pasto reducido", IMAGE_TILE_GRASS_HALF});
 }
 
 void Editor::connectButtonsWithSignals()
@@ -182,12 +201,6 @@ void Editor::connectButtonsWithSignals()
   {
     pBtnCrearJugador->signal_clicked().connect(
         sigc::mem_fun(this,&Editor::on_buttonCrearJugador_clicked));
-  }
-
-  if (pBtnCrearTerreno)
-  {
-    pBtnCrearTerreno->signal_clicked().connect(
-        sigc::mem_fun(this,&Editor::on_buttonCrearTerreno_clicked));
   }
 
   if (pBtnCrearEscalera)
@@ -218,6 +231,12 @@ void Editor::connectButtonsWithSignals()
   {
     pComboBoxBoss->signal_changed().connect(
       sigc::mem_fun(this, &Editor::on_ddlBoss_changed));
+  }
+
+  if (pComboBoxTile)
+  {
+    pComboBoxTile->signal_changed().connect(
+      sigc::mem_fun(this, &Editor::on_ddlTile_changed));
   }
 }
 

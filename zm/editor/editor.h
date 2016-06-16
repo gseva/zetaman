@@ -25,7 +25,6 @@ class Editor {
     unsigned int mapLen;
 
     std::string imagenSeleccionada;
-    Gtk::Button* pBtnCrearTerreno;
     Gtk::Button* pBtnCrearJugador;
     Gtk::Button* pBtnCrearEscalera;
     Gtk::Button* pBtnBorrarTile;
@@ -33,6 +32,7 @@ class Editor {
     Gtk::Window* pWindowEditor;
     Gtk::ComboBoxText* pComboBoxEnemy;
     Gtk::ComboBoxText* pComboBoxBoss;
+    Gtk::ComboBoxText* pComboBoxTile;
     Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
@@ -53,12 +53,12 @@ class Editor {
 
   public:
     void on_buttonCrearJugador_clicked();
-    void on_buttonCrearTerreno_clicked();
     void on_buttonCrearEscalera_clicked();
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
     void on_ddlEnemy_changed();
     void on_ddlBoss_changed();
+    void on_ddlTile_changed();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     void on_windowEditor_hidden();
