@@ -32,6 +32,7 @@ class Editor {
     Gtk::Button* pBtnSaveMap;
     Gtk::Window* pWindowEditor;
     Gtk::ComboBoxText* pComboBoxEnemy;
+    Gtk::ComboBoxText* pComboBoxBoss;
     Gtk::ScrolledWindow* pScrolledWindow;
     Gtk::Grid* pGrid;
     Gtk::Viewport* pViewPort;
@@ -57,6 +58,7 @@ class Editor {
     void on_buttonBorrarTile_clicked();
     void on_buttonSaveMap_clicked();
     void on_ddlEnemy_changed();
+    void on_ddlBoss_changed();
     bool on_eventbox_button_press(GdkEventButton* eventButton,
                                    Gtk::Image* imagen, int col, int row);
     void on_windowEditor_hidden();
@@ -69,6 +71,7 @@ class Editor {
     JsonMap createJsonMap();
     void initializeRelationships();
     void importExistingMap(std::string path);
+    void initializeComboBoxes();
 };
 
 class EditorMenu {
