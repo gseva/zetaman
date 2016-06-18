@@ -137,16 +137,12 @@ zm::proto::Game Level::getState(){
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
-    // std::cout << "Enemy: " << protoEnemy.pos.x << " "
-    // << protoEnemy.pos.y <<  std::endl;
     gs.enemies.push_back(protoEnemy);
   }
 
   for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
-    zm::proto::Proyectile proyectile;
-    proyectile.pos.x = (*bullet)->getPosition().x - xo;
-    proyectile.pos.y = (*bullet)->getPosition().y;
+    zm::proto::Proyectile proyectile = (*bullet)->toBean(xo, yo);
     gs.proyectiles.push_back(proyectile);
   }
 

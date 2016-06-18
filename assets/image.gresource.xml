@@ -36,6 +36,11 @@
     <file>images/enemies/sniper/jumping.png</file>
 
     <file>images/proyectiles/normal.png</file>
+    <file>images/proyectiles/bomb.png</file>
+    <file>images/proyectiles/spark.png</file>
+    <file>images/proyectiles/ring.png</file>
+    <file>images/proyectiles/magnet.png</file>
+    <file>images/proyectiles/fire.png</file>
 
     <file>images/powerups/life.png</file>
     <file>images/powerups/energy.png</file>

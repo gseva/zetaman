@@ -55,11 +55,12 @@ struct Enemy : JsonSerializable {
 };
 
 
-enum ProyectileType { Bomb };
+enum ProyectileType { Normal=0, Bomb=1, Spark=2,
+  Magnet=3, Ring=4, Fire=5 };
 
 struct Proyectile : JsonSerializable {
   Position pos;
-
+  ProyectileType type;
   virtual json getJson();
   static Proyectile deserialize(const json& j);
 };
