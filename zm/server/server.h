@@ -38,6 +38,8 @@ private:
 namespace zm {
 
 class Game {
+ConditionVariable cond;
+
 Server& server_;
 JsonMap currentMap_;
 std::string mapPath_;
@@ -63,6 +65,7 @@ public:
   void selectMap();
   void startLevel();
   void gameLoop();
+  void finishLevel();
 
   void updateState();
 

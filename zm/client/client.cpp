@@ -32,8 +32,14 @@ void Client::selectLevel() {
   window_->showLevelSelection();
 }
 
+
 void Client::showConnectedPlayer(const std::string& playerName) {
   std::cout << "Connected " << playerName << std::endl;
+}
+
+void Client::showWinDialog() {
+  window_->showWaitingScreen();
+  // window_->showWinDialog();
 }
 
 

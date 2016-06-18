@@ -29,6 +29,7 @@ public:
   void selectLevel();
 
   void showConnectedPlayer(const std::string& playerName);
+  void showWinDialog();
 };
 
 } // zm

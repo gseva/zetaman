@@ -22,8 +22,8 @@ void ServerProxy::connect(){
   receiver_->start();
 }
 
-void ServerProxy::updateState(proto::Game gs) {
-  updateHandler.signal_game_update().emit(gs);
+void ServerProxy::updateState(proto::Game game) {
+  updateHandler.signal_game_update().emit(game);
 }
 
 void ServerProxy::jump() {
@@ -81,6 +81,8 @@ void ServerProxy::dispatchEvent(proto::ServerEvent event) {
       client_.startGame();
       break;
     case proto::gameStart: break;
+    case proto::levelWon: client_.showWinDialog(); break;
+    case proto::levelWonHost: client_.selectLevel(); break;
   }
 }
 
@@ -135,12 +137,15 @@ void Receiver::run() {
   do {
     try {
       std::string res = serverSock_.read();
+      // std::cout << "Recibo " << res << std::endl;
+      // std::cout << "Receive events " << receiveEvents << std::endl;
       if (receiveEvents) {
         proto::ServerEvent ev = proto::ServerEvent::deserialize(res);
         if (ev.state == proto::gameStart) receiveEvents = false;
         sp_.dispatchEvent(ev);
       } else {
         proto::Game game = proto::Game::deserialize(res);
+        if (game.state != proto::GameState::playing) receiveEvents = true;
         sp_.updateState(game);
       }
     }

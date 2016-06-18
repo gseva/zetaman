@@ -116,7 +116,7 @@ struct ClientEvent {
 
 
 enum ServerEventType { connected, connectedAsHost, playerConnected,
-  mapSelected, gameStart };
+  mapSelected, gameStart, levelWon, levelWonHost };
 
 struct ServerEvent {
   ServerEventType state;

@@ -1,8 +1,11 @@
 
 #include <string>
 
+#include <gtkmm/messagedialog.h>
+
 #include "zm/client/window.h"
 #include "zm/client/client.h"
+
 
 namespace zm {
 
@@ -47,7 +50,16 @@ void Window::showCanvas() {
           sigc::mem_fun(*canvas_, &Canvas::updateGameState) );
 
   box_.pack_start(*canvas_);
+  selectedWidget_ = canvas_;
   canvas_->show();
+}
+
+void Window::showWinDialog() {
+  Gtk::MessageDialog dialog(*this, "Felicitaciones! Has ganado el nivel!");
+  dialog.set_secondary_text(
+          "Espera mientras el host está seleccionando el mapa..");
+
+  dialog.run();
 }
 
 bool Window::on_key_press_event(GdkEventKey* event) {

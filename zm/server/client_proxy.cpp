@@ -36,6 +36,21 @@ void ClientProxy::startGame() {
   sender_->start();
 }
 
+void ClientProxy::sendLevelWon() {
+  // Espero a que se le envie el último estado al jugador
+  sender_->join();
+  delete sender_;
+
+  zm::proto::ServerEvent event;
+  if (player_->isHost) {
+    event.state = zm::proto::levelWonHost;
+  } else {
+    event.state = zm::proto::levelWon;
+  }
+  std::cout << "Envio " << event.serialize() << std::endl;
+  clientSock_->write(event.serialize());
+}
+
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   switch (ce.state) {
     case proto::moveLeft: player_->left(); break;
@@ -82,8 +97,8 @@ void Sender::run() {
   proto::Game game;
   do {
     game = eventQueue_.pop();
-    if (game.state != proto::GameState::playing) continue;
     std::string s = game.serialize();
+    std::cout << "Escribo " << s <<std::endl;
     clientSock_->write(s);
   } while (game.state == proto::GameState::playing);
 }
@@ -99,7 +114,7 @@ void Receiver::run() {
   do {
     try {
       std::string ev = clientSock_->read();
-      std::cout << "Recibo " << ev << std::endl;
+      // std::cout << "Recibo " << ev << std::endl;
       event = proto::ClientEvent::deserialize(ev);
     }
     catch(const std::exception& e) {

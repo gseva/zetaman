@@ -17,6 +17,7 @@ public:
   zm::Game& game;
   std::string name;
   bool isHost;
+  bool isAlive;
 
 	Player(zm::Game& g, std::string name, bool host);
 	~Player();

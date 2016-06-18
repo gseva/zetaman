@@ -15,6 +15,8 @@
 
 class Level{
 public:
+  zm::proto::GameState state;
+
   Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap);
   ~Level();
 
@@ -23,6 +25,9 @@ public:
 
   void step();
   void clean();
+
+  bool checkLoseCondition();
+  bool checkWinCondition();
 
   std::vector<Player*> players;
   std::vector<Enemy*> enemies;

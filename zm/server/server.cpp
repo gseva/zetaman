@@ -30,8 +30,10 @@ void Server::run() {
 
   game.acceptHost(accepter_);
   game.acceptPlayers(accepter_);
-  game.startLevel();
-  game.gameLoop();
+  while (true) {
+    game.startLevel();
+    game.gameLoop();
+  }
 }
 
 void Server::stopAccepting() {
@@ -110,9 +112,13 @@ void Game::selectLevel(int level) {
     accepting_ = false;
     server_.stopAccepting();
   }
+
+  cond.signal();
 }
 
 void Game::startLevel() {
+  cond.wait();
+
   JsonSerializer js;
   char curPath[255];
   getcwd(curPath, 255);
@@ -154,11 +160,27 @@ void Game::gameLoop() {
 
     updateState();
   }
+
+  finishLevel();
+}
+
+void Game::finishLevel() {
+  if (currentLevel->state == zm::proto::won) {
+    std::cout << "Win!" << std::endl;
+    for (auto&& pair : proxies) {
+      pair.second->sendLevelWon();
+    }
+  } else {
+    std::cout << "Lose!" << std::endl;
+  }
 }
 
 
 void Game::updateState() {
   zm::proto::Game game = currentLevel->getState();
+  if (game.state != zm::proto::playing) {
+    playing_ = false;
+  }
   for (auto&& pair : proxies) {
     pair.second->updateState(game);
   }

@@ -10,7 +10,7 @@
 
 
 Player::Player(zm::Game& g, std::string n, bool host)
-  : game(g), name(n), isHost(host) {
+  : game(g), name(n), isHost(host), isAlive(false) {
   connected = true;
 }
 
@@ -19,8 +19,8 @@ Player::~Player(){
     delete body;
 }
 
-void Player::createBody(Physics* physics, float32 x, float32 y){
-  body = new PlayerBody(*physics,x,y);
+void Player::createBody(Physics* physics, float32 x, float32 y) {
+  body = new PlayerBody(*physics, x, y);
 }
 
 void Player::jump(){

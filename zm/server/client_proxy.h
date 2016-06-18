@@ -52,6 +52,7 @@ public:
   void startListening();
   void sendMap(const std::string& map);
   void startGame();
+  void sendLevelWon();
 
   void updateState(zm::proto::Game gs);
   void dispatchEvent(proto::ClientEvent ce);

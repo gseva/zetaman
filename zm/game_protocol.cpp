@@ -105,12 +105,7 @@ Game::Game(GameState gs) : state(gs) {
 }
 
 std::string Game::serialize() {
-  int s;
-  switch (state) {
-    case playing: s = 0; break;
-    case won: s = 1; break;
-    case lost: s = 2; break;
-  }
+  int s = static_cast<int>(state);
 
   json playersJson = json::array();
   for (auto&& player : players) {
@@ -144,6 +139,7 @@ Game Game::deserialize(const std::string& s) {
   game.camPos.y = j["cp"]["y"];
 
   int st = j["st"];
+  game.state = static_cast<GameState>(st);
 
   for (const json &playerJson : j["p"]) {
     game.players.push_back(Player::deserialize(playerJson));
@@ -155,12 +151,6 @@ Game Game::deserialize(const std::string& s) {
 
   for (const json &proyectileJson : j["pr"]) {
     game.proyectiles.push_back(Proyectile::deserialize(proyectileJson));
-  }
-
-  switch (st) {
-    case 0: game.state = playing; break;
-    case 1: game.state = won; break;
-    case 2: game.state = lost; break;
   }
 
   return game;
