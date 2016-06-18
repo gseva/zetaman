@@ -36,6 +36,13 @@ void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
     case proto::moveDown: break;
     case proto::stopMoving: s_.stopHorizontalMove(playerNumber_); break;
     case proto::shoot: s_.shoot(playerNumber_); break;
+    case proto::selectGun1: s_.changeGun(playerNumber_,0); break;
+    case proto::selectGun2: s_.changeGun(playerNumber_,1); break;
+    case proto::selectGun3: s_.changeGun(playerNumber_,2); break;
+    case proto::selectGun4: s_.changeGun(playerNumber_,3); break;
+    case proto::selectGun5: s_.changeGun(playerNumber_,4); break;
+    case proto::selectGun6: s_.changeGun(playerNumber_,5); break;
+
     case proto::shutdown: s_.shutdown(playerNumber_); break;
 
     case proto::selectLevel1: s_.selectLevel(0); break;

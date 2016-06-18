@@ -41,6 +41,7 @@ public:
   void stopHorizontalMove(int playerNumber);
   void up(int playerNumber);
   void shoot(int playerNumber);
+  void changeGun(int playerNumber, int gunNumber);
   void shutdown(int playerNumber);
 
 private:

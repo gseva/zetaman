@@ -27,7 +27,7 @@ void Gun::tic(){
 }
 
 Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 90, physics){}
+  Gun(proprietor, isEnemy, 2, physics){}
 
 Normalgun::~Normalgun(){}
 
@@ -36,16 +36,16 @@ Bullet* Normalgun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Normalgun::getNumber(){
+int Normalgun::getNumber(){
   return 0;
 }
 
 Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10*60, physics){}
+  Gun(proprietor, isEnemy, 10, physics){}
 
 Bombgun::~Bombgun(){}
 
@@ -54,16 +54,16 @@ Bullet* Bombgun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Bomb(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Bomb(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Bombgun::getNumber(){
+int Bombgun::getNumber(){
   return 1;
 }
 
 Magnetgun::Magnetgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10*60, physics){}
+  Gun(proprietor, isEnemy, 10, physics){}
 
 Magnetgun::~Magnetgun(){}
 
@@ -72,16 +72,16 @@ Bullet* Magnetgun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Magnet(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Magnet(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Magnetgun::getNumber(){
+int Magnetgun::getNumber(){
   return 2;
 }
 
 Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10*60, physics){}
+  Gun(proprietor, isEnemy, 10, physics){}
 
 Sparkgun::~Sparkgun(){}
 
@@ -90,16 +90,16 @@ Bullet* Sparkgun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Spark(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Spark(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Sparkgun::getNumber(){
+int Sparkgun::getNumber(){
   return 3;
 }
 
 Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10*60, physics){}
+  Gun(proprietor, isEnemy, 10, physics){}
 
 Ringgun::~Ringgun(){}
 
@@ -108,16 +108,16 @@ Bullet* Ringgun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Ring(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Ring(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Ringgun::getNumber(){
+int Ringgun::getNumber(){
   return 4;
 }
 
 Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10*60, physics){}
+  Gun(proprietor, isEnemy, 10, physics){}
 
 Firegun::~Firegun(){}
 
@@ -126,11 +126,11 @@ Bullet* Firegun::fire(){
   b2Vec2 pos = proprietor->getPosition();
   b2Vec2 vel = proprietor->body->GetLinearVelocity();
   int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Fire(this->physics, pos.x, pos.y, signo, true);
+  Bullet* bullet = new Fire(this->physics, pos.x, pos.y, signo, isEnemy);
   return bullet;
 }
 
-unsigned int Firegun::getNumber(){
+int Firegun::getNumber(){
   return 5;
 }
 

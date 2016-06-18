@@ -1,9 +1,11 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include <map>
 #include "zm/server/camera.h"
 
 #include "zm/server/player.h"
 #include "zm/server/physics/players.h"
+#include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
 Player::Player(){
@@ -17,6 +19,15 @@ Player::~Player(){
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
   body = new PlayerBody(*physics,x,y,*this);
+  Gun* gun = new Normalgun(body, false, *physics); 
+  addGun(gun);
+  gun = new Firegun(body, false, *physics);
+  addGun(gun);
+  gun = new Ringgun(body, false, *physics);
+  addGun(gun);
+  gun = new Sparkgun(body, false, *physics);
+  addGun(gun);
+  selectedGun = 0;
 }
 
 void Player::jump(){
@@ -58,7 +69,9 @@ void Player::up(){
 }
 
 Bullet* Player::shoot(){
-  Bullet* bullet = body->shoot();
+  //Bullet* bullet = body->shoot();
+  Gun* gun = guns[selectedGun];
+  Bullet* bullet = gun->shoot();
   return bullet;
 }
 
@@ -72,4 +85,20 @@ bool Player::collide(Bullet *bullet){
 
 void Player::disconnect(){
   connected = false;
+}
+
+void Player::addGun(Gun* gun){
+  guns[gun->getNumber()] = gun;
+}
+
+void Player::changeGun(int numberOfGun){
+  std::map<int, Gun*>::iterator iGun = guns.find(numberOfGun);
+  selectedGun = iGun != guns.end() ? numberOfGun : selectedGun;
+}
+
+void Player::tic(){
+  std::map<int,Gun*>::iterator iGun;
+  for ( iGun = guns.begin(); iGun != guns.end(); ++iGun ) {
+    (iGun->second)->tic();
+  }
 }

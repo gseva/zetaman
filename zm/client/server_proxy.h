@@ -62,6 +62,7 @@ public:
   void stopHorizontalMove();
   void up();
   void shoot();
+  void changeGun(int selectedGun);
 
   void selectLevel(int level);
 

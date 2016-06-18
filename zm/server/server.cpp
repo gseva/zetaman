@@ -152,6 +152,11 @@ void Server::shoot(int playerNumber){
   level->shoot(playerNumber);
 }
 
+void Server::changeGun(int playerNumber, int gunNumber){
+  level->changeGun(playerNumber, gunNumber);
+}
+
+
 void Server::shutdown(int playerNumber)
 {
   if (playerNumber!=0)

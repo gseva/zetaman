@@ -171,7 +171,12 @@ void Level::up(int playerNumber){
 
 void Level::shoot(int playerNumber){
   Bullet* bullet = players[playerNumber]->shoot();
-  bullets.push_back(bullet);
+  if ( bullet != NULL )
+    bullets.push_back(bullet);
+}
+
+void Level::changeGun(int playerNumber, int gunNumber){
+  players[playerNumber]->changeGun(gunNumber);
 }
 
 void Level::disconnect(int playerNumber){

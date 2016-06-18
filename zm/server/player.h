@@ -1,10 +1,11 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #include <Box2D/Box2D.h>
+#include <map>
 #include "zm/server/physics/world.h"
 
 class Camera;
-
+class Gun;
 class Bullet;
 
 class Player{
@@ -26,8 +27,14 @@ public:
   bool collide(Bullet *bullet);
   PlayerBody *body;
   bool connected;
+  void addGun(Gun* gun);
+  void changeGun(int numberOfGun);
+  void tic();
+
 private:
   Camera* camera;
+  std::map<int, Gun*> guns;
+  int selectedGun;
 };
 
 #endif

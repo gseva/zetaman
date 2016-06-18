@@ -8,6 +8,7 @@
 #include "zm/server/server.h"
 #include "zm/server/physics/enemies.h"
 #include "zm/server/physics/bullets.h"
+#include "zm/server/player.h"
 
 
 Timer::Timer(Physics& physics, Server& s, Level& l) :
@@ -33,6 +34,10 @@ void Timer::run(){
     std::vector<Bullet*>::iterator j;
     for ( j = l_.bullets.begin(); j != l_.bullets.end(); ++j ) {
       (*j)->move();
+    }
+    std::vector<Player*>::iterator k;
+    for ( k = l_.players.begin(); k != l_.players.end(); ++k ) {
+      (*k)->tic();
     }
     s_.updateState();
   }

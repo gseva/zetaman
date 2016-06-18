@@ -12,7 +12,7 @@ public:
   Bullet* shoot();
   virtual Bullet* fire()=0;
   void tic();
-  virtual unsigned int getNumber()=0;
+  virtual int getNumber()=0;
 protected:
   const int ticsToCharge;
   int tics;
@@ -27,7 +27,7 @@ public:
   explicit Normalgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Normalgun();
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 class Bombgun : public Gun{
@@ -35,7 +35,7 @@ public:
   explicit Bombgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Bombgun();
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 class Magnetgun : public Gun{
@@ -43,7 +43,7 @@ public:
   explicit Magnetgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Magnetgun();
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 class Sparkgun : public Gun{
@@ -51,7 +51,7 @@ public:
   explicit Sparkgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Sparkgun();
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 class Ringgun : public Gun{
@@ -59,7 +59,7 @@ public:
   explicit Ringgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Ringgun();
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 class Firegun : public Gun{
@@ -67,7 +67,7 @@ public:
   explicit Firegun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Firegun();  
   virtual Bullet* fire();
-  virtual unsigned int getNumber();
+  virtual int getNumber();
 };
 
 #endif
