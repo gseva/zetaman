@@ -13,13 +13,13 @@ public:
   explicit Bullet(Physics& physics, float32 x, float32 y, int signo,
     bool isEnemy);
   virtual ~Bullet();
-  void move();
+  virtual void move();
   virtual bool collide(Enemy* enemy);
   virtual bool collide(PlayerBody* player);
   virtual bool collide(Bullet* bullet);
 
 protected:
-  const b2Vec2 vel;
+  b2Vec2 vel;
   const bool isEnemy;
 };
 
@@ -28,6 +28,7 @@ public:
   explicit Bomb(Physics& physics, float32 x, float32 y, int signo,
     bool isEnemy);
   virtual ~Bomb();
+  virtual void move();
 
 };
 

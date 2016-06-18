@@ -1,7 +1,11 @@
 
-
+#include <stdlib.h>
 #include "zm/server/physics/bullets.h"
 
+
+bool randomBool() {
+  return rand() % 2 == 1;
+}
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy)
     : Body(physics, x, y, BodyType::Bullet), vel(6*signo,0), isEnemy(isEnemy) {
@@ -49,40 +53,15 @@ bool Bullet::collide(Bullet* player){
   return false;
 }
 
-
-// PlayerBullet::PlayerBullet(Physics& physics, float32 x, float32 y,
-// int signo) :
-//   Bullet(physics, x, y, signo,
-//     ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE, PLAYER_BULLET_TYPE){}
-
-// PlayerBullet::~PlayerBullet(){}
-
-// bool PlayerBullet::collide(Enemy* enemy){
-//   return true;
-// }
-
-// bool PlayerBullet::collide(PlayerBody* player){
-//   return false;
-// }
-
-// EnemyBullet::EnemyBullet(Physics& physics, float32 x, float32 y, int signo) :
-//   Bullet(physics, x, y, signo,
-//     ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_TYPE, ENEMY_BULLET_TYPE){}
-
-// EnemyBullet::~EnemyBullet(){}
-
-// bool EnemyBullet::collide(Enemy* enemy){
-//   return false;
-// }
-
-// bool EnemyBullet::collide(PlayerBody* player){
-//   return true;
-// }
-
-
 Bomb::Bomb(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics, x, y, signo, isEnemy) {
+  vel.x = randomBool() ? -6 : 6;
+  vel.y = 2;
+  fixtureDef.density = 30;
+  body->SetLinearVelocity(vel);
 }
+
+void Bomb::move() {}
 
 Bomb::~Bomb(){}
 
@@ -92,7 +71,11 @@ Magnet::Magnet(Physics& physics, float32 x, float32 y, int signo,
 Magnet::~Magnet(){}
 
 Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
-  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){
+  vel.x = randomBool() ? -6 : 6;
+  vel.y = randomBool() ? 0 : 6;
+  body->SetLinearVelocity(vel); 
+}
 
 Spark::~Spark(){}
 
