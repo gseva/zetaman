@@ -11,7 +11,7 @@
 namespace zm {
 
 
-Canvas::Canvas(ServerProxy& sp) : map_(sp.getJsonMap()) {
+Canvas::Canvas(Client& c) : c_(c), map_(c), buff_(c) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
               &Canvas::on_timeout), 1000/30);
@@ -31,20 +31,20 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
 
   for (auto&& player : game_.players) {
-    drawing::Player dp(player);
-    dp.draw(cr, buff_);
+    drawing::Player drawable(c_, player);
+    drawable.draw(cr, buff_);
   }
   for (auto&& enemy : game_.enemies) {
-    drawing::Enemy dp(enemy);
-    dp.draw(cr, buff_);
+    drawing::Enemy drawable(c_, enemy);
+    drawable.draw(cr, buff_);
   }
   for (auto&& proy : game_.proyectiles) {
-    drawing::Proyectile dp(proy);
-    dp.draw(cr, buff_);
+    drawing::Proyectile drawable(c_, proy);
+    drawable.draw(cr, buff_);
   }
   for (auto&& powerUp : game_.powerUps) {
-    drawing::PowerUp dp(powerUp);
-    dp.draw(cr, buff_);
+    drawing::PowerUp drawable(c_, powerUp);
+    drawable.draw(cr, buff_);
   }
 
   return true;

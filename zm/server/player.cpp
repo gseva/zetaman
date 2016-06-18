@@ -1,14 +1,17 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
 #include <map>
+#include <string>
 #include "zm/server/camera.h"
 
 #include "zm/server/player.h"
+#include "zm/server/server.h"
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
-Player::Player(){
+Player::Player(zm::Game& g, std::string n, bool host)
+  : game(g), name(n), isHost(host), isAlive(false){
   connected = true;
 }
 
@@ -18,8 +21,8 @@ Player::~Player(){
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
-  body = new PlayerBody(*physics,x,y,*this);
-  Gun* gun = new Normalgun(body, false, *physics); 
+  body = new PlayerBody(*physics, x, y);
+  Gun* gun = new Normalgun(body, false, *physics);
   addGun(gun);
   gun = new Firegun(body, false, *physics);
   addGun(gun);
@@ -72,11 +75,13 @@ void Player::up(){
   body->up();
 }
 
-Bullet* Player::shoot(){
-  //Bullet* bullet = body->shoot();
+void Player::shoot(){
   Gun* gun = guns[selectedGun];
   Bullet* bullet = gun->shoot();
-  return bullet;
+  std::cout << "Creo bala " << bullet << std::endl;
+  if (bullet) {
+    game.currentLevel->addBullet(bullet);
+  }
 }
 
 b2Body* Player::getBody(){
@@ -95,7 +100,7 @@ void Player::addGun(Gun* gun){
   guns[gun->getNumber()] = gun;
 }
 
-void Player::changeGun(int numberOfGun){
+void Player::changeGun(int numberOfGun) {
   std::map<int, Gun*>::iterator iGun = guns.find(numberOfGun);
   selectedGun = iGun != guns.end() ? numberOfGun : selectedGun;
 }

@@ -238,10 +238,10 @@ editor: create_dirs editor_assets $(o_editor_all_files)
 lint:
 	$(lint_command) $(all_sources) $(all_headers)
 
-client_assets: $(client_resources) $(o_client_resources)
+client_assets: create_dirs $(client_resources) $(o_client_resources)
 	@cp -r $(maps_dir)/* $(build_dir)maps
 
-editor_assets: $(editor_resources) $(o_editor_resources)
+editor_assets: create_dirs $(editor_resources) $(o_editor_resources)
 
 clean_assets:
 	@$(RM) -fv $(client_resources) $(o_client_resources) $(editor_resources) $(o_editor_resources)

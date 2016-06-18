@@ -3,27 +3,19 @@
 #include <iostream>
 
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/cursor.h> // Necesario para que no tire el famoso error
 #include <gdkmm/general.h> // set_source_pixbuf()
 
 #include "zm/client/drawable.h"
+#include "zm/client/client.h"
 
-// pixels per meter
-#define PPM 64
-
-// Estos offsets hacen falta para que todo se dibuje mas lindo, no se porque
-#define X_OFFSET 0
-#define Y_OFFSET 0
 
 namespace zm {
 namespace drawing {
 
-proto::Position posToScale(const proto::Position& from) {
-  proto::Position result;
-  result.x = from.x * PPM + X_OFFSET;
-  result.y = from.y * -PPM + 768 + Y_OFFSET;
-  return result;
-}
 
+Drawable::Drawable(Client& c) : c_(c) {
+}
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
                     ImageBuffer& buff) {
@@ -33,8 +25,9 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 
   // int width = image->get_width();
   // int height = image->get_height();
-
-  proto::Position pos = posToScale(getPosition());
+  proto::Position pos = getPosition();
+  pos.x = c_.scaleWidth(pos.x);
+  pos.y = c_.scaleHeight(pos.y);
 
   // Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
   //                               pos.y - height / 2);
@@ -54,7 +47,8 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 }
 
 
-Player::Player(proto::Player p) : p_(p), imageName_("player/megaman.png") {
+Player::Player(Client& c, proto::Player p) : Drawable(c), p_(p),
+    imageName_("player/megaman.png") {
 }
 
 std::string& Player::getImageName() {
@@ -66,7 +60,7 @@ proto::Position& Player::getPosition() {
 }
 
 
-Enemy::Enemy(proto::Enemy e) : e_(e) {
+Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c), e_(e) {
   if ( e.enemyType == proto::EnemyType::Met ){
     if ( e.enemyState == proto::EnemyState::guarded )
       imageName_ = "enemies/met/guarded.png";
@@ -108,7 +102,7 @@ proto::Position& Enemy::getPosition() {
   return e_.pos;
 }
 
-Proyectile::Proyectile(proto::Proyectile p) : p_(p) {
+Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c), p_(p) {
   if ( p.type == proto::ProyectileType::Normal )
     imageName_ = "proyectiles/normal.png";
   else if ( p.type == proto::ProyectileType::Bomb )
@@ -132,7 +126,7 @@ proto::Position& Proyectile::getPosition() {
 }
 
 
-PowerUp::PowerUp(proto::PowerUp p) : p_(p),
+PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c), p_(p),
   imageName_("powerups/life.png") {
 }
 

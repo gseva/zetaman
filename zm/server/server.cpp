@@ -7,79 +7,97 @@
 #include <unistd.h>
 
 #include "zm/server/server.h"
+#include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"
 
 #define DEFAULT_PATH "build/maps/"
+#define GAME_STEP_FREQUENCY 1000/60
 
 
-Server::Server() : port_("9090"), mapPath_(DEFAULT_PATH),
-    accepting_(false), playing_(false) {
+Server::Server() : accepter_(NULL), port_("9090") {
 }
 
 Server::~Server() {
-  std::vector<Player*>::iterator playersIterator;
-  for ( playersIterator = players.begin(); playersIterator != players.end();
-    ++playersIterator ) {
-    delete (*playersIterator);
-  }
-
-  for (auto item : proxies) {
-    delete item;
-  }
-
-  if ( level != NULL )
-    stopLevel();
+  if (accepter_)
+    delete accepter_;
 }
 
 void Server::run() {
   accepter_ = new zm::Socket();
   accepter_->bindAndListen(port_);
-  // acceptPlayers(&accepter);
 
-  // Acepto el jugador host
-  auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter_->accept());
-  newPlayer_();
-  newClientProxy_(hostSock);
+  zm::Game game(*this);
+
+  game.acceptHost(accepter_);
+  game.acceptPlayers(accepter_);
+  while (true) {
+    game.startLevel();
+    game.gameLoop();
+  }
+}
+
+void Server::stopAccepting() {
+  accepter_->close();
+}
+
+
+
+namespace zm {
+
+Game::Game(Server& s) : server_(s), accepting_(false),  playing_(false),
+    currentLevel(NULL) {
+  mapPath_ = "";
+}
+
+void Game::acceptHost(zm::Socket* accepter) {
+  auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter->accept());
+  newPlayer(hostSock);
   zm::proto::ServerEvent event(zm::proto::connectedAsHost);
   std::string ev = event.serialize();
   std::cout << "Envio evento: " << ev << std::endl;
   hostSock->write(ev);
+}
 
+
+void Game::acceptPlayers(zm::Socket* accepter) {
   accepting_ = true;
   while (accepting_) {
-    auto playerSock = accepter_->accept();
-    std::cout << "Acepto un jugador!: " << ev << std::endl;
-    if (playerSock == NULL) continue;
-    std::cout << "Creo new player!: " << ev << std::endl;
-    newPlayer_();
-    newClientProxy_(std::make_shared<zm::ProtectedSocket>(playerSock));
+    auto playerSock = accepter->accept();
+    if (playerSock == NULL) break;
+    std::cout << "Acepto un jugador!" << std::endl;
     zm::proto::ServerEvent event(zm::proto::connected);
     std::string ev = event.serialize();
     std::cout << "Envio evento: " << ev << std::endl;
     playerSock->write(ev);
+    newPlayer(std::make_shared<zm::ProtectedSocket>(playerSock));
+  }
+}
+
+void Game::newPlayer(std::shared_ptr<zm::ProtectedSocket> sock) {
+  // Envio los nombres de los jugadores conectados hasta el momento
+  for (auto&& pair : players) {
+    proto::ServerEvent ev(proto::ServerEventType::playerConnected);
+    ev.payload = pair.second->name;
+    sock->write(ev.serialize());
   }
 
-  std::cout << "Deleteo accepter: "  << std::endl;
-  delete accepter_;
-  std::cout << "Empiezo level: "  << std::endl;
-  startLevel();
-}
+  std::string name = "player " + std::to_string(players.size());
 
-void acceptHost_(zm::Socket& accepter) {
-}
+  // Escribo el nombre del nuevo jugador a los jugadores conectados
+  for (auto&& pair : proxies) {
+    proto::ServerEvent ev(proto::ServerEventType::playerConnected);
+    ev.payload = name;
+    pair.second->getSocket()->write(ev.serialize());
+  }
 
-void Server::newPlayer_(){
-  Player* player = new Player();
-  players.push_back(player);
-}
-
-void Server::newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock) {
-  zm::ClientProxy* cp = new zm::ClientProxy(*this, proxies.size(), sock);
-  proxies.push_back(cp);
+  Player* player = new Player(*this, name, !players.size());
+  players.insert({name, player});
+  zm::ClientProxy* cp = new ClientProxy(player, sock);
+  proxies.insert({name, cp});
   cp->startListening();
 }
 
-void Server::selectLevel(int level) {
+void Game::selectLevel(int level) {
   std::cout << "Selecciono nivel " << level << std::endl;
   switch (level) {
     case 0: mapPath_ = "level_1.json"; break;
@@ -89,105 +107,115 @@ void Server::selectLevel(int level) {
     case 4: mapPath_ = "level_5.json"; break;
   }
   mapPath_ = DEFAULT_PATH + mapPath_;
-  accepting_ = false;
-  accepter_->close();
+
+  if (accepting_) {
+    accepting_ = false;
+    server_.stopAccepting();
+  } else {
+    cond.signal();
+  }
 }
 
-void Server::startLevel(){
-  // envio el mapa
+void Game::startLevel() {
+  std::cout << "Mi map path es " << mapPath_ << std::endl;
+  if (mapPath_ == "") {
+    cond.wait();
+  }
+
   JsonSerializer js;
   char curPath[255];
   getcwd(curPath, 255);
   std::string path(curPath);
   path += "/" + mapPath_;
   std::cout << "Importo path " << path << std::endl;
-  jm = js.importMap(path);
+  currentMap_ = js.importMap(path);
 
-  std::string map = jm.getReducedString();
+  std::string map = currentMap_.getReducedString();
 
   std::cout << "Escribo mapa" << std::endl;
-  for (auto clientProxy : proxies) {
-    clientProxy->getSocket()->write(map);
+  for (auto&& pair : proxies) {
+    pair.second->sendMap(map);
   }
   std::cout << "starteo game" << std::endl;
-  for (auto clientProxy : proxies) {
-    clientProxy->startGame();
+  for (auto&& pair : proxies) {
+    pair.second->startGame();
   }
+
+  if (currentLevel)
+    delete currentLevel;
+
+  std::vector<Player*> playersVec;
+  for (auto pair: players)
+      playersVec.push_back(pair.second);
+
   std::cout << "Creo new level! " << path << std::endl;
-  level = new Level(players, jm, *this);
+  currentLevel = new Level(playersVec, currentMap_);
+  mapPath_ = "";
+}
 
-  std::cout << "Empiezo a jugar! " << std::endl;
+void Game::gameLoop() {
   playing_ = true;
+
   while (playing_) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    currentLevel->step();
+
+    std::this_thread::sleep_for(
+         std::chrono::milliseconds(GAME_STEP_FREQUENCY));
+
+    updateState();
   }
+
+  finishLevel();
 }
 
-void Server::stopLevel(){
-  delete level;
-}
-
-void Server::jump(int playerNumber){
-  level->jump(playerNumber);
-}
-
-
-void Server::right(int playerNumber){
-  level->right(playerNumber);
-}
-
-void Server::left(int playerNumber){
-  level->left(playerNumber);
-}
-
-void Server::stopHorizontalMove(int playerNumber){
-  level->stopHorizontalMove(playerNumber);
-}
-
-void Server::up(int playerNumber){
-  level->up(playerNumber);
-}
-
-void Server::shoot(int playerNumber){
-  level->shoot(playerNumber);
-}
-
-void Server::changeGun(int playerNumber, int gunNumber){
-  level->changeGun(playerNumber, gunNumber);
-}
-
-
-void Server::shutdown(int playerNumber)
-{
-  if (playerNumber!=0)
-  {
-    std::cout << "1" << std::endl;
-    proxies[playerNumber]->shutdown();
-    std::cout << "2" << std::endl;
-    proxies.erase(proxies.begin() + playerNumber);
-    std::cout << "3" << std::endl;
-    level->disconnect(playerNumber);
-    std::cout << proxies.size() << std::endl;  
-  } else {
-    for (unsigned int i=proxies.size(); i > 0; i--)
-    {
-      proxies[i-1]->shutdown();
-      std::cout << "4" << std::endl;
-      proxies.erase(proxies.begin() + i - 1);
-      std::cout << "5" << std::endl;
-      level->disconnect(i - 1);
-      std::cout << "6" << std::endl;
+void Game::finishLevel() {
+  if (currentLevel->state == zm::proto::won) {
+    std::cout << "Win!" << std::endl;
+    for (auto&& pair : proxies) {
+      pair.second->sendLevelWon();
     }
+  } else {
+    std::cout << "Lose!" << std::endl;
   }
 }
 
-zm::proto::Game Server::getState(){
-  return level->getState();
-}
 
-void Server::updateState() {
-  zm::proto::Game game = level->getState();
-  for (auto&& clientProxy : proxies) {
-    clientProxy->updateState(game);
+void Game::updateState() {
+  zm::proto::Game game = currentLevel->getState();
+  if (game.state != zm::proto::playing) {
+    playing_ = false;
+  }
+  for (auto&& pair : proxies) {
+    pair.second->updateState(game);
   }
 }
+
+void Game::shutdown(const std::string& name) {
+  Player* p = players[name];
+
+  if (p->isHost) {
+    for (auto it = proxies.cbegin(); it != proxies.cend();)  {
+      proxies.erase(it++);
+      (*it).second->shutdown();
+    }
+  } else {
+    proxies.erase(name);
+    proxies[name]->shutdown();
+  }
+}
+
+Game::~Game() {
+  for (auto item : players) {
+    delete item.second;
+  }
+
+  for (auto item : proxies) {
+    delete item.second;
+  }
+
+  if (currentLevel)
+    delete currentLevel;
+}
+
+} // zm
+

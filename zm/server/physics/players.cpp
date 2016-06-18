@@ -4,11 +4,10 @@
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
-#include "zm/server/player.h"
 
 
-PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y, Player& player)
-  :  Body(physics, x, y, BodyType::Player), player(player) {
+PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
+  :  Body(physics, x, y, BodyType::Player) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;

@@ -11,7 +11,7 @@ class Player;
 
 class PlayerBody : public Body {
 public:
-  explicit PlayerBody(Physics& physics, float32 x, float32 y, Player& player);
+  explicit PlayerBody(Physics& physics, float32 x, float32 y);
   virtual ~PlayerBody();
   void jump();
   void right();
@@ -23,7 +23,7 @@ public:
   b2Body* getBody();
 private:
   bool canGoUp();
-  Player& player;
+  // Player& player;
 };
 
 #endif

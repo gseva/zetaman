@@ -28,6 +28,7 @@ class Receiver : public Thread {
 ServerProxy& sp_;
 ProtectedSocket& serverSock_;
 public:
+  bool receiveEvents;
   bool stop;
   Receiver(ServerProxy& sp, ProtectedSocket& serverSock);
   virtual void run();
@@ -41,19 +42,17 @@ ProtectedSocket serverSock_;
 Sender* sender_;
 Receiver* receiver_;
 JsonMap map_;
+Client& client_;
 
 void getConnection_();
 
 public:
   GameUpdateHandler updateHandler;
-  bool isHost;
 
-  ServerProxy();
+  explicit ServerProxy(Client& client);
   ~ServerProxy();
 
   void connect();
-  void getMap();
-  void startLevel();
   void shutdown();
 
   void jump();
@@ -66,12 +65,13 @@ public:
 
   void selectLevel(int level);
 
-  JsonMap& getJsonMap();
+  void dispatchEvent(proto::ServerEvent event);
 
-  proto::Game getState();
+  JsonMap& getJsonMap();
 
   void updateState(zm::proto::Game g);
 };
+
 
 } // zm
 

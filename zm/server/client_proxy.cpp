@@ -8,9 +8,9 @@
 namespace zm {
 
 
-ClientProxy::ClientProxy(Server& s, int playerNumber,
+ClientProxy::ClientProxy(Player* p,
    std::shared_ptr<zm::ProtectedSocket> sock_) :
-    s_(s), playerNumber_(playerNumber), clientSock_(sock_) {
+    player_(p), clientSock_(sock_) {
 }
 
 void ClientProxy::updateState(proto::Game gs) {
@@ -22,34 +22,58 @@ void ClientProxy::startListening() {
   receiver_->start();
 }
 
+void ClientProxy::sendMap(const std::string& map) {
+  zm::proto::ServerEvent event(zm::proto::mapSelected);
+  event.payload = map;
+  clientSock_->write(event.serialize());
+}
+
 void ClientProxy::startGame() {
+  zm::proto::ServerEvent event(zm::proto::gameStart);
+  clientSock_->write(event.serialize());
+
   sender_ = new Sender(eventQueue_, clientSock_);
   sender_->start();
 }
 
+void ClientProxy::sendLevelWon() {
+  // Espero a que se le envie el último estado al jugador
+  sender_->join();
+  delete sender_;
+
+  zm::proto::ServerEvent event;
+  if (player_->isHost) {
+    event.state = zm::proto::levelWonHost;
+  } else {
+    event.state = zm::proto::levelWon;
+  }
+  std::cout << "Envio " << event.serialize() << std::endl;
+  clientSock_->write(event.serialize());
+}
+
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   switch (ce.state) {
-    case proto::moveLeft: s_.left(playerNumber_); break;
-    case proto::moveRight: s_.right(playerNumber_); break;
-    case proto::jump: s_.jump(playerNumber_); break;
-    case proto::moveUp: s_.up(playerNumber_); break;
+    case proto::moveLeft: player_->left(); break;
+    case proto::moveRight: player_->right(); break;
+    case proto::jump: player_->jump(); break;
+    case proto::moveUp: player_->up(); break;
     case proto::moveDown: break;
-    case proto::stopMoving: s_.stopHorizontalMove(playerNumber_); break;
-    case proto::shoot: s_.shoot(playerNumber_); break;
-    case proto::selectGun1: s_.changeGun(playerNumber_,0); break;
-    case proto::selectGun2: s_.changeGun(playerNumber_,1); break;
-    case proto::selectGun3: s_.changeGun(playerNumber_,2); break;
-    case proto::selectGun4: s_.changeGun(playerNumber_,3); break;
-    case proto::selectGun5: s_.changeGun(playerNumber_,4); break;
-    case proto::selectGun6: s_.changeGun(playerNumber_,5); break;
+    case proto::stopMoving: player_->stopHorizontalMove(); break;
+    case proto::shoot: player_->shoot(); break;
+    case proto::shutdown: player_->game.shutdown(player_->name); break;
 
-    case proto::shutdown: s_.shutdown(playerNumber_); break;
+    case proto::selectGun1: player_->changeGun(0); break;
+    case proto::selectGun2: player_->changeGun(1); break;
+    case proto::selectGun3: player_->changeGun(2); break;
+    case proto::selectGun4: player_->changeGun(3); break;
+    case proto::selectGun5: player_->changeGun(4); break;
+    case proto::selectGun6: player_->changeGun(5); break;
 
-    case proto::selectLevel1: s_.selectLevel(0); break;
-    case proto::selectLevel2: s_.selectLevel(1); break;
-    case proto::selectLevel3: s_.selectLevel(2); break;
-    case proto::selectLevel4: s_.selectLevel(3); break;
-    case proto::selectLevel5: s_.selectLevel(4); break;
+    case proto::selectLevel1: player_->game.selectLevel(0); break;
+    case proto::selectLevel2: player_->game.selectLevel(1); break;
+    case proto::selectLevel3: player_->game.selectLevel(2); break;
+    case proto::selectLevel4: player_->game.selectLevel(3); break;
+    case proto::selectLevel5: player_->game.selectLevel(4); break;
   }
 }
 
@@ -67,16 +91,9 @@ void ClientProxy::shutdown() {
   clientSock_->close();
   receiver_->join();
 
-  
-
   delete sender_;
   delete receiver_;
 }
-
-proto::Game ClientProxy::getState() {
-  return s_.getState();
-}
-
 
 Sender::Sender(Queue<proto::Game>& eventQueue,
                std::shared_ptr<zm::ProtectedSocket> clientSock) :
