@@ -27,6 +27,10 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
   addGun(gun);
   gun = new Sparkgun(body, false, *physics);
   addGun(gun);
+  gun = new Magnetgun(body, false, *physics);
+  addGun(gun);
+  gun = new Bombgun(body, false, *physics);
+  addGun(gun);
   selectedGun = 0;
 }
 

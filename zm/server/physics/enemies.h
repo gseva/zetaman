@@ -14,6 +14,12 @@ public:
   virtual Bullet* move()=0;
   virtual bool collide(Bullet* bullet);
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
+  virtual void toImpact(Bomb* bullet);
+  virtual void toImpact(Spark* bullet);
+  virtual void toImpact(Ring* bullet);
+  virtual void toImpact(Magnet* bullet);
+  virtual void toImpact(Fire* bullet);
+  virtual void toImpact(Bullet* bullet);
 };
 
 
@@ -24,6 +30,10 @@ public:
   virtual Bullet* move();
   Bullet* shoot();
   virtual zm::proto::Enemy toBean(int xo, int yo);
+  virtual void toImpact(Ring* bullet);
+  virtual void toImpact(Magnet* bullet);
+  virtual void toImpact(Fire* bullet);
+  virtual void toImpact(Bullet* bullet);
 private:
   bool protected_;
   const float32 period;
@@ -55,6 +65,10 @@ private:
    virtual Bullet* move();
     Bullet* shoot();
     virtual zm::proto::Enemy toBean(int xo, int yo);
+    virtual void toImpact(Bomb* bullet);
+    virtual void toImpact(Spark* bullet);
+    virtual void toImpact(Magnet* bullet);
+    virtual void toImpact(Bullet* bullet);
   private:
     bool protected_;
     int tics;
@@ -67,6 +81,10 @@ private:
    virtual Bullet* move();
     Bullet* shoot();
     virtual zm::proto::Enemy toBean(int xo, int yo);
+    virtual void toImpact(Bomb* bullet);
+    virtual void toImpact(Spark* bullet);
+    virtual void toImpact(Magnet* bullet);
+    virtual void toImpact(Bullet* bullet);  
  private:
     bool protected_;
     int tics;

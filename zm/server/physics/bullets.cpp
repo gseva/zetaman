@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "zm/server/physics/bullets.h"
+#include "zm/server/physics/enemies.h"
 #define RING_COLLISIONS 3
 
 bool randomBool() {
@@ -61,6 +62,10 @@ void Bullet::impact(){
   markAsDestroyed();
 }
 
+void Bullet::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
+}
+
 zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo,
   zm::proto::ProyectileType type){
   zm::proto::Proyectile proyectile;
@@ -93,6 +98,10 @@ zm::proto::Proyectile Bomb::toBean(float32 xo, float32 yo){
   return proyectile;    
 }
 
+void Bomb::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
+}
+
 Magnet::Magnet(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
@@ -102,6 +111,10 @@ zm::proto::Proyectile Magnet::toBean(float32 xo, float32 yo){
   zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
     zm::proto::ProyectileType::Magnet);
   return proyectile;    
+}
+
+void Magnet::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
 }
 
 Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
@@ -117,6 +130,10 @@ zm::proto::Proyectile Spark::toBean(float32 xo, float32 yo){
   zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
     zm::proto::ProyectileType::Spark);
   return proyectile;    
+}
+
+void Spark::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
 }
 
 Ring::Ring(Physics& physics, float32 x, float32 y, int signo,
@@ -143,6 +160,10 @@ void Ring::impact(){
   }
 }
 
+void Ring::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
+}
+
 Fire::Fire(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics,x,y,signo,isEnemy,2.0f,0.01f){}
 
@@ -152,4 +173,8 @@ zm::proto::Proyectile Fire::toBean(float32 xo, float32 yo){
   zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
     zm::proto::ProyectileType::Fire);
   return proyectile;    
+}
+
+void Fire::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
 }

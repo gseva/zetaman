@@ -27,6 +27,29 @@ zm::proto::Enemy Enemy::toBean(int xo, int yo){
   return protoEnemy;
 }
 
+void Enemy::toImpact(Bomb* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Spark* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Ring* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Magnet* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Fire* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Bullet* bullet){
+  markAsDestroyed();
+}
 
 Met::Met(Physics& physics, float32 x, float32 y) :
   Enemy(physics, x, y), period(60*3) {
@@ -68,6 +91,27 @@ zm::proto::Enemy Met::toBean(int xo, int yo){
   }
   return protoEnemy;
 }
+
+void Met::toImpact(Ring* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Magnet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Fire* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Bullet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
 
 Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y),
   totalMoves(15) , period(60*3){
@@ -157,6 +201,26 @@ zm::proto::Enemy Sniper::toBean(int xo, int yo){
   return protoEnemy;
 }
 
+void Sniper::toImpact(Bomb* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Spark* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Magnet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Bullet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
 JumpingSniper::JumpingSniper(Physics& physics, float32 x, float32 y) :
 Enemy(physics,x,y){
   protected_ = false;
@@ -193,4 +257,24 @@ zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
   protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
                                       zm::proto::EnemyState::unguarded;
   return protoEnemy;
+}
+
+void JumpingSniper::toImpact(Bomb* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void JumpingSniper::toImpact(Spark* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void JumpingSniper::toImpact(Magnet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void JumpingSniper::toImpact(Bullet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
 }

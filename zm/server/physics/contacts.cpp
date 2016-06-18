@@ -22,10 +22,18 @@ void ContactListener::BeginContact(b2Contact* contact) {
     std::cout << "Deleteo bala\n";
     static_cast<Body*>(bodyUserDataA)->impact();
     if (bodyUserDataB &&
-        static_cast<Body*>(bodyUserDataB)->type == BodyType::Enemy) {
+        static_cast<Body*>(bodyUserDataB)->type == BodyType::Enemy &&
+        static_cast<Body*>(bodyUserDataA)->type == BodyType::Bullet){
       std::cout << "Deleteo enemigo\n";
-      static_cast<Body*>(bodyUserDataB)->impact();
+      static_cast<Bullet*>(bodyUserDataA)->impact(
+        static_cast<Enemy*>(bodyUserDataB));
     }
+    /*if (bodyUserDataB &&
+        static_cast<Body*>(bodyUserDataB)->type == BodyType::Player) {
+      std::cout << "Deleteo enemigo\n";
+      static_cast<PlayerBody*>(bodyUserDataB)->impact(
+        static_cast<Body*>bodyUserDataA);
+    }*/
   }
 }
 
