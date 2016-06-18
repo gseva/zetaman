@@ -87,13 +87,17 @@ Enemy Enemy::deserialize(const json& j) {
 
 
 json Proyectile::getJson() {
-  return pos.getJson();
+  json j = pos.getJson();
+  j["t"] = static_cast<int>(type);
+  return j;
 }
 
 Proyectile Proyectile::deserialize(const json& j) {
   Proyectile p;
   p.pos.x = j["x"];
   p.pos.y = j["y"];
+  int type = j["t"];
+  p.type = static_cast<ProyectileType>(type);
   return p;
 }
 

@@ -52,7 +52,8 @@ Bullet* Boss::move(){
   if ( tics%shootFrecuency == 0 )
     bullet = gun->shoot();
   if ( tics%(60*3) == 0 )
-    vel.x = -vel.x;
+    velocity = -velocity;
+  vel.x = velocity;
   body->SetLinearVelocity(vel);
   return bullet;
 }

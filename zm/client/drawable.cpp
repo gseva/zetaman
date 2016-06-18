@@ -108,10 +108,20 @@ proto::Position& Enemy::getPosition() {
   return e_.pos;
 }
 
-
-Proyectile::Proyectile(proto::Proyectile p) : p_(p),
-    imageName_("proyectiles/normal.png") {
-}
+Proyectile::Proyectile(proto::Proyectile p) : p_(p) {
+  if ( p.type == proto::ProyectileType::Normal )
+    imageName_ = "proyectiles/normal.png";
+  else if ( p.type == proto::ProyectileType::Bomb )
+    imageName_ = "proyectiles/bomb.png";
+  else if ( p.type == proto::ProyectileType::Spark )
+    imageName_ = "proyectiles/spark.png";
+  else if ( p.type == proto::ProyectileType::Magnet )
+    imageName_ = "proyectiles/magnet.png";
+  else if ( p.type == proto::ProyectileType::Ring )
+    imageName_ = "proyectiles/ring.png";
+  else if ( p.type == proto::ProyectileType::Fire )
+    imageName_ = "proyectiles/fire.png";
+  }
 
 std::string& Proyectile::getImageName() {
   return imageName_;
