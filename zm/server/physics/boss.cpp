@@ -92,15 +92,58 @@ void Boss::determinePositionsToGo(){
   positionsCanGo.push_back(topRight);
 }
 
+zm::proto::Position Boss::getPlayersAveragePosition()
+{
+  zm::proto::Position average;
+
+  for(unsigned int i=0; i<players.size(); i++)
+  {
+    average.x += players[i]->getPosition().x;
+    average.y += players[i]->getPosition().y;
+  }
+  average.x = average.x / players.size();
+  average.y = average.y / players.size();
+  return average;
+}
+
 void Boss::choosePosition(){
-  if (positionToGo.x == positionsCanGo[0].x)
+  /*if (positionToGo.x == positionsCanGo[0].x)
   {
     positionToGo.x = positionsCanGo[1].x;
     positionToGo.y = positionsCanGo[1].y;  
   } else {
     positionToGo.x = positionsCanGo[0].x;
     positionToGo.y = positionsCanGo[0].y;
+  }*/
+  int idealDifX = 4;
+  int idealDifY = 2;  
+  int idealPositionNumber = 0;
+  int bestDifX = 0;
+  int bestDifY = 0;
+  bestDifX = abs(positionsCanGo[0].x - getPlayersAveragePosition().x);
+  bestDifY = abs(positionsCanGo[0].y - getPlayersAveragePosition().y);  
+  for (unsigned int i=1; i<positionsCanGo.size(); i++)
+  {
+    int difX = abs(positionsCanGo[i].x - getPlayersAveragePosition().x);
+    int difY = abs(positionsCanGo[i].y - getPlayersAveragePosition().y);
+    /*Si la posicion se acerca mas a la ideal en y quiere esa*/
+    if (abs(idealDifY-difY) < abs(idealDifY-bestDifY))
+    {
+      idealPositionNumber = i;
+      bestDifY = difY;
+      bestDifX = difX;
+    }
+    /*Si la posicion no empeora el y y mejora el x quiero esa*/
+    if (abs(idealDifY-difY) == abs(idealDifY-bestDifY)
+      && abs(idealDifX-difX) < abs(idealDifX-bestDifX))
+    {
+      idealPositionNumber = i;
+      bestDifY = difY;
+      bestDifX = difX; 
+    }
   }
+  positionToGo.x = positionsCanGo[idealPositionNumber].x;
+  positionToGo.y = positionsCanGo[idealPositionNumber].y;  
 }
 
 bool Boss::gotCloseEnough(){

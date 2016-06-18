@@ -18,6 +18,7 @@ public:
   void choosePosition();
   b2Vec2 moveTowardsPosition();
   bool gotCloseEnough();
+  zm::proto::Position getPlayersAveragePosition();
 protected:
   const int velocity;
   Gun* gun;
