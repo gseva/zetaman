@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include <sigc++/sigc++.h>
-
 #include <gtkmm/application.h>
 
 #include "zm/game_protocol.h"

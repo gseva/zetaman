@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <gdkmm/pixbuf.h>
+#include <gdkmm/cursor.h> // Necesario para que no tire el famoso error
 #include <gdkmm/general.h> // set_source_pixbuf()
 
 #include "zm/client/drawable.h"
