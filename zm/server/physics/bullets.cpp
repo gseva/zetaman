@@ -61,11 +61,18 @@ void Bullet::impact(){
   markAsDestroyed();
 }
 
-zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo){
+zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo,
+  zm::proto::ProyectileType type){
   zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Normal;
+  proyectile.type = type;
   proyectile.pos.x = getPosition().x - xo;
   proyectile.pos.y = getPosition().y;
+  return proyectile;    
+}
+
+zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo){
+  zm::proto::ProyectileType type = zm::proto::ProyectileType::Normal;
+  zm::proto::Proyectile proyectile = toBean(xo,yo,type);
   return proyectile;    
 }
 
@@ -81,10 +88,8 @@ void Bomb::move() {}
 Bomb::~Bomb(){}
 
 zm::proto::Proyectile Bomb::toBean(float32 xo, float32 yo){
-  zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Bomb;
-  proyectile.pos.x = getPosition().x - xo;
-  proyectile.pos.y = getPosition().y;
+ zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Bomb);
   return proyectile;    
 }
 
@@ -94,10 +99,8 @@ Magnet::Magnet(Physics& physics, float32 x, float32 y, int signo,
 Magnet::~Magnet(){}
 
 zm::proto::Proyectile Magnet::toBean(float32 xo, float32 yo){
-  zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Magnet;
-  proyectile.pos.x = getPosition().x - xo;
-  proyectile.pos.y = getPosition().y;
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Magnet);
   return proyectile;    
 }
 
@@ -111,10 +114,8 @@ Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
 Spark::~Spark(){}
 
 zm::proto::Proyectile Spark::toBean(float32 xo, float32 yo){
-  zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Spark;
-  proyectile.pos.x = getPosition().x - xo;
-  proyectile.pos.y = getPosition().y;
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Spark);
   return proyectile;    
 }
 
@@ -126,10 +127,8 @@ Ring::Ring(Physics& physics, float32 x, float32 y, int signo,
 Ring::~Ring(){}
 
 zm::proto::Proyectile Ring::toBean(float32 xo, float32 yo){
-  zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Ring;
-  proyectile.pos.x = getPosition().x - xo;
-  proyectile.pos.y = getPosition().y;
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Ring);
   return proyectile;    
 }
 
@@ -150,9 +149,7 @@ Fire::Fire(Physics& physics, float32 x, float32 y, int signo,
 Fire::~Fire(){}
 
 zm::proto::Proyectile Fire::toBean(float32 xo, float32 yo){
-  zm::proto::Proyectile proyectile;
-  proyectile.type = zm::proto::ProyectileType::Fire;
-  proyectile.pos.x = getPosition().x - xo;
-  proyectile.pos.y = getPosition().y;
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Fire);
   return proyectile;    
 }

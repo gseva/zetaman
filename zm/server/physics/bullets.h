@@ -20,6 +20,8 @@ public:
   virtual bool collide(PlayerBody* player);
   virtual bool collide(Bullet* bullet);
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
+  virtual zm::proto::Proyectile toBean(float32 xo, float32 yo,
+    zm::proto::ProyectileType type=zm::proto::ProyectileType::Normal);
   virtual void impact();
 protected:
   b2Vec2 vel;
