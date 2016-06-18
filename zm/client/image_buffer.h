@@ -18,7 +18,7 @@ Client& client_;
 std::map<std::string, Glib::RefPtr<Gdk::Pixbuf>> images_;
 
 public:
-  ImageBuffer(Client& client);
+  explicit ImageBuffer(Client& client);
 
   Glib::RefPtr<Gdk::Pixbuf> getImage(const std::string& key);
 }; // zm
