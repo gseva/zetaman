@@ -109,12 +109,7 @@ Game::Game(GameState gs) : state(gs) {
 }
 
 std::string Game::serialize() {
-  int s;
-  switch (state) {
-    case playing: s = 0; break;
-    case won: s = 1; break;
-    case lost: s = 2; break;
-  }
+  int s = static_cast<int>(state);
 
   json playersJson = json::array();
   for (auto&& player : players) {
@@ -148,6 +143,7 @@ Game Game::deserialize(const std::string& s) {
   game.camPos.y = j["cp"]["y"];
 
   int st = j["st"];
+  game.state = static_cast<GameState>(st);
 
   for (const json &playerJson : j["p"]) {
     game.players.push_back(Player::deserialize(playerJson));
@@ -159,12 +155,6 @@ Game Game::deserialize(const std::string& s) {
 
   for (const json &proyectileJson : j["pr"]) {
     game.proyectiles.push_back(Proyectile::deserialize(proyectileJson));
-  }
-
-  switch (st) {
-    case 0: game.state = playing; break;
-    case 1: game.state = won; break;
-    case 2: game.state = lost; break;
   }
 
   return game;
@@ -185,8 +175,20 @@ ClientEvent ClientEvent::deserialize(const std::string& s) {
 }
 
 
+ServerEvent::ServerEvent() : payload("") {
+}
+
+ServerEvent::ServerEvent(ServerEventType s) : state(s), payload("") {
+}
+
+
 std::string ServerEvent::serialize() {
   json j = {{"e", static_cast<int>(state)}};
+
+  if (payload != "") {
+    j["p"] = payload;
+  }
+
   std::string ev = j.dump();
   return ev;
 }
@@ -194,7 +196,13 @@ std::string ServerEvent::serialize() {
 ServerEvent ServerEvent::deserialize(const std::string& s) {
   json j = json::parse(s);
   int state = j["e"];
+
   ServerEvent ce(static_cast<ServerEventType>(state));
+
+  if (j.find("p") != j.end()) {
+    ce.payload = j["p"];
+  }
+
   return ce;
 }
 

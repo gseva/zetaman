@@ -24,7 +24,7 @@ void ContactListener::BeginContact(b2Contact* contact) {
     if (bodyUserDataB &&
         static_cast<Body*>(bodyUserDataB)->type == BodyType::Enemy) {
       std::cout << "Deleteo enemigo\n";
-      static_cast<Body*>(bodyUserDataB)->impact();
+      static_cast<Enemy*>(bodyUserDataB)->impact();
     }
   }
 }

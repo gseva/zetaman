@@ -1,8 +1,11 @@
 
 #include <string>
 
+#include <gtkmm/messagedialog.h>
+
 #include "zm/client/window.h"
 #include "zm/client/client.h"
+
 
 namespace zm {
 
@@ -37,7 +40,6 @@ void Window::showWaitingScreen() {
   box_.pack_start(*waitingScreen_);
   selectedWidget_ = waitingScreen_;
   waitingScreen_->show();
-  c_->getMap();
 }
 
 void Window::showCanvas() {
@@ -48,8 +50,16 @@ void Window::showCanvas() {
           sigc::mem_fun(*canvas_, &Canvas::updateGameState) );
 
   box_.pack_start(*canvas_);
+  selectedWidget_ = canvas_;
   canvas_->show();
-  c_->serverProxy.startLevel();
+}
+
+void Window::showWinDialog() {
+  Gtk::MessageDialog dialog(*this, "Felicitaciones! Has ganado el nivel!");
+  dialog.set_secondary_text(
+          "Espera mientras el host está seleccionando el mapa..");
+
+  dialog.run();
 }
 
 bool Window::on_key_press_event(GdkEventKey* event) {
@@ -86,11 +96,6 @@ void Window::on_hide()
 
 void Window::on_startButton_clicked() {
   c_->startConnection();
-  if (c_->serverProxy.isHost) {
-    showLevelSelection();
-  } else {
-    showWaitingScreen();
-  }
 }
 
 LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
@@ -108,7 +113,6 @@ LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
 void LevelSelectionPanel::on_button_clicked(int i) {
   std::cout << "Boton presiona2 " << i << std::endl;
   c_->serverProxy.selectLevel(i);
-  c_->getMap();
 }
 
 WaitingScreen::WaitingScreen() :
