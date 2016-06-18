@@ -44,7 +44,13 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
 }
 
 float Boss::getMaxJumpHeight(){
-  return 2;
+  float timeTillMax = (float)jump / 10;
+  float maxHeight;
+  maxHeight = jump * timeTillMax;
+  maxHeight -= (10 * timeTillMax * timeTillMax)/ 2;
+  //maxHeight += 2; // 2 es la base de 1 tile
+  std::cout << "Altura maxima " << maxHeight << std::endl;
+  return maxHeight;
 }
  
 void Boss::determinePositionsToGo(){
@@ -81,13 +87,10 @@ bool Boss::gotCloseEnough(){
   bool gotClose = false;
   float difX = getPosition().x - positionToGo.x;
   float difY = getPosition().y - positionToGo.x;
+  float delta = 0.1;
 
-  std::cout << "Posicion actual en x" << getPosition().x << std::endl;
-  std::cout << "Posicion actual en y" << getPosition().y << std::endl;
-  std::cout << "Posicion que quiero en x" << positionToGo.x << std::endl;
-  std::cout << "Posicion que quiero en y" << positionToGo.y << std::endl;
-
-  if ((difX < 1 && difX > -1) && (difY < 1 && difY > -1))
+  if ((difX < delta && difX > -delta) &&
+   (difY < delta + getMaxJumpHeight() && difY > -(delta + getMaxJumpHeight())))
     gotClose = true;
 
     return gotClose; 
@@ -147,6 +150,13 @@ Bullet* Boss::move(){
         vel = moveTowardsPosition();
       }
     }
+
+  std::cout << "Posicion actual en x " << getPosition().x << std::endl;
+  std::cout << "Posicion actual en y " << getPosition().y << std::endl;
+  std::cout << "Posicion que quiero en x " << positionToGo.x << std::endl;
+  std::cout << "Posicion que quiero en y " << positionToGo.y << std::endl;
+  std::cout << "Altura maxima es " << getMaxJumpHeight() << std::endl;
+
   body->SetLinearVelocity(vel);
   return bullet;
 }
