@@ -22,7 +22,16 @@ void ClientProxy::startListening() {
   receiver_->start();
 }
 
+void ClientProxy::sendMap(const std::string& map) {
+  zm::proto::ServerEvent event(zm::proto::mapSelected);
+  event.payload = map;
+  clientSock_->write(event.serialize());
+}
+
 void ClientProxy::startGame() {
+  zm::proto::ServerEvent event(zm::proto::gameStart);
+  clientSock_->write(event.serialize());
+
   sender_ = new Sender(eventQueue_, clientSock_);
   sender_->start();
 }

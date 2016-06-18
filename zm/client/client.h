@@ -1,6 +1,8 @@
 #ifndef __ZM_CLIENT_CLIENT__
 #define __ZM_CLIENT_CLIENT__
 
+#include <string>
+
 #include <sigc++/sigc++.h>
 
 #include <gtkmm/application.h>
@@ -21,8 +23,12 @@ public:
 
   void run(Glib::RefPtr<Gtk::Application> app);
   void startConnection();
-  void getMap();
   void startGame();
+
+  void waitForPlayers();
+  void selectLevel();
+
+  void showConnectedPlayer(const std::string& playerName);
 };
 
 } // zm

@@ -37,7 +37,6 @@ void Window::showWaitingScreen() {
   box_.pack_start(*waitingScreen_);
   selectedWidget_ = waitingScreen_;
   waitingScreen_->show();
-  c_->getMap();
 }
 
 void Window::showCanvas() {
@@ -49,7 +48,6 @@ void Window::showCanvas() {
 
   box_.pack_start(*canvas_);
   canvas_->show();
-  c_->serverProxy.startLevel();
 }
 
 bool Window::on_key_press_event(GdkEventKey* event) {
@@ -86,11 +84,6 @@ void Window::on_hide()
 
 void Window::on_startButton_clicked() {
   c_->startConnection();
-  if (c_->serverProxy.isHost) {
-    showLevelSelection();
-  } else {
-    showWaitingScreen();
-  }
 }
 
 LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
@@ -108,7 +101,6 @@ LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
 void LevelSelectionPanel::on_button_clicked(int i) {
   std::cout << "Boton presiona2 " << i << std::endl;
   c_->serverProxy.selectLevel(i);
-  c_->getMap();
 }
 
 WaitingScreen::WaitingScreen() :

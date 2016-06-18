@@ -181,8 +181,20 @@ ClientEvent ClientEvent::deserialize(const std::string& s) {
 }
 
 
+ServerEvent::ServerEvent() : payload("") {
+}
+
+ServerEvent::ServerEvent(ServerEventType s) : state(s), payload("") {
+}
+
+
 std::string ServerEvent::serialize() {
   json j = {{"e", static_cast<int>(state)}};
+
+  if (payload != "") {
+    j["p"] = payload;
+  }
+
   std::string ev = j.dump();
   return ev;
 }
@@ -190,7 +202,13 @@ std::string ServerEvent::serialize() {
 ServerEvent ServerEvent::deserialize(const std::string& s) {
   json j = json::parse(s);
   int state = j["e"];
+
   ServerEvent ce(static_cast<ServerEventType>(state));
+
+  if (j.find("p") != j.end()) {
+    ce.payload = j["p"];
+  }
+
   return ce;
 }
 

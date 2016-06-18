@@ -57,21 +57,37 @@ void Game::acceptHost(zm::Socket* accepter) {
 
 
 void Game::acceptPlayers(zm::Socket* accepter) {
-  while (true) {
+  accepting_ = true;
+  while (accepting_) {
     auto playerSock = accepter->accept();
     std::cout << "Acepto un jugador!" << std::endl;
     if (playerSock == NULL) break;
     std::cout << "Creo new player!" << std::endl;
-    newPlayer(std::make_shared<zm::ProtectedSocket>(playerSock));
     zm::proto::ServerEvent event(zm::proto::connected);
     std::string ev = event.serialize();
     std::cout << "Envio evento: " << ev << std::endl;
     playerSock->write(ev);
+    newPlayer(std::make_shared<zm::ProtectedSocket>(playerSock));
   }
 }
 
 void Game::newPlayer(std::shared_ptr<zm::ProtectedSocket> sock) {
+  // Envio los nombres de los jugadores conectados hasta el momento
+  for (auto&& pair : players) {
+    proto::ServerEvent ev(proto::ServerEventType::playerConnected);
+    ev.payload = pair.second->name;
+    sock->write(ev.serialize());
+  }
+
   std::string name = "player " + std::to_string(players.size());
+
+  // Escribo el nombre del nuevo jugador a los jugadores conectados
+  for (auto&& pair : proxies) {
+    proto::ServerEvent ev(proto::ServerEventType::playerConnected);
+    ev.payload = name;
+    pair.second->getSocket()->write(ev.serialize());
+  }
+
   Player* player = new Player(*this, name, !players.size());
   players.insert({name, player});
   zm::ClientProxy* cp = new ClientProxy(player, sock);
@@ -109,7 +125,7 @@ void Game::startLevel() {
 
   std::cout << "Escribo mapa" << std::endl;
   for (auto&& pair : proxies) {
-    pair.second->getSocket()->write(map);
+    pair.second->sendMap(map);
   }
   std::cout << "starteo game" << std::endl;
   for (auto&& pair : proxies) {

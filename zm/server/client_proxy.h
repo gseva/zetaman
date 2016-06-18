@@ -3,6 +3,7 @@
 #define __CLIENT_PROXY_H__
 
 #include <memory>
+#include <string>
 
 #include "zm/connection.h"
 #include "zm/game_protocol.h"
@@ -49,6 +50,7 @@ public:
   void shutdown();
 
   void startListening();
+  void sendMap(const std::string& map);
   void startGame();
 
   void updateState(zm::proto::Game gs);

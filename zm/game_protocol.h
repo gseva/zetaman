@@ -115,14 +115,15 @@ struct ClientEvent {
 };
 
 
-enum ServerEventType { connected, connectedAsHost };
+enum ServerEventType { connected, connectedAsHost, playerConnected,
+  mapSelected, gameStart };
 
 struct ServerEvent {
   ServerEventType state;
+  std::string payload;
 
-  ServerEvent() {}
-  explicit ServerEvent(ServerEventType s) : state(s) {
-  }
+  ServerEvent();
+  explicit ServerEvent(ServerEventType s);
 
   std::string serialize();
   static ServerEvent deserialize(const std::string& s);

@@ -8,40 +8,18 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy() : sender_(NULL), isHost(false) {
+ServerProxy::ServerProxy(Client& client) : sender_(NULL),
+    client_(client) {
 }
 
 void ServerProxy::connect(){
   serverSock_.connect("127.0.0.1", "9090");
-  getConnection_();
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
-}
 
-void ServerProxy::getConnection_() {
-  std::cout << "Leyendo evento" << std::endl;
-  std::string eventString = serverSock_.read();
-  proto::ServerEvent ev = proto::ServerEvent::deserialize(eventString);
-  isHost = ev.state == proto::connectedAsHost;
-  std::cout << "recibo evento, isHost: " << isHost <<  std::endl;
-}
-
-void ServerProxy::getMap() {
-  std::string mapString = serverSock_.read();
-
-  std::cout << "recibo map " << mapString <<  std::endl;
-  map_.fromReducedString(mapString);
-}
-
-void ServerProxy::startLevel() {
   receiver_ = new Receiver(*this, serverSock_);
   receiver_->start();
-}
-
-proto::Game ServerProxy::getState() {
-  proto::Game game;
-  return game;
 }
 
 void ServerProxy::updateState(proto::Game gs) {
@@ -91,6 +69,21 @@ void ServerProxy::selectLevel(int level) {
   eventQueue_.push(ce);
 }
 
+void ServerProxy::dispatchEvent(proto::ServerEvent event) {
+  switch (event.state) {
+    case proto::connected: client_.waitForPlayers(); break;
+    case proto::connectedAsHost: client_.selectLevel(); break;
+    case proto::playerConnected:
+      client_.showConnectedPlayer(event.payload);
+      break;
+    case proto::mapSelected:
+      map_.fromReducedString(event.payload);
+      client_.startGame();
+      break;
+    case proto::gameStart: break;
+  }
+}
+
 
 void ServerProxy::shutdown() {
   receiver_->stop = true;
@@ -109,7 +102,7 @@ void ServerProxy::shutdown() {
 }
 
 ServerProxy::~ServerProxy() {
-  //shutdown();
+  shutdown();
 }
 
 
@@ -135,21 +128,26 @@ void Sender::run() {
 
 
 Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
-                  : sp_(sp), serverSock_(serverSock), stop(false) {
+    : sp_(sp), serverSock_(serverSock), receiveEvents(true), stop(false) {
 }
 
 void Receiver::run() {
-  proto::Game game;
   do {
     try {
       std::string res = serverSock_.read();
-      game = proto::Game::deserialize(res);
+      if (receiveEvents) {
+        proto::ServerEvent ev = proto::ServerEvent::deserialize(res);
+        if (ev.state == proto::gameStart) receiveEvents = false;
+        sp_.dispatchEvent(ev);
+      } else {
+        proto::Game game = proto::Game::deserialize(res);
+        sp_.updateState(game);
+      }
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';
       throw;
     }
-    sp_.updateState(game);
   } while (!stop);
 }
 
