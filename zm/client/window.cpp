@@ -13,6 +13,8 @@ namespace zm {
 Window::Window(Client* c) : c_(c), startButton_("Empezar!") {
   add(box_);
 
+  set_default_size(c_->width, c_->height);
+  set_position(Gtk::WIN_POS_CENTER);
   // signal_key_press_event().connect(
   //   sigc::mem_fun(*this, &Window::keyReleased));
   add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
@@ -44,7 +46,7 @@ void Window::showWaitingScreen() {
 
 void Window::showCanvas() {
   box_.remove(*selectedWidget_);
-  canvas_ = Gtk::manage(new Canvas(c_->serverProxy));
+  canvas_ = Gtk::manage(new Canvas(*c_));
 
   c_->serverProxy.updateHandler.signal_game_update().connect(
           sigc::mem_fun(*canvas_, &Canvas::updateGameState) );

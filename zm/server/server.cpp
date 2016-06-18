@@ -111,9 +111,10 @@ void Game::selectLevel(int level) {
   if (accepting_) {
     accepting_ = false;
     server_.stopAccepting();
+  } else {
+    cond.signal();
   }
 
-  cond.signal();
 }
 
 void Game::startLevel() {

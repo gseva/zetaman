@@ -17,9 +17,14 @@ namespace zm {
 class Client {
 Window* window_;
 public:
+  int width, height, ppm;
   ServerProxy serverProxy;
 
   Client();
+
+  int scaleNum(int n);
+  int scaleWidth(float w);
+  int scaleHeight(float h);
 
   void run(Glib::RefPtr<Gtk::Application> app);
   void startConnection();
@@ -30,6 +35,8 @@ public:
 
   void showConnectedPlayer(const std::string& playerName);
   void showWinDialog();
+
+
 };
 
 } // zm
