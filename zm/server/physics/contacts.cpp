@@ -1,5 +1,3 @@
-
-
 #include "zm/server/physics/world.h"
 #include "zm/server/physics/contacts.h"
 #include "zm/server/physics/bullets.h"
@@ -22,7 +20,7 @@ void ContactListener::BeginContact(b2Contact* contact) {
   if (bodyUserDataA &&
       static_cast<Body*>(bodyUserDataA)->type == BodyType::Bullet) {
     std::cout << "Deleteo bala\n";
-    static_cast<Body*>(bodyUserDataA)->markAsDestroyed();
+    static_cast<Body*>(bodyUserDataA)->impact();
     if (bodyUserDataB &&
         static_cast<Body*>(bodyUserDataB)->type == BodyType::Enemy) {
       std::cout << "Deleteo enemigo\n";

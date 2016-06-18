@@ -1,12 +1,17 @@
-
-
+#include <stdlib.h>
 #include "zm/server/physics/bullets.h"
+#define RING_COLLISIONS 3
+
+bool randomBool() {
+  return rand() % 2 == 1;
+}
 
 
-Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy)
+Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy,
+  float32 largo, float32 alto)
     : Body(physics, x, y, BodyType::Bullet), vel(6*signo,0), isEnemy(isEnemy) {
   b2PolygonShape shape;
-  shape.SetAsBox(0.01f, 0.01f);
+  shape.SetAsBox(largo, alto);
   fixtureDef.shape = &shape;
 
   int mask, category;
@@ -26,6 +31,9 @@ Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy)
                   body->GetWorldCenter(), false);
   body->SetUserData(this);
 }
+
+Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy)
+  : Bullet(physics, x, y, signo, isEnemy, 0.01f, 0.01f) {}
 
 Bullet::~Bullet(){
 }
@@ -49,59 +57,99 @@ bool Bullet::collide(Bullet* player){
   return false;
 }
 
+void Bullet::impact(){
+  markAsDestroyed();
+}
 
-// PlayerBullet::PlayerBullet(Physics& physics, float32 x, float32 y,
-// int signo) :
-//   Bullet(physics, x, y, signo,
-//     ALL_CONTACT & ~STAIR_TYPE & ~PLAYER_TYPE, PLAYER_BULLET_TYPE){}
+zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo,
+  zm::proto::ProyectileType type){
+  zm::proto::Proyectile proyectile;
+  proyectile.type = type;
+  proyectile.pos.x = getPosition().x - xo;
+  proyectile.pos.y = getPosition().y;
+  return proyectile;    
+}
 
-// PlayerBullet::~PlayerBullet(){}
-
-// bool PlayerBullet::collide(Enemy* enemy){
-//   return true;
-// }
-
-// bool PlayerBullet::collide(PlayerBody* player){
-//   return false;
-// }
-
-// EnemyBullet::EnemyBullet(Physics& physics, float32 x, float32 y, int signo) :
-//   Bullet(physics, x, y, signo,
-//     ALL_CONTACT & ~STAIR_TYPE & ~ENEMY_TYPE, ENEMY_BULLET_TYPE){}
-
-// EnemyBullet::~EnemyBullet(){}
-
-// bool EnemyBullet::collide(Enemy* enemy){
-//   return false;
-// }
-
-// bool EnemyBullet::collide(PlayerBody* player){
-//   return true;
-// }
-
+zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo){
+  zm::proto::ProyectileType type = zm::proto::ProyectileType::Normal;
+  zm::proto::Proyectile proyectile = toBean(xo,yo,type);
+  return proyectile;    
+}
 
 Bomb::Bomb(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics, x, y, signo, isEnemy) {
+  vel.x = randomBool() ? -6 : 6;
+  vel.y = 2;
+  body->SetLinearVelocity(vel);
 }
 
+void Bomb::move() {}
+
 Bomb::~Bomb(){}
+
+zm::proto::Proyectile Bomb::toBean(float32 xo, float32 yo){
+ zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Bomb);
+  return proyectile;    
+}
 
 Magnet::Magnet(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
 
 Magnet::~Magnet(){}
 
+zm::proto::Proyectile Magnet::toBean(float32 xo, float32 yo){
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Magnet);
+  return proyectile;    
+}
+
 Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
-  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){
+  vel.x = randomBool() ? -6 : 6;
+  vel.y = randomBool() ? 0 : 6;
+  body->SetLinearVelocity(vel); 
+}
 
 Spark::~Spark(){}
 
+zm::proto::Proyectile Spark::toBean(float32 xo, float32 yo){
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Spark);
+  return proyectile;    
+}
+
 Ring::Ring(Physics& physics, float32 x, float32 y, int signo,
-  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){
+  restCollisions = RING_COLLISIONS;
+}
 
 Ring::~Ring(){}
 
+zm::proto::Proyectile Ring::toBean(float32 xo, float32 yo){
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Ring);
+  return proyectile;    
+}
+
+void Ring::impact(){
+  if ( restCollisions == 0 ) {
+    markAsDestroyed();
+  } else {
+    restCollisions --;
+    b2Vec2 vel = body->GetLinearVelocity();
+    vel.x = -vel.x;
+    body->SetLinearVelocity(vel);
+  }
+}
+
 Fire::Fire(Physics& physics, float32 x, float32 y, int signo,
-  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){}
+  bool isEnemy) : Bullet(physics,x,y,signo,isEnemy,2.0f,0.01f){}
 
 Fire::~Fire(){}
+
+zm::proto::Proyectile Fire::toBean(float32 xo, float32 yo){
+  zm::proto::Proyectile proyectile = Bullet::toBean(xo, yo,
+    zm::proto::ProyectileType::Fire);
+  return proyectile;    
+}

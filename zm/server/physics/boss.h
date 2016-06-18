@@ -11,7 +11,7 @@ public:
   virtual Bullet* move();
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
 protected:
-  const int velocity;
+  int velocity;
   Gun* gun;
   const int jump;
   const int shootFrecuency;
