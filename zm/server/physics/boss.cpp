@@ -6,26 +6,36 @@
 #define BOMBMAN_JUMP_F     5 * 60
 #define BOMBMAN_SHOOT_F    5 * 60
 #define BOMBMAN_JUMP       6
+#define BOMBMAN_PREF_DIS_X 3
+#define BOMBMAN_PREF_DIS_Y 2
 
 #define MAGNETMAN_VEL       4
 #define MAGNETMAN_JUMP_F    15 * 60
 #define MAGNETMAN_SHOOT_F   5 * 60
 #define MAGNETMAN_JUMP      3
+#define MAGNETMAN_PREF_DIS_X 3
+#define MAGNETMAN_PREF_DIS_Y 2
 
 #define SPARKMAN_VEL       2 
 #define SPARKMAN_JUMP_F    2 * 60
 #define SPARKMAN_SHOOT_F   5 * 60
 #define SPARKMAN_JUMP      3 
+#define SPARKMAN_PREF_DIS_X 3
+#define SPARKMAN_PREF_DIS_Y 2
 
 #define RINGMAN_VEL       5 
 #define RINGMAN_JUMP_F    10 * 60
 #define RINGMAN_SHOOT_F   8 * 60
 #define RINGMAN_JUMP      6 
+#define RINGMAN_PREF_DIS_X 3
+#define RINGMAN_PREF_DIS_Y 2
 
 #define FIREMAN_VEL       10
 #define FIREMAN_JUMP_F    2 * 60
 #define FIREMAN_SHOOT_F   5 * 60
 #define FIREMAN_JUMP      6 
+#define FIREMAN_PREF_DIS_X 3
+#define FIREMAN_PREF_DIS_Y 2
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
