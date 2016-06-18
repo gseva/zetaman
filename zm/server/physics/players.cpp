@@ -2,11 +2,13 @@
 #include <vector>
 
 #include "zm/server/physics/players.h"
+#include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
+#include "zm/server/player.h"
 
 
-PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
-    Body(physics, x, y, BodyType::Player) {
+PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y, Player& player)
+  :  Body(physics, x, y, BodyType::Player), player(player) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
@@ -15,9 +17,16 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y) :
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
+
+  addGun(new Normalgun(this, false, physics));
+  addGun(new Firegun(this, false, physics));
+  addGun(new Ringgun(this, false, physics));
+  addGun(new Sparkgun(this, false, physics));
+  selectedGun = 0;
 }
 
-PlayerBody::~PlayerBody(){}
+PlayerBody::~PlayerBody(){
+}
 
 void PlayerBody::jump(){
   b2Vec2 vel = body->GetLinearVelocity();
@@ -64,11 +73,12 @@ bool PlayerBody::canGoUp(){
 }
 
 Bullet* PlayerBody::shoot(){
-  b2Vec2 pos = getPosition();
-  b2Vec2 vel = body->GetLinearVelocity();
-  int signo = vel.x >=0 ? 1 : -1;
+  //b2Vec2 pos = getPosition();
+  //b2Vec2 vel = body->GetLinearVelocity();
+  //int signo = vel.x >=0 ? 1 : -1;
   //Bullet* bullet = new PlayerBullet(this->physics, pos.x, pos.y, signo);
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, false);
+//  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, false);
+  Bullet* bullet = guns[selectedGun]->shoot();
   return bullet;
 }
 
@@ -78,4 +88,12 @@ bool PlayerBody::collide(Bullet* bullet){
 
 b2Body* PlayerBody::getBody(){
   return body;
+}
+
+void PlayerBody::addGun(Gun* gun){
+  guns[gun->getNumber()] = gun;
+}
+
+void PlayerBody::changeGun(unsigned int numberOfGun){
+  selectedGun = guns[numberOfGun] != NULL ? numberOfGun : selectedGun;
 }

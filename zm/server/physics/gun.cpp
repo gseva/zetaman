@@ -26,8 +26,26 @@ void Gun::tic(){
   }
 }
 
+Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) : 
+  Gun(proprietor, isEnemy, 90, physics){}
+
+Normalgun::~Normalgun(){}
+
+Bullet* Normalgun::fire(){
+  used = true;
+  b2Vec2 pos = proprietor->getPosition();
+  b2Vec2 vel = proprietor->body->GetLinearVelocity();
+  int signo = vel.x >=0 ? 1 : -1;
+  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
+  return bullet;
+}
+
+unsigned int Normalgun::getNumber(){
+  return 0;
+}
+
 Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 10*60, physics){}
 
 Bombgun::~Bombgun(){}
 
@@ -40,8 +58,12 @@ Bullet* Bombgun::fire(){
   return bullet;
 }
 
+unsigned int Bombgun::getNumber(){
+  return 1;
+}
+
 Magnetgun::Magnetgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 10*60, physics){}
 
 Magnetgun::~Magnetgun(){}
 
@@ -54,8 +76,12 @@ Bullet* Magnetgun::fire(){
   return bullet;
 }
 
+unsigned int Magnetgun::getNumber(){
+  return 2;
+}
+
 Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 10*60, physics){}
 
 Sparkgun::~Sparkgun(){}
 
@@ -68,8 +94,12 @@ Bullet* Sparkgun::fire(){
   return bullet;
 }
 
+unsigned int Sparkgun::getNumber(){
+  return 3;
+}
+
 Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 10*60, physics){}
 
 Ringgun::~Ringgun(){}
 
@@ -82,8 +112,12 @@ Bullet* Ringgun::fire(){
   return bullet;
 }
 
+unsigned int Ringgun::getNumber(){
+  return 4;
+}
+
 Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) : 
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 10*60, physics){}
 
 Firegun::~Firegun(){}
 
@@ -95,3 +129,8 @@ Bullet* Firegun::fire(){
   Bullet* bullet = new Fire(this->physics, pos.x, pos.y, signo, true);
   return bullet;
 }
+
+unsigned int Firegun::getNumber(){
+  return 5;
+}
+

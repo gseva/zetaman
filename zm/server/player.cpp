@@ -16,7 +16,7 @@ Player::~Player(){
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
-  body = new PlayerBody(*physics,x,y);
+  body = new PlayerBody(*physics,x,y,*this);
 }
 
 void Player::jump(){
