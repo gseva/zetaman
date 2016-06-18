@@ -28,17 +28,19 @@ void Map::loadImages() {
     // images_[i] = Gdk::Pixbuf::create_from_resource(resource_name)
     //                     ->scale_simple(64, 64, Gdk::INTERP_BILINEAR);
 
-    images_[i] = Glib::wrap(gdk_pixbuf_new_from_resource_at_scale(
-                              resource_name.c_str(), ppm, ppm, TRUE, 0));
+    auto image = Glib::wrap(gdk_pixbuf_new_from_resource(
+                                 resource_name.c_str(), 0));
+    images_[i] = image->scale_simple(ppm, ppm, Gdk::INTERP_BILINEAR);
   }
 
   if (jsonMap_.backgroundImage != "") {
     std::string backgroundName;
-    int width = client_.scaleNum(1024);
-    int height = client_.scaleNum(768);
+    int w = client_.scaleNum(1024);
+    int h = client_.scaleNum(768);
     backgroundName = "/zm/images/backgrounds/" + jsonMap_.backgroundImage;
-    background_ = Glib::wrap(gdk_pixbuf_new_from_resource_at_scale(
-                    backgroundName.c_str(), width, height, TRUE, 0));
+    auto background = Glib::wrap(gdk_pixbuf_new_from_resource(
+                    backgroundName.c_str(), 0));
+    background_ = background->scale_simple(w, h, Gdk::INTERP_BILINEAR);
     hasBackground = true;
   }
 }
