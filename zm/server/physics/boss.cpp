@@ -67,6 +67,16 @@ void Boss::determinePositionsToGo(){
   topRight.x = (screenCount * 16) - 3;
   topRight.y = getMaxJumpHeight() + 0.5f;
 
+  /*for(int i=4; i<1; i++)
+  {
+    zm::proto::Position position;
+    position.x = topRight.x / i;
+    position.y = topRight.y;
+    positionsCanGo.push_back(position);
+    position.y = bottomLeft.y;
+    positionsCanGo.push_back(position);
+  }*/
+
   /*Por ahora solo puede moverse a estas dos posiciones*/
   positionsCanGo.push_back(bottomLeft);
   positionsCanGo.push_back(topRight);
@@ -90,7 +100,7 @@ bool Boss::gotCloseEnough(){
   float delta = 0.1;
 
   if ((difX < delta && difX > -delta) &&
-   (difY < delta + getMaxJumpHeight() && difY > -(delta + getMaxJumpHeight())))
+   (difY < delta && difY > -delta))
     gotClose = true;
 
     return gotClose; 
@@ -117,11 +127,6 @@ b2Vec2 Boss::moveTowardsPosition(){
     vel.x = -velocity;
   }
 
-  if (gotCloseEnough())
-  {
-    moving = false;  
-  }
-
   return vel;
 }
 
@@ -135,9 +140,12 @@ Bullet* Boss::move(){
   Bullet* bullet = NULL;
   b2Vec2 vel = body->GetLinearVelocity();
   if ( tics%jumpFrecuency == 0 )
-    canJump=true;
+    canJump = true;
   if ( tics%shootFrecuency == 0 )
+  {
+    //moveTowardsPlayer();
     bullet = gun->shoot();
+  }
   if ( tics%(60*3) == 0 )
     {
       if (!moving)
@@ -150,6 +158,11 @@ Bullet* Boss::move(){
         vel = moveTowardsPosition();
       }
     }
+
+  if (gotCloseEnough())
+  {
+    moving = false;  
+  }  
 
   std::cout << "Posicion actual en x " << getPosition().x << std::endl;
   std::cout << "Posicion actual en y " << getPosition().y << std::endl;

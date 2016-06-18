@@ -23,10 +23,6 @@ struct Position : JsonSerializable {
   virtual json getJson();
 };
 
-struct TilePosition{
-  int x, y;
-};
-
 enum class PlayerState { movingLeft=0, movingRight=1, idle=2,
                          shooting=3, jumping=4 };
 
