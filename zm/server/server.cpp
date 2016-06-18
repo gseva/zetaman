@@ -46,6 +46,7 @@ namespace zm {
 
 Game::Game(Server& s) : server_(s), accepting_(false),  playing_(false),
     currentLevel(NULL) {
+  mapPath_ = "";
 }
 
 void Game::acceptHost(zm::Socket* accepter) {
@@ -62,9 +63,8 @@ void Game::acceptPlayers(zm::Socket* accepter) {
   accepting_ = true;
   while (accepting_) {
     auto playerSock = accepter->accept();
-    std::cout << "Acepto un jugador!" << std::endl;
     if (playerSock == NULL) break;
-    std::cout << "Creo new player!" << std::endl;
+    std::cout << "Acepto un jugador!" << std::endl;
     zm::proto::ServerEvent event(zm::proto::connected);
     std::string ev = event.serialize();
     std::cout << "Envio evento: " << ev << std::endl;
@@ -114,11 +114,13 @@ void Game::selectLevel(int level) {
   } else {
     cond.signal();
   }
-
 }
 
 void Game::startLevel() {
-  cond.wait();
+  std::cout << "Mi map path es " << mapPath_ << std::endl;
+  if (mapPath_ == "") {
+    cond.wait();
+  }
 
   JsonSerializer js;
   char curPath[255];
@@ -148,6 +150,7 @@ void Game::startLevel() {
 
   std::cout << "Creo new level! " << path << std::endl;
   currentLevel = new Level(playersVec, currentMap_);
+  mapPath_ = "";
 }
 
 void Game::gameLoop() {
