@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/zm">
-    <file>images/tiles/beam.png</file>
-    <file>images/tiles/beam_holes.png</file>
-    <file>images/tiles/box.png</file>
-    <file>images/tiles/brown.png</file>
-    <file>images/tiles/brown_box.png</file>
-    <file>images/tiles/grass.png</file>
-    <file>images/tiles/grass_half.png</file>
-    <file>images/tiles/grass_mid.png</file>
-    <file>images/tiles/dirt.png</file>
-    <file>images/tiles/ice.png</file>
-    <file>images/tiles/ladder_mid.png</file>
-    <file>images/tiles/metal_mid.png</file>
-    <file>images/tiles/sand.png</file>
-    <file>images/tiles/snow.png</file>
-    <file>images/tiles/stone_mid.png</file>
-    <file>images/tiles/tundra_mid.png</file>
+    <file preprocess="to-pixdata">images/tiles/beam.png</file>
+    <file preprocess="to-pixdata">images/tiles/beam_holes.png</file>
+    <file preprocess="to-pixdata">images/tiles/box.png</file>
+    <file preprocess="to-pixdata">images/tiles/brown.png</file>
+    <file preprocess="to-pixdata">images/tiles/brown_box.png</file>
+    <file preprocess="to-pixdata">images/tiles/grass.png</file>
+    <file preprocess="to-pixdata">images/tiles/grass_half.png</file>
+    <file preprocess="to-pixdata">images/tiles/grass_mid.png</file>
+    <file preprocess="to-pixdata">images/tiles/dirt.png</file>
+    <file preprocess="to-pixdata">images/tiles/ice.png</file>
+    <file preprocess="to-pixdata">images/tiles/ladder_mid.png</file>
+    <file preprocess="to-pixdata">images/tiles/metal_mid.png</file>
+    <file preprocess="to-pixdata">images/tiles/sand.png</file>
+    <file preprocess="to-pixdata">images/tiles/snow.png</file>
+    <file preprocess="to-pixdata">images/tiles/stone_mid.png</file>
+    <file preprocess="to-pixdata">images/tiles/tundra_mid.png</file>
 
-    <file>images/backgrounds/background_1.png</file>
-    <file>images/backgrounds/background_2.png</file>
-    <file>images/backgrounds/background_3.png</file>
-    <file>images/backgrounds/background_4.png</file>
+    <file  preprocess="to-pixdata">images/backgrounds/background_1.png</file>
+    <file  preprocess="to-pixdata">images/backgrounds/background_2.png</file>
+    <file  preprocess="to-pixdata">images/backgrounds/background_3.png</file>
+    <file  preprocess="to-pixdata">images/backgrounds/background_4.png</file>
 
-    <file>images/player/megaman.png</file>
-    <file>images/player/megaman_running.png</file>
-    <file>images/player/megaman_jumping.png</file>
+    <file  preprocess="to-pixdata">images/player/megaman.png</file>
+    <file  preprocess="to-pixdata">images/player/megaman_running.png</file>
+    <file  preprocess="to-pixdata">images/player/megaman_jumping.png</file>
 
-    <file>images/enemies/bumpy/1.png</file>
-    <file>images/enemies/bumpy/2.png</file>
-    <file>images/enemies/met/guarded.png</file>
-    <file>images/enemies/met/unguarded.png</file>
-    <file>images/enemies/sniper/guarded.png</file>
-    <file>images/enemies/sniper/unguarded.png</file>
-    <file>images/enemies/sniper/jumping.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumpy/1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumpy/2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/guarded.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/unguarded.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/guarded.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/unguarded.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/jumping.png</file>
 
-    <file>images/proyectiles/normal.png</file>
-    <file>images/proyectiles/bomb.png</file>
-    <file>images/proyectiles/spark.png</file>
-    <file>images/proyectiles/ring.png</file>
-    <file>images/proyectiles/magnet.png</file>
-    <file>images/proyectiles/fire.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/normal.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/magnet.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/fire.png</file>
 
-    <file>images/powerups/life.png</file>
-    <file>images/powerups/energy.png</file>
-    <file>images/powerups/bigplasma.png</file>
-    <file>images/powerups/plasma.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life.png</file>
+    <file  preprocess="to-pixdata">images/powerups/energy.png</file>
+    <file  preprocess="to-pixdata">images/powerups/bigplasma.png</file>
+    <file  preprocess="to-pixdata">images/powerups/plasma.png</file>
 
-    <file>images/enemies/fireman/charmeleon.png</file>
-    <file>images/enemies/magnetman/magneton.png</file>
-    <file>images/enemies/sparkman/voltorb.png</file>
-    <file>images/enemies/ringman/mewtwo.png</file>
-    <file>images/enemies/bombman/golem.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/charmeleon.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/magneton.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/voltorb.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/mewtwo.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/golem.png</file>
 
 
   </gresource>
