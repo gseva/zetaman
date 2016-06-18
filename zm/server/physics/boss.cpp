@@ -44,7 +44,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
 }
 
 float Boss::getMaxJumpHeight(){
-  return 0.25;
+  return 2;
 }
  
 void Boss::determinePositionsToGo(){
@@ -52,12 +52,11 @@ void Boss::determinePositionsToGo(){
   zm::proto::Position topRight;
   /*12 es el alto fijo del mapa*/
   unsigned int mapLen = jm.imageNumbers.size() / 12;
-  std::cout << "TAMANIO ASD" << mapLen << std::endl;
   /*16 es al ancho fijo del mapa*/
   unsigned int screenCount = mapLen / 16;
 
   /*Faltaria multiplicarlo por metroPorTile*/
-  bottomLeft.x = (screenCount - 1) * 8 + .5f;
+  bottomLeft.x = (screenCount - 1) * 16 + .5f;
   bottomLeft.y = .5f;
   topRight.x = (screenCount * 16) - 3;
   topRight.y = getMaxJumpHeight() + 0.5f;
@@ -88,7 +87,7 @@ bool Boss::gotCloseEnough(){
   std::cout << "Posicion que quiero en x" << positionToGo.x << std::endl;
   std::cout << "Posicion que quiero en y" << positionToGo.y << std::endl;
 
-  if ((difX < 2 || difX > -2) && (difY < 2 || difY > -2))
+  if ((difX < 1 && difX > -1) && (difY < 1 && difY > -1))
     gotClose = true;
 
     return gotClose; 
