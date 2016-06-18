@@ -1,12 +1,16 @@
 #include <Box2D/Box2D.h>
 #include <iostream>
+#include <string>
 #include "zm/server/camera.h"
 
 #include "zm/server/player.h"
+#include "zm/server/server.h"
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/bullets.h"
 
-Player::Player(){
+
+Player::Player(zm::Game& g, std::string n, bool host)
+  : game(g), name(n), isHost(host) {
   connected = true;
 }
 
@@ -57,9 +61,9 @@ void Player::up(){
   body->up();
 }
 
-Bullet* Player::shoot(){
+void Player::shoot(){
   Bullet* bullet = body->shoot();
-  return bullet;
+  game.currentLevel->addBullet(bullet);
 }
 
 b2Body* Player::getBody(){

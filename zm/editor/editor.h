@@ -74,7 +74,7 @@ class EditorMenu {
   private:
     unsigned int mapLen;
 
-    Gtk::Window* pWindowEditor;
+    // Gtk::Window* pWindowEditor;
     Gtk::SpinButton* pSpinLength;
     Glib::RefPtr<Gtk::Application> app;
 

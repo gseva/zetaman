@@ -8,9 +8,9 @@
 namespace zm {
 
 
-ClientProxy::ClientProxy(Server& s, int playerNumber,
+ClientProxy::ClientProxy(Player* p,
    std::shared_ptr<zm::ProtectedSocket> sock_) :
-    s_(s), playerNumber_(playerNumber), clientSock_(sock_) {
+    player_(p), clientSock_(sock_) {
 }
 
 void ClientProxy::updateState(proto::Game gs) {
@@ -29,20 +29,20 @@ void ClientProxy::startGame() {
 
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   switch (ce.state) {
-    case proto::moveLeft: s_.left(playerNumber_); break;
-    case proto::moveRight: s_.right(playerNumber_); break;
-    case proto::jump: s_.jump(playerNumber_); break;
-    case proto::moveUp: s_.up(playerNumber_); break;
+    case proto::moveLeft: player_->left(); break;
+    case proto::moveRight: player_->right(); break;
+    case proto::jump: player_->jump(); break;
+    case proto::moveUp: player_->up(); break;
     case proto::moveDown: break;
-    case proto::stopMoving: s_.stopHorizontalMove(playerNumber_); break;
-    case proto::shoot: s_.shoot(playerNumber_); break;
-    case proto::shutdown: s_.shutdown(playerNumber_); break;
+    case proto::stopMoving: player_->stopHorizontalMove(); break;
+    case proto::shoot: player_->shoot(); break;
+    case proto::shutdown: player_->game.shutdown(player_->name); break;
 
-    case proto::selectLevel1: s_.selectLevel(0); break;
-    case proto::selectLevel2: s_.selectLevel(1); break;
-    case proto::selectLevel3: s_.selectLevel(2); break;
-    case proto::selectLevel4: s_.selectLevel(3); break;
-    case proto::selectLevel5: s_.selectLevel(4); break;
+    case proto::selectLevel1: player_->game.selectLevel(0); break;
+    case proto::selectLevel2: player_->game.selectLevel(1); break;
+    case proto::selectLevel3: player_->game.selectLevel(2); break;
+    case proto::selectLevel4: player_->game.selectLevel(3); break;
+    case proto::selectLevel5: player_->game.selectLevel(4); break;
   }
 }
 
@@ -60,16 +60,9 @@ void ClientProxy::shutdown() {
   clientSock_->close();
   receiver_->join();
 
-  
-
   delete sender_;
   delete receiver_;
 }
-
-proto::Game ClientProxy::getState() {
-  return s_.getState();
-}
-
 
 Sender::Sender(Queue<proto::Game>& eventQueue,
                std::shared_ptr<zm::ProtectedSocket> clientSock) :
