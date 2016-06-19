@@ -10,7 +10,9 @@ public:
     Physics& physics);
   virtual ~Gun()=0;
   Bullet* shoot();
+  Bullet* shoot(int direction);
   virtual Bullet* fire()=0;
+  virtual Bullet* fire(int direction)=0;
   void tic();
   virtual int getNumber()=0;
 protected:
@@ -27,6 +29,7 @@ public:
   explicit Normalgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Normalgun();
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 
@@ -35,6 +38,7 @@ public:
   explicit Bombgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Bombgun();
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 
@@ -43,6 +47,7 @@ public:
   explicit Magnetgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Magnetgun();
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 
@@ -51,6 +56,7 @@ public:
   explicit Sparkgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Sparkgun();
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 
@@ -59,6 +65,7 @@ public:
   explicit Ringgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Ringgun();
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 
@@ -67,6 +74,7 @@ public:
   explicit Firegun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Firegun();  
   virtual Bullet* fire();
+  virtual Bullet* fire(int direction);
   virtual int getNumber();
 };
 

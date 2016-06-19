@@ -87,7 +87,7 @@ zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo){
 
 Bomb::Bomb(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics, x, y, signo, isEnemy) {
-  vel.x = randomBool() ? -6 : 6;
+  vel.x = signo == 1 ? 6 : -6;
   vel.y = 2;
   body->SetLinearVelocity(vel);
 }
@@ -123,7 +123,7 @@ void Magnet::impact(Enemy* impactBody){
 
 Spark::Spark(Physics& physics, float32 x, float32 y, int signo,
   bool isEnemy) : Bullet(physics,x,y,signo,isEnemy){
-  vel.x = randomBool() ? -6 : 6;
+  vel.x = signo == 1 ? 6 : -6;
   vel.y = randomBool() ? 0 : 6;
   body->SetLinearVelocity(vel);
 }
