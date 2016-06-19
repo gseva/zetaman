@@ -13,11 +13,9 @@ public:
   virtual ~Boss()=0;
   virtual Bullet* move();
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
-  float getMaxJumpHeight();
   void determinePositionsToGo();
   void choosePosition();
   float moveTowardsPosition();
-  bool gotCloseEnough();
   zm::proto::Position getPlayersAveragePosition();
 protected:
   int velocity;
@@ -28,7 +26,6 @@ protected:
   const int prefDistance; 
   /*Posicion a la que va a moverse*/
   float positionToGo;
-  //bool moving;
   /*Posiciones a las que puede moverse en x*/
   std::vector<float> positionsCanGo;
   JsonMap jm;

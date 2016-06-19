@@ -7,31 +7,31 @@
 #define BOMBMAN_JUMP_F     5 * 60
 #define BOMBMAN_SHOOT_F    5 * 60
 #define BOMBMAN_JUMP       6
-#define BOMBMAN_PREF_DIST 3
+#define BOMBMAN_PREF_DIST 5
 
 #define MAGNETMAN_VEL       4
 #define MAGNETMAN_JUMP_F    15 * 60
 #define MAGNETMAN_SHOOT_F   5 * 60
 #define MAGNETMAN_JUMP      3
-#define MAGNETMAN_PREF_DIST 3
+#define MAGNETMAN_PREF_DIST 5
 
 #define SPARKMAN_VEL       2 
 #define SPARKMAN_JUMP_F    2 * 60
 #define SPARKMAN_SHOOT_F   5 * 60
 #define SPARKMAN_JUMP      3 
-#define SPARKMAN_PREF_DIST 3
+#define SPARKMAN_PREF_DIST 5
 
 #define RINGMAN_VEL       5 
 #define RINGMAN_JUMP_F    10 * 60
 #define RINGMAN_SHOOT_F   8 * 60
 #define RINGMAN_JUMP      6 
-#define RINGMAN_PREF_DIST 3
+#define RINGMAN_PREF_DIST 5
 
 #define FIREMAN_VEL       10
 #define FIREMAN_JUMP_F    10 * 60
 #define FIREMAN_SHOOT_F   5 * 60
 #define FIREMAN_JUMP      6 
-#define FIREMAN_PREF_DIST 3
+#define FIREMAN_PREF_DIST 5
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
@@ -40,7 +40,6 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency),
     prefDistance(prefDistance), jm(jm), players(players){
       tics = 0;
-      //moving = false;
       determinePositionsToGo();
 }
  
@@ -51,7 +50,7 @@ void Boss::determinePositionsToGo(){
   /*16 es al ancho fijo del mapa*/
   unsigned int screenCount = mapLen / 16;
 
-  /*Faltaria multiplicarlo por metroPorTile*/
+  /* Posicion mas a la izquierda de su recamara*/
   left = (screenCount - 1) * 16;
 
   for (int i=0; i<14; i++)
@@ -93,17 +92,6 @@ void Boss::choosePosition(){
   positionToGo = positionsCanGo[idealPositionNumber];
 }
 
-bool Boss::gotCloseEnough(){
-  bool gotClose = false;
-  float difX = getPosition().x - positionToGo;
-  float delta = 1;
-
-  if (abs(difX) < delta)
-    gotClose = true;
-
-  return gotClose; 
-}
-
 float Boss::moveTowardsPosition(){
   float xVel;
 
@@ -132,23 +120,8 @@ Bullet* Boss::move(){
   {
     bullet = gun->shoot();
   }
-  //if ( tics%(60*3) == 0 )
-    //{
-      //if (!moving)
-      //{
-        choosePosition();
-      //  moving = true;
-      //}
-      //if (moving)
-      //{
-        vel.x = moveTowardsPosition();
-      //}
-    //}
-
-  //if (gotCloseEnough())
-  //{
-  //  moving = false;
-  //}  
+  choosePosition();
+  vel.x = moveTowardsPosition();
 
   std::cout << "Posicion actual en x " << getPosition().x << std::endl;
   std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
