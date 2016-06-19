@@ -18,7 +18,7 @@ public:
   virtual void toImpact(Fire* bullet);
   virtual void toImpact(Bullet* bullet);
 protected:
-  int healt;
+  int health;
 };
 
 class Met : public Enemy{
@@ -73,19 +73,12 @@ private:
     int tics;
  };
 
- class JumpingSniper : public Enemy{
+ class JumpingSniper : public Sniper{
  public:
    explicit JumpingSniper(Physics& physics, float32 x, float32 y);
    virtual ~JumpingSniper();
    virtual Bullet* move();
-    Bullet* shoot();
     virtual zm::proto::Enemy toBean(int xo, int yo);
-    virtual void toImpact(Bomb* bullet);
-    virtual void toImpact(Spark* bullet);
-    virtual void toImpact(Ring* bullet);
-    virtual void toImpact(Magnet* bullet);
-    virtual void toImpact(Fire* bullet);
-    virtual void toImpact(Bullet* bullet);  
  private:
     bool protected_;
     int tics;

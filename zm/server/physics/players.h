@@ -4,8 +4,6 @@
 
 #include "zm/server/physics/world.h"
 #include "zm/server/physics/bullets.h"
-//#include "zm/server/physics/gun.h"
-//#include <map>
 
 class Bullet;
 class Player;
@@ -30,8 +28,8 @@ public:
   virtual void toImpact(Bullet* bullet);
 private:
   bool canGoUp();
-  int healt;
-  // Player& player;
+  void hurting(int hurt);
+  int health;
 };
 
 #endif

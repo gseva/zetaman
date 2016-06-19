@@ -36,7 +36,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
       vel.x = velocity;
       vel.y = 0;
       body->SetLinearVelocity(vel);
-      healt = 30;
+      health = 30;
 }
 
 Boss::~Boss(){
@@ -60,33 +60,27 @@ Bullet* Boss::move(){
 }
 
 void Boss::toImpact(Bomb* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+   hurting(3);
 }
 void Boss::toImpact(Spark* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+   hurting(3);
 }
 void Boss::toImpact(Ring* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+   hurting(3);
 }
 void Boss::toImpact(Magnet* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+   hurting(3);
 }
 void Boss::toImpact(Fire* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+   hurting(3);
 }
 void Boss::toImpact(Bullet* bullet){
-  healt -= 1;
-  if ( healt <= 0 )
+   hurting(1);
+}
+
+void Boss::hurting(int hurt){
+  health -= hurt;
+  if ( health <= 0 )
     markAsDestroyed();
 }
 

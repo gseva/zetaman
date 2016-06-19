@@ -17,7 +17,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
-  healt = 50;
+  health = 50;
 }
 
 PlayerBody::~PlayerBody(){
@@ -86,41 +86,31 @@ b2Body* PlayerBody::getBody(){
 }
 
 void PlayerBody::toImpact(Bomb* bullet){
-  healt -= 4;
-  if ( healt <= 0 )
-    markAsDestroyed();
+  hurting(4);
 }
 
 void PlayerBody::toImpact(Spark* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+  hurting(3);
 }
 
 void PlayerBody::toImpact(Ring* bullet){
-  healt -= 3;
-  if ( healt <= 0 )
-    markAsDestroyed();
+  hurting(3);
 }
 
 void PlayerBody::toImpact(Magnet* bullet){
-  healt -= 2;
-  if ( healt <= 0 )
-    markAsDestroyed();
+  hurting(2);
 }
 
 void PlayerBody::toImpact(Fire* bullet){
-  healt -= 4;
-  if ( healt <= 0 )
-    markAsDestroyed();
+  hurting(4);
 }
 
 void PlayerBody::toImpact(Bullet* bullet){
-  healt -= 1;
-  std::cout << "\n\n\n\n\nHEALT: "<< healt <<"\n\n\n\n\n\n";
+  hurting(1);
+}
 
-  if ( healt <= 0 ) {
-    std::cout << "\n\n\n\n\nPLAYER DESTRUIDO\n\n\n\n\n\n";
+void PlayerBody::hurting(int hurt){
+  health -= hurt;
+  if ( health <= 0 )
     markAsDestroyed();
-  }
 }

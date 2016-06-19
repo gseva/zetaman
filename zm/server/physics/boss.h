@@ -24,6 +24,7 @@ protected:
   const int shootFrecuency;
   const int jumpFrecuency;
 private:
+  void hurting (int healt);
   unsigned int tics; 
 };
 

@@ -168,7 +168,7 @@ zm::proto::Enemy Bumby::toBean(int xo, int yo){
 
 Sniper::Sniper(Physics& physics, float32 x, float32 y) :
 Enemy(physics,x,y){
-  healt = 2;
+  health = 2;
   protected_ = false;
   tics = 0;
 }
@@ -216,8 +216,8 @@ void Sniper::toImpact(Ring* bullet){
   if ( !protected_ ) {
     markAsDestroyed();
   } else {
-    healt--;
-    if ( healt <= 0 )
+    health--;
+    if ( health <= 0 )
       markAsDestroyed();
   }
 }
@@ -231,8 +231,8 @@ void Sniper::toImpact(Fire* bullet){
   if ( !protected_ ) {
     markAsDestroyed();
   } else {
-    healt--;
-    if ( healt <= 0 )
+    health--;
+    if ( health <= 0 )
       markAsDestroyed();
   }
 }
@@ -243,8 +243,8 @@ void Sniper::toImpact(Bullet* bullet){
 }
 
 JumpingSniper::JumpingSniper(Physics& physics, float32 x, float32 y) :
-Enemy(physics,x,y){
-  healt = 2;
+  Sniper(physics,x,y){
+  health = 2;
   protected_ = false;
   tics = 0;
 }
@@ -265,58 +265,9 @@ Bullet* JumpingSniper::move(){
   return bullet;
 }
 
-Bullet* JumpingSniper::shoot(){
-  b2Vec2 pos = getPosition();
-  b2Vec2 vel = body->GetLinearVelocity();
-  int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
-  return bullet;
-}
-
 zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
-  protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
+  zm::proto::Enemy protoEnemy = Sniper::toBean(xo, yo);
   protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
                                       zm::proto::EnemyState::unguarded;
   return protoEnemy;
-}
-
-void JumpingSniper::toImpact(Bomb* bullet){
-  if ( !protected_ )
-    markAsDestroyed();
-}
-
-void JumpingSniper::toImpact(Spark* bullet){
-  if ( !protected_ )
-    markAsDestroyed();
-}
-
-void JumpingSniper::toImpact(Ring* bullet){
-  if ( !protected_ ) {
-    markAsDestroyed();
-  } else {
-    healt--;
-    if ( healt <= 0 )
-      markAsDestroyed();
-  }
-}
-
-void JumpingSniper::toImpact(Magnet* bullet){
-  if ( !protected_ )
-    markAsDestroyed();
-}
-
-void JumpingSniper::toImpact(Fire* bullet){
-  if ( !protected_ ) {
-    markAsDestroyed();
-  } else {
-    healt--;
-    if ( healt <= 0 )
-      markAsDestroyed();
-  }
-}
-
-void JumpingSniper::toImpact(Bullet* bullet){
-  if ( !protected_ )
-    markAsDestroyed();
 }
