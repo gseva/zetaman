@@ -86,30 +86,30 @@ b2Body* PlayerBody::getBody(){
 }
 
 void PlayerBody::toImpact(Bomb* bullet){
-  hurting(4);
+  damage(4);
 }
 
 void PlayerBody::toImpact(Spark* bullet){
-  hurting(3);
+  damage(3);
 }
 
 void PlayerBody::toImpact(Ring* bullet){
-  hurting(3);
+  damage(3);
 }
 
 void PlayerBody::toImpact(Magnet* bullet){
-  hurting(2);
+  damage(2);
 }
 
 void PlayerBody::toImpact(Fire* bullet){
-  hurting(4);
+  damage(4);
 }
 
 void PlayerBody::toImpact(Bullet* bullet){
-  hurting(1);
+  damage(1);
 }
 
-void PlayerBody::hurting(int hurt){
+void PlayerBody::damage(int hurt){
   health -= hurt;
   if ( health <= 0 )
     markAsDestroyed();

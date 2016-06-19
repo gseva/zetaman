@@ -28,7 +28,7 @@ public:
   virtual void toImpact(Bullet* bullet);
 private:
   bool canGoUp();
-  void hurting(int hurt);
+  void damage(int hurt);
   int health;
 };
 

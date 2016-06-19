@@ -60,25 +60,25 @@ Bullet* Boss::move(){
 }
 
 void Boss::toImpact(Bomb* bullet){
-   hurting(3);
+   damage(3);
 }
 void Boss::toImpact(Spark* bullet){
-   hurting(3);
+   damage(3);
 }
 void Boss::toImpact(Ring* bullet){
-   hurting(3);
+   damage(3);
 }
 void Boss::toImpact(Magnet* bullet){
-   hurting(3);
+   damage(3);
 }
 void Boss::toImpact(Fire* bullet){
-   hurting(3);
+   damage(3);
 }
 void Boss::toImpact(Bullet* bullet){
-   hurting(1);
+   damage(1);
 }
 
-void Boss::hurting(int hurt){
+void Boss::damage(int hurt){
   health -= hurt;
   if ( health <= 0 )
     markAsDestroyed();
