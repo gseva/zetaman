@@ -3,19 +3,23 @@
 #include <vector>
 #include <iostream>
 
+#include <gdkmm/cursor.h> // Necesario para que no tire el famoso error
 #include <gdkmm/general.h> // set_source_pixbuf()
 
 #include "zm/client/map.h"
+#include "zm/client/client.h"
 
 
 namespace zm {
 
-Map::Map(JsonMap& jsonMap) : jsonMap_(jsonMap), hasBackground(false) {
+Map::Map(Client& client) : client_(client),
+    jsonMap_(client_.serverProxy.getJsonMap()), hasBackground(false) {
   loadImages();
 }
 
 void Map::loadImages() {
   std::string prefix = "/zm/images/tiles/";
+  int ppm = client_.ppm;
   for (unsigned int i = 0; i < jsonMap_.imageNames.size(); ++i) {
     std::string resource_name = prefix + jsonMap_.imageNames[i];
 
@@ -24,15 +28,19 @@ void Map::loadImages() {
     // images_[i] = Gdk::Pixbuf::create_from_resource(resource_name)
     //                     ->scale_simple(64, 64, Gdk::INTERP_BILINEAR);
 
-    images_[i] = Glib::wrap(gdk_pixbuf_new_from_resource_at_scale(
-                              resource_name.c_str(), 64, 64, TRUE, 0));
+    auto image = Glib::wrap(gdk_pixbuf_new_from_resource(
+                                 resource_name.c_str(), 0));
+    images_[i] = image->scale_simple(ppm, ppm, Gdk::INTERP_BILINEAR);
   }
 
   if (jsonMap_.backgroundImage != "") {
     std::string backgroundName;
+    int w = client_.scaleNum(1024);
+    int h = client_.scaleNum(768);
     backgroundName = "/zm/images/backgrounds/" + jsonMap_.backgroundImage;
-    background_ = Glib::wrap(gdk_pixbuf_new_from_resource_at_scale(
-                               backgroundName.c_str(), 1024, 768, TRUE, 0));
+    auto background = Glib::wrap(gdk_pixbuf_new_from_resource(
+                    backgroundName.c_str(), 0));
+    background_ = background->scale_simple(w, h, Gdk::INTERP_BILINEAR);
     hasBackground = true;
   }
 }

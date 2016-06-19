@@ -14,7 +14,11 @@
 
 namespace zm {
 
+class Client;
+
+
 class Map {
+Client& client_;
 JsonMap& jsonMap_;
 Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
 Glib::RefPtr<Gdk::Pixbuf> background_;
@@ -22,7 +26,7 @@ bool hasBackground;
 void loadImages();
 
 public:
-  explicit Map(JsonMap& jsonMap_);
+  explicit Map(Client& client);
 
   void draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y);
 };

@@ -1,58 +1,77 @@
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
-#include <vector>
 #include <string>
 #include <memory>
+#include <map>
 #include <Box2D/Box2D.h>
 
 #include "zm/connection.h"
 #include "zm/game_protocol.h"
 #include "zm/thread.h"
 #include "zm/json/jsonserializer.h"
-#include "zm/server/player.h"
 #include "zm/server/physics/world.h"
-#include "zm/server/timer.h"
 #include "zm/server/level.h"
 
 
-class Server{
-private:
-  void newPlayer_();
-  void newClientProxy_(std::shared_ptr<zm::ProtectedSocket> sock);
+class Player;
 
+
+class Server{
 public:
   Server();
   ~Server();
 
   void run();
 
-  void startLevel();
-  void stopLevel();
-
-	zm::proto::Game getState();
+  zm::proto::Game getState();
   void updateState();
 
-  void selectLevel(int level);
-
-  void jump(int playerNumber);
-  void right(int playerNumber);
-  void left(int playerNumber);
-  void stopHorizontalMove(int playerNumber);
-  void up(int playerNumber);
-  void shoot(int playerNumber);
-  void shutdown(int playerNumber);
+  void stopAccepting();
 
 private:
-  Level* level;
   zm::Socket* accepter_;
-  std::vector<Player*> players;
-  JsonMap jm;
-  std::vector<zm::ClientProxy*> proxies;
   std::string port_;
-  std::string mapPath_;
-  bool accepting_;
-  bool playing_;
 };
+
+
+namespace zm {
+
+class Game {
+ConditionVariable cond;
+
+Server& server_;
+JsonMap currentMap_;
+std::string mapPath_;
+
+std::map<std::string, Player*> players;
+std::map<std::string, zm::ClientProxy*> proxies;
+
+bool accepting_;
+bool playing_;
+
+public:
+  Level* currentLevel;
+
+  explicit Game(Server& s);
+  ~Game();
+
+  void acceptHost(zm::Socket* accepter);
+  void acceptPlayers(zm::Socket* accepter);
+
+  void newPlayer(std::shared_ptr<zm::ProtectedSocket> sock);
+
+  void selectLevel(int level);
+  void selectMap();
+  void startLevel();
+  void gameLoop();
+  void finishLevel();
+
+  void updateState();
+
+  void shutdown(const std::string& playerName);
+};
+
+} // zm
 
 #endif

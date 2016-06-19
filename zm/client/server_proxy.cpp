@@ -8,44 +8,22 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy() : sender_(NULL), isHost(false) {
+ServerProxy::ServerProxy(Client& client) : sender_(NULL),
+    client_(client) {
 }
 
 void ServerProxy::connect(){
   serverSock_.connect("127.0.0.1", "9090");
-  getConnection_();
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
-}
 
-void ServerProxy::getConnection_() {
-  std::cout << "Leyendo evento" << std::endl;
-  std::string eventString = serverSock_.read();
-  proto::ServerEvent ev = proto::ServerEvent::deserialize(eventString);
-  isHost = ev.state == proto::connectedAsHost;
-  std::cout << "recibo evento, isHost: " << isHost <<  std::endl;
-}
-
-void ServerProxy::getMap() {
-  std::string mapString = serverSock_.read();
-
-  std::cout << "recibo map " << mapString <<  std::endl;
-  map_.fromReducedString(mapString);
-}
-
-void ServerProxy::startLevel() {
   receiver_ = new Receiver(*this, serverSock_);
   receiver_->start();
 }
 
-proto::Game ServerProxy::getState() {
-  proto::Game game;
-  return game;
-}
-
-void ServerProxy::updateState(proto::Game gs) {
-  updateHandler.signal_game_update().emit(gs);
+void ServerProxy::updateState(proto::Game game) {
+  updateHandler.signal_game_update().emit(game);
 }
 
 void ServerProxy::jump() {
@@ -78,6 +56,21 @@ void ServerProxy::shoot() {
   eventQueue_.push(ce);
 }
 
+void ServerProxy::changeGun(int selectedGun) {
+  proto::ClientEventType type;
+  switch (selectedGun){
+    case 1: type = proto::ClientEventType::selectGun1; break;
+    case 2: type = proto::ClientEventType::selectGun2; break;
+    case 3: type = proto::ClientEventType::selectGun3; break;
+    case 4: type = proto::ClientEventType::selectGun4; break;
+    case 5: type = proto::ClientEventType::selectGun5; break;
+    case 6: type = proto::ClientEventType::selectGun6; break;
+  }
+  proto::ClientEvent ce(type);
+  eventQueue_.push(ce);
+}
+
+
 void ServerProxy::selectLevel(int level) {
   proto::ClientEventType type;
   switch (level) {
@@ -89,6 +82,23 @@ void ServerProxy::selectLevel(int level) {
   }
   proto::ClientEvent ce(type);
   eventQueue_.push(ce);
+}
+
+void ServerProxy::dispatchEvent(proto::ServerEvent event) {
+  switch (event.state) {
+    case proto::connected: client_.waitForPlayers(); break;
+    case proto::connectedAsHost: client_.selectLevel(); break;
+    case proto::playerConnected:
+      client_.showConnectedPlayer(event.payload);
+      break;
+    case proto::mapSelected:
+      map_.fromReducedString(event.payload);
+      client_.startGame();
+      break;
+    case proto::gameStart: break;
+    case proto::levelWon: client_.showWinDialog(); break;
+    case proto::levelWonHost: client_.selectLevel(); break;
+  }
 }
 
 
@@ -109,7 +119,7 @@ void ServerProxy::shutdown() {
 }
 
 ServerProxy::~ServerProxy() {
-  //shutdown();
+  shutdown();
 }
 
 
@@ -135,21 +145,29 @@ void Sender::run() {
 
 
 Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
-                  : sp_(sp), serverSock_(serverSock), stop(false) {
+    : sp_(sp), serverSock_(serverSock), receiveEvents(true), stop(false) {
 }
 
 void Receiver::run() {
-  proto::Game game;
   do {
     try {
       std::string res = serverSock_.read();
-      game = proto::Game::deserialize(res);
+      // std::cout << "Recibo " << res << std::endl;
+      // std::cout << "Receive events " << receiveEvents << std::endl;
+      if (receiveEvents) {
+        proto::ServerEvent ev = proto::ServerEvent::deserialize(res);
+        if (ev.state == proto::gameStart) receiveEvents = false;
+        sp_.dispatchEvent(ev);
+      } else {
+        proto::Game game = proto::Game::deserialize(res);
+        if (game.state != proto::GameState::playing) receiveEvents = true;
+        sp_.updateState(game);
+      }
     }
     catch(const std::exception& e) {
       std::cerr << e.what() << '\n';
       throw;
     }
-    sp_.updateState(game);
   } while (!stop);
 }
 

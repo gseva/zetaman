@@ -1,8 +1,11 @@
 
 #include <string>
 
+#include <gtkmm/messagedialog.h>
+
 #include "zm/client/window.h"
 #include "zm/client/client.h"
+
 
 namespace zm {
 
@@ -10,6 +13,8 @@ namespace zm {
 Window::Window(Client* c) : c_(c), startButton_("Empezar!") {
   add(box_);
 
+  set_default_size(c_->width, c_->height);
+  set_position(Gtk::WIN_POS_CENTER);
   // signal_key_press_event().connect(
   //   sigc::mem_fun(*this, &Window::keyReleased));
   add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
@@ -37,19 +42,26 @@ void Window::showWaitingScreen() {
   box_.pack_start(*waitingScreen_);
   selectedWidget_ = waitingScreen_;
   waitingScreen_->show();
-  c_->getMap();
 }
 
 void Window::showCanvas() {
   box_.remove(*selectedWidget_);
-  canvas_ = Gtk::manage(new Canvas(c_->serverProxy));
+  canvas_ = Gtk::manage(new Canvas(*c_));
 
   c_->serverProxy.updateHandler.signal_game_update().connect(
           sigc::mem_fun(*canvas_, &Canvas::updateGameState) );
 
   box_.pack_start(*canvas_);
+  selectedWidget_ = canvas_;
   canvas_->show();
-  c_->serverProxy.startLevel();
+}
+
+void Window::showWinDialog() {
+  Gtk::MessageDialog dialog(*this, "Felicitaciones! Has ganado el nivel!");
+  dialog.set_secondary_text(
+          "Espera mientras el host está seleccionando el mapa..");
+
+  dialog.run();
 }
 
 bool Window::on_key_press_event(GdkEventKey* event) {
@@ -63,7 +75,21 @@ bool Window::on_key_press_event(GdkEventKey* event) {
     c_->serverProxy.up();
   } else if ((event->keyval == GDK_KEY_A) || (event->keyval == GDK_KEY_a)) {
     c_->serverProxy.shoot();
+  } else if (event->keyval == GDK_KEY_1) {
+    c_->serverProxy.changeGun(1);
+  } else if (event->keyval == GDK_KEY_2) {
+    c_->serverProxy.changeGun(2);
+  } else if (event->keyval == GDK_KEY_3) {
+    c_->serverProxy.changeGun(3);
+  } else if (event->keyval == GDK_KEY_4) {
+    c_->serverProxy.changeGun(4);
+  } else if (event->keyval == GDK_KEY_5) {
+    c_->serverProxy.changeGun(5);
+  } else if (event->keyval == GDK_KEY_6) {
+    c_->serverProxy.changeGun(6);
   }
+
+
 
   return Gtk::Window::on_key_press_event(event);
 }
@@ -86,11 +112,6 @@ void Window::on_hide()
 
 void Window::on_startButton_clicked() {
   c_->startConnection();
-  if (c_->serverProxy.isHost) {
-    showLevelSelection();
-  } else {
-    showWaitingScreen();
-  }
 }
 
 LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
@@ -108,7 +129,6 @@ LevelSelectionPanel::LevelSelectionPanel(Client* c) : c_(c) {
 void LevelSelectionPanel::on_button_clicked(int i) {
   std::cout << "Boton presiona2 " << i << std::endl;
   c_->serverProxy.selectLevel(i);
-  c_->getMap();
 }
 
 WaitingScreen::WaitingScreen() :

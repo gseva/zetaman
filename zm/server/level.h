@@ -6,39 +6,37 @@
 
 #include "zm/json/jsonserializer.h"
 #include "zm/server/player.h"
-#include "zm/server/timer.h"
 #include "zm/server/camera.h"
 #include "zm/server/client_proxy.h"
 #include "zm/server/physics/world.h"
 #include "zm/server/physics/enemies.h"
 #include "zm/server/physics/bullets.h"
 
-class Server;
 
 class Level{
 public:
-  explicit Level(std::vector<Player*>& connectedPlayers,
-    JsonMap& jsonMap, Server& s);
+  zm::proto::GameState state;
+
+  Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap);
   ~Level();
 
-  void jump(int playerNumber);
   zm::proto::Game getState();
-  void right(int playerNumber);
-  void left(int playerNumber);
-  void stopHorizontalMove(int playerNumber);
-  void up(int playerNumber);
-  void shoot(int playerNumber);
-  void disconnect(int playerNumber);
+  void addBullet(Bullet* bullet);
 
+  void changeGun(int playerNumber, int gunNumber);
+
+  void step();
   void clean();
 
-  std::vector<Player*>& players;
+  bool checkLoseCondition();
+  bool checkWinCondition();
+
+  std::vector<Player*> players;
   std::vector<Enemy*> enemies;
   std::vector<Bullet*> bullets;
 
 private:
   Physics physics;
-  Timer timer;
   JsonMap& jm;
   Camera camera;
 };

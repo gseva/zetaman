@@ -46,6 +46,7 @@ public:
   void showLevelSelection();
   void showWaitingScreen();
   void showCanvas();
+  void showWinDialog();
 
 private:
   bool on_key_press_event(GdkEventKey* event) override;
