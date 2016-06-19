@@ -18,6 +18,9 @@ Canvas::Canvas(Client& c) : c_(c), map_(c), buff_(c) {
 }
 
 Canvas::~Canvas() {
+  for(auto&& player : players_) {
+    delete player.second;
+  }
 }
 
 bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
@@ -29,10 +32,16 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   map_.draw(cr, game_.camPos.x, game_.camPos.y);
 
-
   for (auto&& player : game_.players) {
-    drawing::Player drawable(c_, player);
-    drawable.draw(cr, buff_);
+    drawing::Player* drawable;
+    if (!players_.count(player.id)) {
+      drawable = new drawing::Player(c_);
+      players_.insert({player.id, drawable});
+    } else {
+      drawable = players_.at(player.id);
+    }
+    drawable->setState(player);
+    drawable->draw(cr, buff_);
   }
   for (auto&& enemy : game_.enemies) {
     drawing::Enemy drawable(c_, enemy);

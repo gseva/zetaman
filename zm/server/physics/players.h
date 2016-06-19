@@ -16,20 +16,22 @@ public:
   void right();
   void left();
   void stopHorizontalMove();
-  void up();
+  bool up();
   Bullet* shoot();
   virtual bool collide(Bullet* bullet);
   b2Body* getBody();
+
   virtual void toImpact(Bomb* bullet);
   virtual void toImpact(Spark* bullet);
   virtual void toImpact(Ring* bullet);
   virtual void toImpact(Magnet* bullet);
   virtual void toImpact(Fire* bullet);
   virtual void toImpact(Bullet* bullet);
+
+  int health;
 private:
   bool canGoUp();
   void damage(int hurt);
-  int health;
 };
 
 #endif

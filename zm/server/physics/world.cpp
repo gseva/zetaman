@@ -18,7 +18,7 @@
 zm::ContactListener GlobalContextListener;
 
 
-Physics::Physics() {}//: ground(world){}
+Physics::Physics() : id(0) {}//: ground(world){}
 
 Physics::~Physics() {}
 
@@ -79,6 +79,10 @@ void Physics::destroyBody(b2Body* body){
   world.destroyBody(body);
 }
 
+int Physics::getNextId() {
+  return id++;
+}
+
 World::World(){
   gravity = new b2Vec2(DEFAULT_GRAVITY_X, DEFAULT_GRAVITY_Y);
   world = new b2World(*gravity);
@@ -120,7 +124,9 @@ Body::Body(Physics& physics, float32 x, float32 y, BodyType t)
   : type(t), physics(physics) {
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
-  body = this->physics.createBody(bodyDef);
+  body = physics.createBody(bodyDef);
+  id = physics.getNextId();
+  std::cout << "Seteo id " << id << std::endl;
   // Intento de hacer que los cuerpos sean un poco mas platformers
   body->SetFixedRotation(true);
   destroyed = false;
@@ -150,4 +156,8 @@ void Body::markAsDestroyed() {
 
 bool Body::isDestroyed() {
   return destroyed;
+}
+
+int Body::getId() {
+  return id;
 }

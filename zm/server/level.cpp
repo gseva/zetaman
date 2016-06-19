@@ -89,7 +89,7 @@ void Level::step() {
     (*j)->move();
   }
 
-  for ( auto&& player : players ) {
+  for (auto&& player : players) {
     player->tic();
   }
 }
@@ -155,10 +155,7 @@ zm::proto::Game Level::getState(){
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
     if ((*player)->connected && !(*player)->body->isDestroyed()) {
-      zm::proto::Player protoPlayer;
-      protoPlayer.pos.x = (*player)->getPosition().x - xo;
-      protoPlayer.pos.y = (*player)->getPosition().y;
-      gs.players.push_back(protoPlayer);
+      gs.players.push_back((*player)->toBean(xo, yo));
     }
   }
 

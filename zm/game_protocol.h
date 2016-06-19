@@ -23,14 +23,17 @@ struct Position : JsonSerializable {
   virtual json getJson();
 };
 
+enum Orientation { left=1, right=2 };
 
-enum class PlayerState { movingLeft=0, movingRight=1, idle=2,
-                         shooting=3, jumping=4 };
+enum class PlayerState { moving=0, idle=1, shooting=2, jumping=3,
+                         jumpingShooting=4, climbing=5 };
 
 struct Player : JsonSerializable {
   Position pos;
   PlayerState ps;
   int health;
+  int id;
+  Orientation o;
 
   virtual json getJson();
   static Player deserialize(const json& j);

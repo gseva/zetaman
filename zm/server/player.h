@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 
+#include "zm/game_protocol.h"
 #include "zm/server/physics/world.h"
 
 class Camera;
@@ -13,6 +14,10 @@ class Bullet;
 namespace zm {
   class Game;
 } // zm
+
+
+enum class LastAction { left, right, up, jump, shoot, idle };
+
 
 class Player{
 public:
@@ -45,10 +50,13 @@ public:
   void changeGun(int numberOfGun);
   void tic();
 
+  zm::proto::Player toBean(int xo, int yo);
 private:
   Camera* camera;
   std::map<int, Gun*> guns;
   int selectedGun;
+  zm::proto::Orientation orientation;
+  LastAction action;
 };
 
 #endif

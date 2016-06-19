@@ -246,7 +246,9 @@ editor_assets: create_dirs $(editor_resources) $(o_editor_resources)
 clean_assets:
 	@$(RM) -fv $(client_resources) $(o_client_resources) $(editor_resources) $(o_editor_resources)
 
-clean: clean_assets
+clean:
 	@$(RM) -fv $(o_client_only_files) $(o_server_only_files) $(o_common_files) \
 						 $(o_editor_only_files) $(client_target) $(server_target) $(editor_target)
+
+full_clean: clean_assets clean
 

@@ -14,14 +14,14 @@ namespace zm {
 namespace drawing {
 
 
-Drawable::Drawable(Client& c) : c_(c) {
+Drawable::Drawable(Client& c, bool needsScaling) : c_(c), flipped_(false),
+    needsScaling_(needsScaling) {
 }
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
                     ImageBuffer& buff) {
   context->save();
-
-  Glib::RefPtr<Gdk::Pixbuf> image = buff.getImage(getImageName());
+  auto image = buff.getImage(getImageName(), flipped_, needsScaling_);
 
   // int width = image->get_width();
   // int height = image->get_height();
@@ -46,9 +46,60 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
   context->restore();
 }
 
+Drawable::~Drawable() {}
 
-Player::Player(Client& c, proto::Player p) : Drawable(c), p_(p),
-    imageName_("player/megaman.png") {
+void Drawable::setFlipped(bool f) {
+  flipped_ = f;
+}
+
+Player::Player(Client& c) : Drawable(c, false), tics(0) {
+}
+
+Player::~Player() {}
+
+void Player::setState(proto::Player p) {
+  if (p_.ps != p.ps) {
+    tics = 0;
+  }
+  tics++;
+
+  p_ = p;
+
+  setFlipped(p_.o == proto::left);
+
+  std::string image = "idle_1";
+  switch (p_.ps) {
+    case proto::PlayerState::moving:
+      image = "running_" + std::to_string(tics);
+      if (tics >=  11) tics = 0;
+      break;
+    case proto::PlayerState::idle:
+      break;
+    case proto::PlayerState::shooting:
+      image = "shooting_" + std::to_string(tics);
+      if (tics >= 2) tics = 1;
+      break;
+    case proto::PlayerState::jumping:
+      if (p.ps == proto::PlayerState::jumpingShooting) tics = 2;
+      image = "jumping_" + std::to_string(tics);
+      if (tics >= 3) tics = 2;
+      break;
+    case proto::PlayerState::jumpingShooting:
+      image = "jumping_shooting_1";
+      if (tics >= 3) tics = 2;
+      break;
+    case proto::PlayerState::climbing:
+      image = "climbing_1";
+      if (tics >= 10) image = "climbing_2";
+      if (tics >= 20) tics = 0;
+      break;
+  }
+
+  // if (p_.o == proto::left) {
+  //   image += "_left";
+  // }
+
+  imageName_ = "player/" + image + ".png";
 }
 
 std::string& Player::getImageName() {
@@ -60,7 +111,7 @@ proto::Position& Player::getPosition() {
 }
 
 
-Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c), e_(e) {
+Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c, true), e_(e) {
   if ( e.enemyType == proto::EnemyType::Met ){
     if ( e.enemyState == proto::EnemyState::guarded )
       imageName_ = "enemies/met/guarded.png";
@@ -94,6 +145,8 @@ Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c), e_(e) {
   }
 }
 
+Enemy::~Enemy() {}
+
 std::string& Enemy::getImageName() {
   return imageName_;
 }
@@ -102,7 +155,8 @@ proto::Position& Enemy::getPosition() {
   return e_.pos;
 }
 
-Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c), p_(p) {
+Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c, true),
+  p_(p) {
   if ( p.type == proto::ProyectileType::Normal )
     imageName_ = "proyectiles/normal.png";
   else if ( p.type == proto::ProyectileType::Bomb )
@@ -115,7 +169,9 @@ Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c), p_(p) {
     imageName_ = "proyectiles/ring.png";
   else if ( p.type == proto::ProyectileType::Fire )
     imageName_ = "proyectiles/fire.png";
-  }
+}
+
+Proyectile::~Proyectile() {}
 
 std::string& Proyectile::getImageName() {
   return imageName_;
@@ -126,9 +182,11 @@ proto::Position& Proyectile::getPosition() {
 }
 
 
-PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c), p_(p),
+PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c, true), p_(p),
   imageName_("powerups/life.png") {
 }
+
+PowerUp::~PowerUp() {}
 
 std::string& PowerUp::getImageName() {
   return imageName_;

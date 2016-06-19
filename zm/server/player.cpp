@@ -10,8 +10,11 @@
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
-Player::Player(zm::Game& g, std::string n, bool host)
-  : game(g), name(n), isHost(host), isAlive(false){
+
+
+Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
+  isHost(host), isAlive(false), orientation(zm::proto::right),
+  action(LastAction::idle) {
   connected = true;
 }
 
@@ -38,7 +41,10 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
 }
 
 void Player::jump(){
-  body->jump();
+  if (!body->isDestroyed()) {
+    body->jump();
+    action = LastAction::jump;
+  }
 }
 
 b2Vec2 Player::getPosition(){
@@ -54,17 +60,25 @@ void Player::setCamera(Camera* camera){
 }
 
 void Player::right(){
-  if ( camera->canMoveRight(this) && !body->isDestroyed() )
+  orientation = zm::proto::right;
+  if ( camera->canMoveRight(this) && !body->isDestroyed() ) {
     body->right();
-  else
+    action = LastAction::right;
+  } else {
     this->stopHorizontalMove();
+    action = LastAction::idle;
+  }
 }
 
 void Player::left(){
-  if ( camera->canMoveLeft(this) && !body->isDestroyed() )
+  orientation = zm::proto::left;
+  if ( camera->canMoveLeft(this) && !body->isDestroyed() ) {
     body->left();
-  else
+    action = LastAction::left;
+  } else {
     this->stopHorizontalMove();
+    action = LastAction::right;
+  }
 }
 
 void Player::stopHorizontalMove(){
@@ -73,17 +87,21 @@ void Player::stopHorizontalMove(){
 }
 
 void Player::up(){
-  if (!body->isDestroyed() )
-    body->up();
+  if (body->up() && !body->isDestroyed() ) {
+    action = LastAction::up;
+  } else {
+    action = LastAction::idle;
+  }
 }
 
 void Player::shoot(){
   if (body->isDestroyed() )
-    return; 
+    return;
   Gun* gun = guns[selectedGun];
   Bullet* bullet = gun->shoot();
   std::cout << "Creo bala " << bullet << std::endl;
   if (bullet) {
+    action = LastAction::shoot;
     game.currentLevel->addBullet(bullet);
   }
 }
@@ -114,4 +132,33 @@ void Player::tic(){
   for ( iGun = guns.begin(); iGun != guns.end(); ++iGun ) {
     (iGun->second)->tic();
   }
+}
+
+
+zm::proto::Player Player::toBean(int xo, int yo) {
+  zm::proto::Player player;
+  b2Vec2 vel = body->getBody()->GetLinearVelocity();
+  zm::proto::PlayerState state;
+  if (vel.y != 0) {
+    if (action == LastAction::shoot) {
+      state = zm::proto::PlayerState::jumpingShooting;
+    } else if (action == LastAction::up) {
+      state = zm::proto::PlayerState::climbing;
+    } else {
+      state = zm::proto::PlayerState::jumping;
+    }
+  } else if (action == LastAction::shoot) {
+    state = zm::proto::PlayerState::shooting;
+  } else if (vel.x != 0) {
+    state = zm::proto::PlayerState::moving;
+  } else {
+    state = zm::proto::PlayerState::idle;
+  }
+  player.ps = state;
+  player.id = body->getId();
+  player.health = body->health;
+  player.o = orientation;
+  player.pos.x = getPosition().x - xo;
+  player.pos.y = getPosition().y;
+  return player;
 }

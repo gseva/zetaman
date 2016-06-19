@@ -24,17 +24,20 @@ json Position::getJson() {
 
 json Player::getJson() {
   json j = pos.getJson();
+  j["i"] = id;
   j["h"] = health;
 
   int state;
   switch (ps) {
-    case PlayerState::movingLeft: state = 0; break;
-    case PlayerState::movingRight: state = 1; break;
-    case PlayerState::idle: state = 2; break;
-    case PlayerState::shooting: state = 3; break;
-    case PlayerState::jumping: state = 4; break;
+    case PlayerState::moving: state = 0; break;
+    case PlayerState::idle: state = 1; break;
+    case PlayerState::shooting: state = 2; break;
+    case PlayerState::jumping: state = 3; break;
+    case PlayerState::jumpingShooting: state = 4; break;
+    case PlayerState::climbing: state = 5; break;
   }
   j["st"] = state;
+  j["o"] = static_cast<int>(o);
 
   return j;
 }
@@ -45,6 +48,9 @@ Player Player::deserialize(const json& j) {
   p.pos.y = j["y"];
   int state = j["st"];
   p.ps = static_cast<PlayerState>(state);
+  int orientation = j["o"];
+  p.o = static_cast<Orientation>(orientation);
+  p.id = j["i"];
   return p;
 }
 

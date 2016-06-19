@@ -23,10 +23,30 @@
     <file  preprocess="to-pixdata">images/backgrounds/background_3.png</file>
     <file  preprocess="to-pixdata">images/backgrounds/background_4.png</file>
 
-    <file  preprocess="to-pixdata">images/player/megaman.png</file>
-    <file  preprocess="to-pixdata">images/player/megaman_running.png</file>
-    <file  preprocess="to-pixdata">images/player/megaman_jumping.png</file>
+    <!-- Player -->
+    <file  preprocess="to-pixdata">images/player/climbing_1.png</file>
+    <file  preprocess="to-pixdata">images/player/climbing_2.png</file>
+    <file  preprocess="to-pixdata">images/player/damaged_1.png</file>
+    <file  preprocess="to-pixdata">images/player/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/player/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/player/jumping_2.png</file>
+    <file  preprocess="to-pixdata">images/player/jumping_3.png</file>
+    <file  preprocess="to-pixdata">images/player/jumping_shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/player/running_1.png</file>
+    <file  preprocess="to-pixdata">images/player/running_2.png</file>
+    <file  preprocess="to-pixdata">images/player/running_3.png</file>
+    <file  preprocess="to-pixdata">images/player/running_4.png</file>
+    <file  preprocess="to-pixdata">images/player/running_5.png</file>
+    <file  preprocess="to-pixdata">images/player/running_6.png</file>
+    <file  preprocess="to-pixdata">images/player/running_7.png</file>
+    <file  preprocess="to-pixdata">images/player/running_8.png</file>
+    <file  preprocess="to-pixdata">images/player/running_9.png</file>
+    <file  preprocess="to-pixdata">images/player/running_10.png</file>
+    <file  preprocess="to-pixdata">images/player/running_11.png</file>
+    <file  preprocess="to-pixdata">images/player/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/player/shooting_2.png</file>
 
+    <!-- Enemies -->
     <file  preprocess="to-pixdata">images/enemies/bumpy/1.png</file>
     <file  preprocess="to-pixdata">images/enemies/bumpy/2.png</file>
     <file  preprocess="to-pixdata">images/enemies/met/guarded.png</file>
