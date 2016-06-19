@@ -152,22 +152,20 @@ zm::proto::Game Level::getState(){
   int xo = gs.camPos.x;
   int yo = gs.camPos.y;
 
-  for ( std::vector<Player*>::iterator player = players.begin();
-    player != players.end(); ++player ) {
-    if ((*player)->connected && !(*player)->body->isDestroyed()) {
-      gs.players.push_back((*player)->toBean(xo, yo));
+
+  for (auto&& player : players) {
+    if (player->connected && !player->body->isDestroyed()) {
+      gs.players.push_back(player->toBean(xo, yo));
     }
   }
 
-  for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
-    enemy != enemies.end(); ++enemy ) {
-    zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
+  for (auto&& enemy : enemies) {
+    zm::proto::Enemy protoEnemy = enemy->toBean(xo, yo);
     gs.enemies.push_back(protoEnemy);
   }
 
-  for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
-    bullet != bullets.end(); ++bullet ) {
-    zm::proto::Proyectile proyectile = (*bullet)->toBean(xo, yo);
+  for (auto&& bullet : bullets) {
+    zm::proto::Proyectile proyectile = bullet->toBean(xo, yo);
     gs.proyectiles.push_back(proyectile);
   }
 

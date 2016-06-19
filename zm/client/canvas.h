@@ -23,6 +23,7 @@ Map map_;
 ImageBuffer buff_;
 Mutex m_;
 std::map<int, drawing::Player*> players_;
+std::map<int, drawing::Enemy*> enemies_;
 
 public:
   explicit Canvas(Client& c);
@@ -38,6 +39,9 @@ protected:
   bool on_expose_event(GdkEventExpose* event);
 
   bool on_timeout();
+
+private:
+  drawing::Enemy* newEnemy_(const proto::Enemy& e);
 };
 
 } // zm

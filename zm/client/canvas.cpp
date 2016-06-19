@@ -18,8 +18,11 @@ Canvas::Canvas(Client& c) : c_(c), map_(c), buff_(c) {
 }
 
 Canvas::~Canvas() {
-  for(auto&& player : players_) {
+  for (auto&& player : players_) {
     delete player.second;
+  }
+  for (auto&& enemy : enemies_) {
+    delete enemy.second;
   }
 }
 
@@ -44,8 +47,14 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawable->draw(cr, buff_);
   }
   for (auto&& enemy : game_.enemies) {
-    drawing::Enemy drawable(c_, enemy);
-    drawable.draw(cr, buff_);
+    drawing::Enemy* drawable;
+    if (!enemies_.count(enemy.id)) {
+      drawable = newEnemy_(enemy);
+    } else {
+      drawable = enemies_.at(enemy.id);
+    }
+    drawable->setState(enemy);
+    drawable->draw(cr, buff_);
   }
   for (auto&& proy : game_.proyectiles) {
     drawing::Proyectile drawable(c_, proy);
@@ -59,8 +68,22 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   return true;
 }
 
+drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
+  drawing::Enemy* enemy;
+  switch (e.enemyType) {
+    case proto::Met:
+      enemy = new drawing::Met(c_);
+      break;
+    default:
+      enemy = new drawing::Enemy(c_);
+      break;
+  }
+  enemies_.insert({e.id, enemy});
+  return enemy;
+}
+
 void Canvas::updateGameState(proto::Game game) {
-  Lock l(m_);
+  // Lock l(m_);
   game_ = game;
   // redraw();
 }

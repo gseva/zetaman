@@ -49,8 +49,23 @@
     <!-- Enemies -->
     <file  preprocess="to-pixdata">images/enemies/bumpy/1.png</file>
     <file  preprocess="to-pixdata">images/enemies/bumpy/2.png</file>
-    <file  preprocess="to-pixdata">images/enemies/met/guarded.png</file>
-    <file  preprocess="to-pixdata">images/enemies/met/unguarded.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/met/guarded_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/guarded_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/guarded_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_7.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_8.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_9.png</file>
+    <file  preprocess="to-pixdata">images/enemies/met/moving_10.png</file>
+
     <file  preprocess="to-pixdata">images/enemies/sniper/guarded.png</file>
     <file  preprocess="to-pixdata">images/enemies/sniper/unguarded.png</file>
     <file  preprocess="to-pixdata">images/enemies/sniper/jumping.png</file>

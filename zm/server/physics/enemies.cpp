@@ -3,7 +3,7 @@
 
 
 Enemy::Enemy(Physics& physics, float32 x, float32 y)
-    : Body(physics, x, y, BodyType::Enemy) {
+    : Body(physics, x, y, BodyType::Enemy), orientation(zm::proto::left) {
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
@@ -20,10 +20,30 @@ bool Enemy::collide(Bullet* bullet){
   return bullet->collide(this);
 }
 
+void Enemy::setOrientation(zm::proto::Orientation o) {
+  orientation = o;
+}
+
+zm::proto::Orientation Enemy::getOrientation() {
+  return orientation;
+}
+
 zm::proto::Enemy Enemy::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy;
-  protoEnemy.pos.x = this->getPosition().x - xo;
-  protoEnemy.pos.y = this->getPosition().y;
+  protoEnemy.pos.x = getPosition().x - xo;
+  protoEnemy.pos.y = getPosition().y;
+  protoEnemy.id = getId();
+  protoEnemy.o = getOrientation();
+
+  b2Vec2 vel = body->GetLinearVelocity();
+  if (vel.y != 0) {
+    protoEnemy.enemyState = zm::proto::EnemyState::jumping;
+  } else if (vel.x != 0) {
+    protoEnemy.enemyState = zm::proto::EnemyState::moving;
+  } else {
+    protoEnemy.enemyState = zm::proto::EnemyState::idle;
+  }
+
   return protoEnemy;
 }
 
@@ -86,8 +106,6 @@ zm::proto::Enemy Met::toBean(int xo, int yo){
   protoEnemy.enemyType = zm::proto::EnemyType::Met;
   if (protected_) {
     protoEnemy.enemyState = zm::proto::EnemyState::guarded;
-  } else {
-    protoEnemy.enemyState = zm::proto::EnemyState::unguarded;
   }
   return protoEnemy;
 }
@@ -140,7 +158,7 @@ Bullet* Bumby::move(){
     Lock locker(mutex);
     body->SetLinearVelocity(vel);
     body->ApplyForce(b2Vec2(0,-DEFAULT_GRAVITY_Y),
-      body->GetWorldCenter(), false);
+    body->GetWorldCenter(), false);
   }
 
   tics++;
@@ -197,8 +215,9 @@ Bullet* Sniper::shoot(){
 zm::proto::Enemy Sniper::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
-  protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
-                                      zm::proto::EnemyState::unguarded;
+  if (protected_) {
+    protoEnemy.enemyState = zm::proto::EnemyState::guarded;
+  }
   return protoEnemy;
 }
 
@@ -267,7 +286,8 @@ Bullet* JumpingSniper::move(){
 
 zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Sniper::toBean(xo, yo);
-  protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
-                                      zm::proto::EnemyState::unguarded;
+  if (protected_) {
+    protoEnemy.enemyState = zm::proto::EnemyState::guarded;
+  }
   return protoEnemy;
 }

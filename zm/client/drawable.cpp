@@ -14,24 +14,25 @@ namespace zm {
 namespace drawing {
 
 
-Drawable::Drawable(Client& c, bool needsScaling) : c_(c), flipped_(false),
-    needsScaling_(needsScaling) {
+Drawable::Drawable(Client& c) : c_(c), flipped_(false),
+    scaleX(1), scaleY(1) {
 }
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
                     ImageBuffer& buff) {
   context->save();
-  auto image = buff.getImage(getImageName(), flipped_, needsScaling_);
+  auto image = buff.getImage(getImageName(), flipped_, scaleX, scaleY);
 
   // int width = image->get_width();
   // int height = image->get_height();
   proto::Position pos = getPosition();
-  pos.x = c_.scaleWidth(pos.x);
-  pos.y = c_.scaleHeight(pos.y);
+
+  int x = c_.scaleWidth(pos.x);
+  int y = c_.scaleHeight(pos.y);
 
   // Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
   //                               pos.y - height / 2);
-  Gdk::Cairo::set_source_pixbuf(context, image, pos.x, pos.y);
+  Gdk::Cairo::set_source_pixbuf(context, image, x, y);
   context->paint();
 
   // context->set_source_rgb(0.8, 0.0, 0.0);
@@ -52,7 +53,13 @@ void Drawable::setFlipped(bool f) {
   flipped_ = f;
 }
 
-Player::Player(Client& c) : Drawable(c, false), tics(0) {
+void Drawable::setScale(float x, float y) {
+  scaleX = x;
+  scaleY = y;
+}
+
+Player::Player(Client& c) : Drawable(c), tics(0) {
+  setScale(1.5, 1.5);
 }
 
 Player::~Player() {}
@@ -95,10 +102,6 @@ void Player::setState(proto::Player p) {
       break;
   }
 
-  // if (p_.o == proto::left) {
-  //   image += "_left";
-  // }
-
   imageName_ = "player/" + image + ".png";
 }
 
@@ -111,13 +114,13 @@ proto::Position& Player::getPosition() {
 }
 
 
-Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c, true), e_(e) {
-  if ( e.enemyType == proto::EnemyType::Met ){
-    if ( e.enemyState == proto::EnemyState::guarded )
-      imageName_ = "enemies/met/guarded.png";
-    else
-      imageName_ = "enemies/met/unguarded.png";
-  } else if ( e.enemyType == proto::EnemyType::Bumby ) {
+Enemy::Enemy(Client& c) : Drawable(c) {
+}
+
+void Enemy::setState(proto::Enemy e) {
+  setPosition(e.pos);
+  imageName_ = "enemies/bumpy/1.png";
+  if ( e.enemyType == proto::EnemyType::Bumby ) {
     imageName_ = "enemies/bumpy/1.png";
   } else if ( e.enemyType == proto::EnemyType::Sniper ){
     switch ( e.enemyState ) {
@@ -127,10 +130,9 @@ Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c, true), e_(e) {
       case proto::EnemyState::jumping:
         imageName_ = "enemies/sniper/jumping.png";
         break;
-      case proto::EnemyState::unguarded:
+      default:
         imageName_ = "enemies/sniper/unguarded.png";
         break;
-      default: break;
     }
   } else if ( e.enemyType == proto::EnemyType::Fireman ) {
     imageName_ = "enemies/fireman/charmeleon.png";
@@ -145,17 +147,59 @@ Enemy::Enemy(Client& c, proto::Enemy e) : Drawable(c, true), e_(e) {
   }
 }
 
+void Enemy::setPosition(proto::Position pos) {
+  pos_ = pos;
+}
+
 Enemy::~Enemy() {}
 
 std::string& Enemy::getImageName() {
   return imageName_;
 }
 
-proto::Position& Enemy::getPosition() {
-  return e_.pos;
+void Enemy::setImageName(const std::string& imageName) {
+  imageName_ = imageName;
 }
 
-Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c, true),
+proto::Position& Enemy::getPosition() {
+  return pos_;
+}
+
+
+Met::Met(Client& c) : Enemy(c) {
+  setScale(2.1, 2.1);
+}
+
+Met::~Met() {}
+
+void Met::setState(proto::Enemy e) {
+  if (e.enemyState != e_.enemyState) {
+    tics = 0;
+  }
+  e_ = e;
+  setPosition(e_.pos);
+  tics++;
+
+  setFlipped(e_.o == proto::left);
+
+  std::string image = "idle_1";
+  switch (e.enemyState) {
+    case proto::EnemyState::moving:
+      image = "moving_" + std::to_string(tics);
+      if (tics >=  10) tics = 0;
+      break;
+    case proto::EnemyState::idle: break;
+    case proto::EnemyState::shooting: return;
+    case proto::EnemyState::jumping: image = "jumping_1"; break;
+    case proto::EnemyState::guarded:
+      image = "guarded_" + std::to_string(tics);
+      if (tics >=  3) tics = 2;
+      break;
+  }
+  setImageName("enemies/met/" + image + ".png");
+}
+
+Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c),
   p_(p) {
   if ( p.type == proto::ProyectileType::Normal )
     imageName_ = "proyectiles/normal.png";
@@ -182,7 +226,7 @@ proto::Position& Proyectile::getPosition() {
 }
 
 
-PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c, true), p_(p),
+PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c), p_(p),
   imageName_("powerups/life.png") {
 }
 

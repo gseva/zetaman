@@ -51,6 +51,7 @@ public:
   void tic();
 
   zm::proto::Player toBean(int xo, int yo);
+
 private:
   Camera* camera;
   std::map<int, Gun*> guns;

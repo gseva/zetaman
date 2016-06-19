@@ -1,6 +1,7 @@
 #ifndef __ZM_SERVER_PHYSICS_H__
 #define __ZM_SERVER_PHYSICS_H__
 
+#include "zm/game_protocol.h"
 #include "zm/server/physics/world.h"
 #include "zm/server/physics/bullets.h"
 
@@ -17,8 +18,12 @@ public:
   virtual void toImpact(Magnet* bullet);
   virtual void toImpact(Fire* bullet);
   virtual void toImpact(Bullet* bullet);
+
+  void setOrientation(zm::proto::Orientation o);
+  zm::proto::Orientation getOrientation();
 protected:
   int health;
+  zm::proto::Orientation orientation;
 };
 
 class Met : public Enemy{

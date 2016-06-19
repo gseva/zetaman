@@ -63,32 +63,39 @@ json Enemy::getJson() {
 
   int state;
   switch (enemyState) {
-    case EnemyState::movingLeft: state = 0; break;
-    case EnemyState::movingRight: state = 1; break;
-    case EnemyState::idle: state = 2; break;
-    case EnemyState::shooting: state = 3; break;
-    case EnemyState::jumping: state = 4; break;
-    case EnemyState::guarded: state = 5; break;
-    case EnemyState::unguarded: state = 6; break;
+    case EnemyState::moving: state = 0; break;
+    case EnemyState::idle: state = 1; break;
+    case EnemyState::shooting: state = 2; break;
+    case EnemyState::jumping: state = 3; break;
+    case EnemyState::guarded: state = 4; break;
   }
   j["s"] = state;
 
   j["t"] = static_cast<int>(enemyType);
+  j["o"] = static_cast<int>(o);
+  j["id"] = id;
 
   return j;
 }
 
 Enemy Enemy::deserialize(const json& j) {
-  Enemy p;
-  p.pos.x = j["x"];
-  p.pos.y = j["y"];
+  Enemy e;
+  e.pos.x = j["x"];
+  e.pos.y = j["y"];
+  e.health = j["h"];
 
   int state = j["s"];
-  p.enemyState = static_cast<EnemyState>(state);
+  e.enemyState = static_cast<EnemyState>(state);
 
   int type = j["t"];
-  p.enemyType = static_cast<EnemyType>(type);
-  return p;
+  e.enemyType = static_cast<EnemyType>(type);
+
+  int orientation = j["o"];
+  e.o = static_cast<Orientation>(orientation);
+
+  e.id = j["id"];
+
+  return e;
 }
 
 

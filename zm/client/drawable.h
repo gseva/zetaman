@@ -19,10 +19,10 @@ namespace drawing {
 class Drawable {
 Client& c_;
 bool flipped_;
-bool needsScaling_;
+float scaleX, scaleY;
+
 public:
   explicit Drawable(Client& c);
-  Drawable(Client& c, bool needsScaling=true);
   virtual ~Drawable();
 
   void draw(const Cairo::RefPtr<Cairo::Context>& context, ImageBuffer& buff);
@@ -31,6 +31,7 @@ public:
   virtual proto::Position& getPosition() = 0;
 
   void setFlipped(bool f);
+  void setScale(float x, float y);
 };
 
 
@@ -51,17 +52,34 @@ public:
 
 
 class Enemy : public Drawable {
+proto::Position pos_;
 proto::Enemy e_;
 std::string imageName_;
 
 public:
-  Enemy(Client& c, proto::Enemy e);
+  int tics;
+
+  explicit Enemy(Client& c);
   virtual ~Enemy();
 
+  virtual void setState(proto::Enemy e);
+
   virtual std::string& getImageName() override;
+  void setImageName(const std::string& imageName);
+
   virtual proto::Position& getPosition() override;
+  void setPosition(proto::Position pos);
 };
 
+
+class Met : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Met(Client& c);
+  virtual ~Met();
+  virtual void setState(proto::Enemy e);
+};
 
 class Proyectile : public Drawable {
 proto::Proyectile p_;

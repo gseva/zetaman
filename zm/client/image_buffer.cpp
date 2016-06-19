@@ -12,19 +12,17 @@ ImageBuffer::ImageBuffer(Client& client) : client_(client) {
 }
 
 void ImageBuffer::loadImage(const std::string& key, bool flipped,
-                            bool needsScaling) {
+                            float scaleY, float scaleX) {
   std::string resource_name = "/zm/images/" + key;
 
   std::string key_ = key;
   auto image = Glib::wrap(gdk_pixbuf_new_from_resource(
                                resource_name.c_str(), 0));
 
-  int width = client_.scaleNum(image->get_width());
-  int height = client_.scaleNum(image->get_height());
+  int width = client_.scaleNum(image->get_width() * scaleY);
+  int height = client_.scaleNum(image->get_height() * scaleX);
 
-  if (needsScaling) {
-    image = image->scale_simple(width, height, Gdk::INTERP_BILINEAR);
-  }
+  image = image->scale_simple(width, height, Gdk::INTERP_BILINEAR);
 
   if (flipped) {
     image = image->flip();
@@ -35,14 +33,14 @@ void ImageBuffer::loadImage(const std::string& key, bool flipped,
 }
 
 Glib::RefPtr<Gdk::Pixbuf> ImageBuffer::getImage(const std::string& key,
-    bool flipped, bool needsScaling) {
+    bool flipped, float scaleY, float scaleX) {
   std::string key_ = key;
   if (flipped) {
     key_ += "_flipped";
   }
 
   if (!images_.count(key_)) {
-    loadImage(key, flipped, needsScaling);
+    loadImage(key, flipped, scaleY, scaleX);
   }
 
   return images_.at(key_);

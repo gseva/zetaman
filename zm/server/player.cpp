@@ -87,7 +87,7 @@ void Player::stopHorizontalMove(){
 }
 
 void Player::up(){
-  if (body->up() && !body->isDestroyed() ) {
+  if (body->up() && !body->isDestroyed()) {
     action = LastAction::up;
   } else {
     action = LastAction::idle;
