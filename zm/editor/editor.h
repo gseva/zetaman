@@ -17,8 +17,8 @@
 #include <map>
 #include "zm/json/jsonserializer.h"
 
-#define ALTO 9
-#define ANCHO 12
+#define ALTO 12
+#define ANCHO 16
 
 class Editor {
   private:
@@ -38,6 +38,7 @@ class Editor {
     Gtk::Viewport* pViewPort;
     Glib::RefPtr<Gtk::Application> app;
     Gtk::Image* pSelectedImage;
+    Gtk::Image* pSelectedBoss;
 
     Gtk::EventBox** eventBoxMatrix;
     Gtk::Image** imageMatrix;
@@ -50,6 +51,7 @@ class Editor {
     std::map<std::string, std::string> ddlToName;
 
     std::string mapName;
+    std::string selectedBoss;
 
   public:
     void on_buttonCrearJugador_clicked();

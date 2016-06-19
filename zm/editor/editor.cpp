@@ -25,7 +25,6 @@
 void Editor::on_buttonCrearJugador_clicked()
 {
   pComboBoxEnemy->set_active(0);
-  pComboBoxBoss->set_active(0);
   pComboBoxTile->set_active(0);
   std::cout << "Crear jugador seleccionado" << std::endl;
   imagenSeleccionada = IMAGE_PLAYER;
@@ -35,7 +34,6 @@ void Editor::on_buttonCrearJugador_clicked()
 void Editor::on_buttonCrearEscalera_clicked()
 {
   pComboBoxEnemy->set_active(0);
-  pComboBoxBoss->set_active(0);
   pComboBoxTile->set_active(0);
   std::cout << "Crear escalera seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_ESCALERA;
@@ -45,7 +43,6 @@ void Editor::on_buttonCrearEscalera_clicked()
 void Editor::on_buttonBorrarTile_clicked()
 {
   pComboBoxEnemy->set_active(0);
-  pComboBoxBoss->set_active(0);
   pComboBoxTile->set_active(0);
   std::cout << "Borrar tile seleccionado" << std::endl;
   imagenSeleccionada = IMAGEN_BLANCO;
@@ -60,7 +57,6 @@ void Editor::on_buttonSaveMap_clicked()
 
 void Editor::on_ddlEnemy_changed()
 {
-  pComboBoxBoss->set_active(0);
   pComboBoxTile->set_active(0);
   imagenSeleccionada = ddlToName[pComboBoxEnemy->get_active_text()];
   pSelectedImage->set_from_resource(imagenSeleccionada);
@@ -68,16 +64,13 @@ void Editor::on_ddlEnemy_changed()
 
 void Editor::on_ddlBoss_changed()
 {
-  pComboBoxEnemy->set_active(0);
-  pComboBoxTile->set_active(0);
-  imagenSeleccionada = ddlToName[pComboBoxBoss->get_active_text()];
-  pSelectedImage->set_from_resource(imagenSeleccionada);
+  selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
+  pSelectedBoss->set_from_resource(selectedBoss);
 }
 
 void Editor::on_ddlTile_changed()
 {
   pComboBoxEnemy->set_active(0);
-  pComboBoxBoss->set_active(0);
   imagenSeleccionada = ddlToName[pComboBoxTile->get_active_text()];
   pSelectedImage->set_from_resource(imagenSeleccionada);
 }
@@ -109,9 +102,10 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
   builder->get_widget("imgSelected", pSelectedImage);
   builder->get_widget("ddlBoss", pComboBoxBoss);
   builder->get_widget("ddlTile", pComboBoxTile);
+  builder->get_widget("imgBossSelected", pSelectedBoss);
 
   pWindowEditor->set_default_size(1024, 768);
-  pScrolledWindow->set_size_request(768,768);
+  pScrolledWindow->set_size_request(1024,768);
 
   initializeComboBoxes();
 
@@ -136,6 +130,8 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
 
   imagenSeleccionada = IMAGE_PLAYER;
   pSelectedImage->set_from_resource(imagenSeleccionada);
+  selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
+  pSelectedBoss->set_from_resource(selectedBoss);
 }
 
 void Editor::initializeComboBoxes()
@@ -147,7 +143,6 @@ void Editor::initializeComboBoxes()
   pComboBoxEnemy->append("Sniper");
   pComboBoxEnemy->set_active(0);
   /*Bosses*/
-  pComboBoxBoss->append("Elegir boss");
   pComboBoxBoss->append("Sparkman");
   pComboBoxBoss->append("Fireman");
   pComboBoxBoss->append("Magnetman");
@@ -168,10 +163,20 @@ void Editor::initializeRelationships()
   nameToSpawnNumber.insert({IMAGEN_BUMPY,1});
   nameToSpawnNumber.insert({IMAGEN_MET,2});
   nameToSpawnNumber.insert({IMAGEN_SNIPER,3});
+  nameToSpawnNumber.insert({IMAGE_BOSS_RINGMAN,4});
+  nameToSpawnNumber.insert({IMAGE_BOSS_MAGNETMAN,5});
+  nameToSpawnNumber.insert({IMAGE_BOSS_FIREMAN,6});
+  nameToSpawnNumber.insert({IMAGE_BOSS_BOMBMAN,7});
+  nameToSpawnNumber.insert({IMAGE_BOSS_SPARKMAN,8});
   /*Relacion entre nombre de la imagen con tipo de spawn*/
-  nameToSpawnType.insert({IMAGEN_BUMPY,"enemy"});
-  nameToSpawnType.insert({IMAGEN_MET,"enemy"});
-  nameToSpawnType.insert({IMAGEN_SNIPER,"enemy"});
+  nameToSpawnType.insert({IMAGE_BOSS_SPARKMAN,"sparkman"});
+  nameToSpawnType.insert({IMAGE_BOSS_BOMBMAN,"bombman"});
+  nameToSpawnType.insert({IMAGE_BOSS_FIREMAN,"fireman"});
+  nameToSpawnType.insert({IMAGE_BOSS_MAGNETMAN,"magnetman"});
+  nameToSpawnType.insert({IMAGE_BOSS_RINGMAN,"ringman"});
+  nameToSpawnType.insert({IMAGEN_SNIPER,"sniper"});
+  nameToSpawnType.insert({IMAGEN_MET,"met"});
+  nameToSpawnType.insert({IMAGEN_BUMPY,"bumpy"});
   nameToSpawnType.insert({IMAGE_PLAYER,"player"});
   /*Relacion entre nombre de la imagen con la fisica*/
   nameToPhysics.insert({IMAGE_GRASS,"solid"});
@@ -243,7 +248,7 @@ void Editor::connectButtonsWithSignals()
 void Editor::createEmptyGrid()
 {
   /*Agrego los event box a la grid*/
-  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
@@ -252,7 +257,7 @@ void Editor::createEmptyGrid()
   }
 
   /*Agrego las imagenes a los event box*/
-  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
@@ -261,7 +266,7 @@ void Editor::createEmptyGrid()
   }
 
   /*Seteo las imagenes*/
-  for (unsigned int i = 0; i < ANCHO * mapLen; i++)
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
@@ -275,7 +280,7 @@ void Editor::createEmptyGrid()
   }
 
   /*Seteo el evento en los event box*/
-  for (unsigned int i=0; i<ANCHO * mapLen; i++)
+  for (unsigned int i=0; i<ANCHO * (mapLen-1); i++)
   {
     for (unsigned int j=0; j<ALTO; j++)
     {
@@ -361,6 +366,13 @@ JsonMap Editor::createJsonMap()
     jMap.spawnTypes.push_back(nameToSpawnType[it->first]);
   }
 
+  /*Agrego el boss en su recamara*/
+  SpawnData bossData;
+  bossData.column = (ANCHO * mapLen) - 2;
+  bossData.row = 4;
+  bossData.type = nameToSpawnNumber[selectedBoss]; 
+  jMap.spawnsData.push_back(bossData);
+
   return jMap;
 }
 
@@ -406,7 +418,7 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
   builder->get_widget("btnAcceptExport", pBtnAcceptExport);
   builder->get_widget("entryExportMapName", pEntryExportMapName);
   builder->get_widget("spinLength", pSpinLength);
-  pSpinLength -> set_range(1,10);
+  pSpinLength -> set_range(4,10);
   pSpinLength -> set_increments(1,1);
 
   /* Elementos del menu */
