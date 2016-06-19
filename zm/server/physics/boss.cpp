@@ -79,12 +79,12 @@ zm::proto::Position Boss::getPlayersAveragePosition()
 void Boss::choosePosition(){ 
   int idealPositionNumber = 0;
   int bestDifX = 0;
-  bestDifX = abs(positionsCanGo[0] - getPlayersAveragePosition().x);
+  bestDifX = std::abs(positionsCanGo[0] - getPlayersAveragePosition().x);
   for (unsigned int i=1; i<positionsCanGo.size(); i++)
   {
-    int difX = abs(positionsCanGo[i] - getPlayersAveragePosition().x);
+    int difX = std::abs(positionsCanGo[i] - getPlayersAveragePosition().x);
     //Si la posicion se acerca mas a la ideal quiere esa
-    if (abs(prefDistance-difX) < abs(prefDistance-bestDifX))
+    if (std::abs(prefDistance-difX) < std::abs(prefDistance-bestDifX))
     {
       idealPositionNumber = i;
       bestDifX = difX;
