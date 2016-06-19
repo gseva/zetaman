@@ -10,6 +10,13 @@ public:
   virtual ~Boss()=0;
   virtual Bullet* move();
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
+  virtual void toImpact(Bomb* bullet);
+  virtual void toImpact(Spark* bullet);
+  virtual void toImpact(Ring* bullet);
+  virtual void toImpact(Magnet* bullet);
+  virtual void toImpact(Fire* bullet);
+  virtual void toImpact(Bullet* bullet);
+
 protected:
   int velocity;
   Gun* gun;
@@ -17,6 +24,7 @@ protected:
   const int shootFrecuency;
   const int jumpFrecuency;
 private:
+  void damage (int healt);
   unsigned int tics; 
 };
 

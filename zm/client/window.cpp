@@ -75,7 +75,21 @@ bool Window::on_key_press_event(GdkEventKey* event) {
     c_->serverProxy.up();
   } else if ((event->keyval == GDK_KEY_A) || (event->keyval == GDK_KEY_a)) {
     c_->serverProxy.shoot();
+  } else if (event->keyval == GDK_KEY_1) {
+    c_->serverProxy.changeGun(1);
+  } else if (event->keyval == GDK_KEY_2) {
+    c_->serverProxy.changeGun(2);
+  } else if (event->keyval == GDK_KEY_3) {
+    c_->serverProxy.changeGun(3);
+  } else if (event->keyval == GDK_KEY_4) {
+    c_->serverProxy.changeGun(4);
+  } else if (event->keyval == GDK_KEY_5) {
+    c_->serverProxy.changeGun(5);
+  } else if (event->keyval == GDK_KEY_6) {
+    c_->serverProxy.changeGun(6);
   }
+
+
 
   return Gtk::Window::on_key_press_event(event);
 }

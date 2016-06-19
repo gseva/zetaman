@@ -24,7 +24,7 @@ public:
 
   void run();
 
-	zm::proto::Game getState();
+  zm::proto::Game getState();
   void updateState();
 
   void stopAccepting();

@@ -190,8 +190,6 @@ void Game::updateState() {
   }
 }
 
-
-
 void Game::shutdown(const std::string& name) {
   Player* p = players[name];
 

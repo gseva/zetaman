@@ -1,13 +1,15 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
-
 #include <Box2D/Box2D.h>
 #include <string>
+#include <map>
 
 #include "zm/server/physics/world.h"
 
 class Camera;
+class Gun;
 class Bullet;
+
 namespace zm {
   class Game;
 } // zm
@@ -19,8 +21,8 @@ public:
   bool isHost;
   bool isAlive;
 
-	Player(zm::Game& g, std::string name, bool host);
-	~Player();
+  Player(zm::Game& g, std::string name, bool host);
+  ~Player();
 
   void setPosition(int x, int y);
   void setCamera(Camera* camera);
@@ -39,9 +41,14 @@ public:
   bool collide(Bullet *bullet);
   PlayerBody *body;
   bool connected;
+  void addGun(Gun* gun);
+  void changeGun(int numberOfGun);
+  void tic();
 
 private:
   Camera* camera;
+  std::map<int, Gun*> guns;
+  int selectedGun;
 };
 
 #endif

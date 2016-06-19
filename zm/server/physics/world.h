@@ -81,7 +81,6 @@ public:
   void markAsDestroyed();
   bool isDestroyed();
   virtual void impact();
-
   BodyType type;
 protected:
   Mutex mutex;
