@@ -41,6 +41,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
     prefDistance(prefDistance), jm(jm), players(players){
       tics = 0;
       determinePositionsToGo();
+	  health = 30;
 }
  
 void Boss::determinePositionsToGo(){
@@ -118,7 +119,14 @@ Bullet* Boss::move(){
     vel.y = jump;
   if ( tics%shootFrecuency == 0 )
   {
-    bullet = gun->shoot();
+    int direction;
+    if (getPlayersAveragePosition().x > getPosition().x)
+    {
+      direction = 1;
+    } else {
+      direction = -1;
+    }
+    bullet = gun->shoot(direction);
   }
   choosePosition();
   vel.x = moveTowardsPosition();
@@ -137,6 +145,31 @@ Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
   BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F, BOMBMAN_PREF_DIST,
    jm, players){
   gun = new Bombgun(this, true, physics);
+}
+
+void Boss::toImpact(Bomb* bullet){
+   damage(3);
+}
+void Boss::toImpact(Spark* bullet){
+   damage(3);
+}
+void Boss::toImpact(Ring* bullet){
+   damage(3);
+}
+void Boss::toImpact(Magnet* bullet){
+   damage(3);
+}
+void Boss::toImpact(Fire* bullet){
+   damage(3);
+}
+void Boss::toImpact(Bullet* bullet){
+   damage(1);
+}
+
+void Boss::damage(int hurt){
+  health -= hurt;
+  if ( health <= 0 )
+    markAsDestroyed();
 }
 
 Bombman::~Bombman(){}

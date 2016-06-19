@@ -5,9 +5,9 @@
 #include <string>
 
 #include "zm/json/jsonserializer.h"
+#include "zm/server/player.h"
 #include "zm/server/camera.h"
 #include "zm/server/client_proxy.h"
-#include "zm/server/player.h"
 #include "zm/server/physics/world.h"
 #include "zm/server/physics/enemies.h"
 #include "zm/server/physics/bullets.h"
@@ -22,6 +22,8 @@ public:
 
   zm::proto::Game getState();
   void addBullet(Bullet* bullet);
+
+  void changeGun(int playerNumber, int gunNumber);
 
   void step();
   void clean();

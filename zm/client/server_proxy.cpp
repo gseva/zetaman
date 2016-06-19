@@ -56,6 +56,21 @@ void ServerProxy::shoot() {
   eventQueue_.push(ce);
 }
 
+void ServerProxy::changeGun(int selectedGun) {
+  proto::ClientEventType type;
+  switch (selectedGun){
+    case 1: type = proto::ClientEventType::selectGun1; break;
+    case 2: type = proto::ClientEventType::selectGun2; break;
+    case 3: type = proto::ClientEventType::selectGun3; break;
+    case 4: type = proto::ClientEventType::selectGun4; break;
+    case 5: type = proto::ClientEventType::selectGun5; break;
+    case 6: type = proto::ClientEventType::selectGun6; break;
+  }
+  proto::ClientEvent ce(type);
+  eventQueue_.push(ce);
+}
+
+
 void ServerProxy::selectLevel(int level) {
   proto::ClientEventType type;
   switch (level) {

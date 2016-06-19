@@ -23,6 +23,8 @@ public:
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo,
     zm::proto::ProyectileType type);
   virtual void impact();
+  virtual void impact(Enemy* impactBody);
+  virtual void impact(PlayerBody* impactBody);
 protected:
   b2Vec2 vel;
   const bool isEnemy;
@@ -35,6 +37,7 @@ public:
   virtual ~Bomb();
   virtual void move();
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
+  virtual void impact(Enemy* impactBody);
 };
 
 class Magnet : public Bullet{
@@ -43,6 +46,7 @@ public:
     bool isEnemy);
   virtual ~Magnet();
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
+  virtual void impact(Enemy* impactBody);
 };
 
 class Spark : public Bullet{
@@ -51,6 +55,7 @@ public:
     bool isEnemy);
   ~Spark();
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
+  virtual void impact(Enemy* impactBody);
 };
 
 class Ring : public Bullet{
@@ -60,6 +65,7 @@ public:
   virtual ~Ring();
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
   virtual void impact();
+  virtual void impact(Enemy* impactBody);
 private:
   int restCollisions;
 };
@@ -70,6 +76,7 @@ public:
     bool isEnemy);
   virtual ~Fire();
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
+  virtual void impact(Enemy* impactBody);
 };
 
 #endif

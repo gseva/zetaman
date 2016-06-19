@@ -17,6 +17,13 @@ public:
   void choosePosition();
   float moveTowardsPosition();
   zm::proto::Position getPlayersAveragePosition();
+  virtual void toImpact(Bomb* bullet);
+  virtual void toImpact(Spark* bullet);
+  virtual void toImpact(Ring* bullet);
+  virtual void toImpact(Magnet* bullet);
+  virtual void toImpact(Fire* bullet);
+  virtual void toImpact(Bullet* bullet);
+
 protected:
   int velocity;
   Gun* gun;
@@ -31,7 +38,8 @@ protected:
   JsonMap jm;
   std::vector<Player*>& players;
 private:
-  unsigned int tics;
+  void damage (int healt);
+  unsigned int tics; 
 };
 
 class Bombman : public Boss{

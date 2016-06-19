@@ -27,6 +27,29 @@ zm::proto::Enemy Enemy::toBean(int xo, int yo){
   return protoEnemy;
 }
 
+void Enemy::toImpact(Bomb* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Spark* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Ring* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Magnet* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Fire* bullet){
+  markAsDestroyed();
+}
+
+void Enemy::toImpact(Bullet* bullet){
+  markAsDestroyed();
+}
 
 Met::Met(Physics& physics, float32 x, float32 y) :
   Enemy(physics, x, y), period(60*3) {
@@ -68,6 +91,27 @@ zm::proto::Enemy Met::toBean(int xo, int yo){
   }
   return protoEnemy;
 }
+
+void Met::toImpact(Ring* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Magnet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Fire* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Met::toImpact(Bullet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
 
 Bumby::Bumby(Physics& physics, float32 x, float32 y) : Enemy(physics, x, y),
   totalMoves(15) , period(60*3){
@@ -124,6 +168,7 @@ zm::proto::Enemy Bumby::toBean(int xo, int yo){
 
 Sniper::Sniper(Physics& physics, float32 x, float32 y) :
 Enemy(physics,x,y){
+  health = 2;
   protected_ = false;
   tics = 0;
 }
@@ -157,8 +202,49 @@ zm::proto::Enemy Sniper::toBean(int xo, int yo){
   return protoEnemy;
 }
 
+void Sniper::toImpact(Bomb* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Spark* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Ring* bullet){
+  if ( !protected_ ) {
+    markAsDestroyed();
+  } else {
+    health--;
+    if ( health <= 0 )
+      markAsDestroyed();
+  }
+}
+
+void Sniper::toImpact(Magnet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
+void Sniper::toImpact(Fire* bullet){
+  if ( !protected_ ) {
+    markAsDestroyed();
+  } else {
+    health--;
+    if ( health <= 0 )
+      markAsDestroyed();
+  }
+}
+
+void Sniper::toImpact(Bullet* bullet){
+  if ( !protected_ )
+    markAsDestroyed();
+}
+
 JumpingSniper::JumpingSniper(Physics& physics, float32 x, float32 y) :
-Enemy(physics,x,y){
+  Sniper(physics,x,y){
+  health = 2;
   protected_ = false;
   tics = 0;
 }
@@ -179,17 +265,8 @@ Bullet* JumpingSniper::move(){
   return bullet;
 }
 
-Bullet* JumpingSniper::shoot(){
-  b2Vec2 pos = getPosition();
-  b2Vec2 vel = body->GetLinearVelocity();
-  int signo = vel.x >=0 ? 1 : -1;
-  Bullet* bullet = new Bullet(this->physics, pos.x, pos.y, signo, true);
-  return bullet;
-}
-
 zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
-  protoEnemy.enemyType = zm::proto::EnemyType::Sniper;
+  zm::proto::Enemy protoEnemy = Sniper::toBean(xo, yo);
   protoEnemy.enemyState = protected_ ? zm::proto::EnemyState::guarded :
                                       zm::proto::EnemyState::unguarded;
   return protoEnemy;

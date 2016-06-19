@@ -101,7 +101,9 @@ struct Game {
 
 enum ClientEventType { moveLeft, moveRight, jump, moveUp, moveDown,
                        stopMoving, shoot, shutdown, selectLevel1, selectLevel2,
-                       selectLevel3, selectLevel4, selectLevel5 };
+                       selectLevel3, selectLevel4, selectLevel5,
+                       selectGun1, selectGun2, selectGun3,
+                       selectGun4, selectGun5, selectGun6 };
 
 struct ClientEvent {
   ClientEventType state;
