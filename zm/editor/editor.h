@@ -46,7 +46,7 @@ class Editor {
 
 
     std::map<std::string, int> nameToSpawnNumber;
-    std::map<std::string, std::string> nameToSpawnType;
+    std::vector<std::string> spawnTypes;
     std::map<std::string, std::string> nameToPhysics;
     std::map<std::string, std::string> ddlToName;
 
@@ -74,6 +74,7 @@ class Editor {
     void initializeRelationships();
     void importExistingMap(std::string path);
     void initializeComboBoxes();
+    std::string getName(std::string imageFullPath);
 };
 
 class EditorMenu {

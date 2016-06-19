@@ -168,16 +168,16 @@ void Editor::initializeRelationships()
   nameToSpawnNumber.insert({IMAGE_BOSS_FIREMAN,6});
   nameToSpawnNumber.insert({IMAGE_BOSS_BOMBMAN,7});
   nameToSpawnNumber.insert({IMAGE_BOSS_SPARKMAN,8});
-  /*Relacion entre nombre de la imagen con tipo de spawn*/
-  nameToSpawnType.insert({IMAGE_BOSS_SPARKMAN,"sparkman"});
-  nameToSpawnType.insert({IMAGE_BOSS_BOMBMAN,"bombman"});
-  nameToSpawnType.insert({IMAGE_BOSS_FIREMAN,"fireman"});
-  nameToSpawnType.insert({IMAGE_BOSS_MAGNETMAN,"magnetman"});
-  nameToSpawnType.insert({IMAGE_BOSS_RINGMAN,"ringman"});
-  nameToSpawnType.insert({IMAGEN_SNIPER,"sniper"});
-  nameToSpawnType.insert({IMAGEN_MET,"met"});
-  nameToSpawnType.insert({IMAGEN_BUMPY,"bumpy"});
-  nameToSpawnType.insert({IMAGE_PLAYER,"player"});
+  /*Vector con todos los tipos*/
+  spawnTypes.push_back("player");
+  spawnTypes.push_back("bumpy");
+  spawnTypes.push_back("met");
+  spawnTypes.push_back("sniper");
+  spawnTypes.push_back("ringman");
+  spawnTypes.push_back("magnetman");
+  spawnTypes.push_back("fireman");
+  spawnTypes.push_back("bombman");
+  spawnTypes.push_back("sparkman");
   /*Relacion entre nombre de la imagen con la fisica*/
   nameToPhysics.insert({IMAGE_GRASS,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
@@ -319,12 +319,19 @@ void Editor::exportCreatedMap()
   s.exportMap(mapName + ".json", jMap);
 }
 
+std::string Editor::getName(std::string imageFullPath)
+{
+  std::size_t found = imageFullPath.find_last_of("/");
+  return imageFullPath.substr(found + 1);
+}
+
 JsonMap Editor::createJsonMap()
 {
   JsonMap jMap;
   std::map<std::string, int> nameToNumber;
   int numeroImagen = 1;
   nameToNumber.insert({IMAGEN_BLANCO,0});
+  jMap.physics.push_back(nameToPhysics[IMAGEN_BLANCO]);
 
   for (unsigned int i=0; i<ALTO; i++)
   {
@@ -337,7 +344,7 @@ JsonMap Editor::createJsonMap()
         nameToNumber.insert({image,numeroImagen});
         numeroImagen++;          
         
-        jMap.imageNames.push_back(image);
+        jMap.imageNames.push_back(getName(image));
         
         jMap.physics.push_back(nameToPhysics[image]);
       }
@@ -360,11 +367,7 @@ JsonMap Editor::createJsonMap()
     }
   }
 
-  for (std::map<std::string, int>::iterator it = nameToSpawnNumber.begin();
-       it != nameToSpawnNumber.end(); ++it)
-  {
-    jMap.spawnTypes.push_back(nameToSpawnType[it->first]);
-  }
+  jMap.spawnTypes = spawnTypes;
 
   /*Agrego el boss en su recamara*/
   SpawnData bossData;
