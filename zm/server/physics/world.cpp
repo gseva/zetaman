@@ -38,7 +38,7 @@ void Physics::setMap(const JsonMap& jm){
           b2FixtureDef fixtureDef;
           fixtureDef.shape = &blockBox;
           fixtureDef.density = 0.0f;
-          fixtureDef.friction = 0.0f;
+          fixtureDef.friction = 100.0f;
           fixtureDef.filter.categoryBits = BLOCK_TYPE;
           fixtureDef.filter.maskBits = ALL_CONTACT;
           blockBody->CreateFixture(&fixtureDef);

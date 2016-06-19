@@ -11,6 +11,7 @@
 #include "zm/server/server.h"
 #include "zm/server/level.h"
 #include "zm/server/physics/boss.h"
+#include "zm/server/physics/players.h"
 
 #define PLAYER "player"
 #define MET "met"
@@ -26,9 +27,9 @@
 #define XMAX 47
 #define XMIN 0
 
-Level::Level(std::vector<Player*>& connectedPlayers, JsonMap& jsonMap,
-    Server& s) : players(connectedPlayers), timer(physics, s, *this),
-    jm(jsonMap), camera(players)
+Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
+  : state(zm::proto::playing), players(connectedPlayers), jm(jsonMap),
+    camera(players)
 {
   physics.setMap(jm);
   unsigned int amountPlayers = 0;
@@ -70,9 +71,23 @@ Level::Level(std::vector<Player*>& connectedPlayers, JsonMap& jsonMap,
     }
     enemies.push_back(enemy);
   }
+}
 
-  std::cout << "Empiezo timer!" << std::endl;
-  timer.start();
+void Level::step() {
+  physics.step();
+  clean();
+
+  std::vector<Enemy*>::iterator i;
+  for ( i = enemies.begin(); i != enemies.end(); ++i ) {
+    Bullet* bullet = (*i)->move();
+    if ( bullet != NULL ) {
+      bullets.push_back(bullet);
+    }
+  }
+  std::vector<Bullet*>::iterator j;
+  for ( j = bullets.begin(); j != bullets.end(); ++j ) {
+    (*j)->move();
+  }
 }
 
 void Level::clean() {
@@ -97,23 +112,26 @@ void Level::clean() {
   }
 }
 
-Level::~Level(){
+Level::~Level() {
+  std::cout << "Borrando enemigos" << std::endl;
   std::vector<Enemy*>::iterator iEnemy;
-  for ( iEnemy = enemies.begin(); iEnemy != enemies.end(); ++iEnemy ) {
+  for ( iEnemy = enemies.begin(); iEnemy != enemies.end(); ) {
     delete (*iEnemy);
+    iEnemy = enemies.erase(iEnemy);
   }
 
+  std::cout << "Borrando jugadores" << std::endl;
   std::vector<Player*>::iterator iPlayer;
-  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
-    delete (*iPlayer);
+  for ( iPlayer = players.begin(); iPlayer != players.end(); iPlayer++ ) {
+    physics.destroyBody((*iPlayer)->body->getBody());
   }
 
+  std::cout << "Borrando balas" << std::endl;
   std::vector<Bullet*>::iterator iBullet;
-  for ( iBullet = bullets.begin(); iBullet != bullets.end(); ++iBullet ) {
+  for ( iBullet = bullets.begin(); iBullet != bullets.end(); ) {
     delete (*iBullet);
+    iBullet = bullets.erase(iBullet);
   }
-
-  timer.join();
 }
 
 zm::proto::Game Level::getState(){
@@ -133,51 +151,36 @@ zm::proto::Game Level::getState(){
     }
   }
 
-
   for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
     enemy != enemies.end(); ++enemy ) {
     zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
-    // std::cout << "Enemy: " << protoEnemy.pos.x << " "
-    // << protoEnemy.pos.y <<  std::endl;
     gs.enemies.push_back(protoEnemy);
   }
 
   for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
     bullet != bullets.end(); ++bullet ) {
-    zm::proto::Proyectile proyectile;
-    proyectile.pos.x = (*bullet)->getPosition().x - xo;
-    proyectile.pos.y = (*bullet)->getPosition().y;
+    zm::proto::Proyectile proyectile = (*bullet)->toBean(xo, yo);
     gs.proyectiles.push_back(proyectile);
   }
+
+  if (checkLoseCondition()) {
+    state = zm::proto::lost;
+  } else if (checkWinCondition()) {
+    state = zm::proto::won;
+  }
+  gs.state = state;
 
   return gs;
 }
 
-void Level::jump(int playerNumber){
-  players[playerNumber]->jump();
+bool Level::checkLoseCondition() {
+  return false;
 }
 
-void Level::right(int playerNumber){
-  players[playerNumber]->right();
+bool Level::checkWinCondition() {
+  return !enemies.size();
 }
 
-void Level::left(int playerNumber){
-  players[playerNumber]->left();
-}
-
-void Level::stopHorizontalMove(int playerNumber){
-  players[playerNumber]->stopHorizontalMove();
-}
-
-void Level::up(int playerNumber){
-  players[playerNumber]->up();
-}
-
-void Level::shoot(int playerNumber){
-  Bullet* bullet = players[playerNumber]->shoot();
+void Level::addBullet(Bullet* bullet){
   bullets.push_back(bullet);
-}
-
-void Level::disconnect(int playerNumber){
-  players[playerNumber]->disconnect();
 }

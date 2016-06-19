@@ -80,7 +80,7 @@ public:
 
   void markAsDestroyed();
   bool isDestroyed();
-  void impact();
+  virtual void impact();
 
   BodyType type;
 protected:

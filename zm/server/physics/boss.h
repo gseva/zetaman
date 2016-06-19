@@ -16,21 +16,20 @@ public:
   float getMaxJumpHeight();
   void determinePositionsToGo();
   void choosePosition();
-  b2Vec2 moveTowardsPosition();
+  float moveTowardsPosition();
   bool gotCloseEnough();
   zm::proto::Position getPlayersAveragePosition();
 protected:
-  const int velocity;
+  int velocity;
   Gun* gun;
   const int jump;
   const int shootFrecuency;
   const int jumpFrecuency;
   /*Posicion a la que va a moverse*/
-  zm::proto::Position positionToGo;
+  float positionToGo;
   bool moving;
-  bool canJump;
-  /*Posiciones a las que puede moverse*/
-  std::vector<zm::proto::Position> positionsCanGo;
+  /*Posiciones a las que puede moverse en x*/
+  std::vector<float> positionsCanGo;
   JsonMap jm;
   std::vector<Player*>& players;
 private:

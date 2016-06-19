@@ -54,11 +54,12 @@ struct Enemy : JsonSerializable {
 };
 
 
-enum ProyectileType { Bomb };
+enum ProyectileType { Normal=0, Bomb=1, Spark=2,
+  Magnet=3, Ring=4, Fire=5 };
 
 struct Proyectile : JsonSerializable {
   Position pos;
-
+  ProyectileType type;
   virtual json getJson();
   static Proyectile deserialize(const json& j);
 };
@@ -114,14 +115,15 @@ struct ClientEvent {
 };
 
 
-enum ServerEventType { connected, connectedAsHost };
+enum ServerEventType { connected, connectedAsHost, playerConnected,
+  mapSelected, gameStart, levelWon, levelWonHost };
 
 struct ServerEvent {
   ServerEventType state;
+  std::string payload;
 
-  ServerEvent() {}
-  explicit ServerEvent(ServerEventType s) : state(s) {
-  }
+  ServerEvent();
+  explicit ServerEvent(ServerEventType s);
 
   std::string serialize();
   static ServerEvent deserialize(const std::string& s);

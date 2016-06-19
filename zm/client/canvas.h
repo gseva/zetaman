@@ -14,13 +14,14 @@
 namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
+Client& c_;
 proto::Game game_;
 Map map_;
 ImageBuffer buff_;
 Mutex m_;
 
 public:
-  explicit Canvas(ServerProxy& sp);
+  explicit Canvas(Client& c);
   virtual ~Canvas();
 
   void updateGameState(proto::Game gs);

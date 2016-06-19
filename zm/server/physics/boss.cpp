@@ -1,41 +1,37 @@
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
+#include <vector>
 
 #define BOMBMAN_VEL        2
 #define BOMBMAN_JUMP_F     5 * 60
 #define BOMBMAN_SHOOT_F    5 * 60
 #define BOMBMAN_JUMP       6
-#define BOMBMAN_PREF_DIS_X 3
-#define BOMBMAN_PREF_DIS_Y 2
+#define BOMBMAN_PREF_DIST 3
 
 #define MAGNETMAN_VEL       4
 #define MAGNETMAN_JUMP_F    15 * 60
 #define MAGNETMAN_SHOOT_F   5 * 60
 #define MAGNETMAN_JUMP      3
-#define MAGNETMAN_PREF_DIS_X 3
-#define MAGNETMAN_PREF_DIS_Y 2
+#define MAGNETMAN_PREF_DIST 3
 
 #define SPARKMAN_VEL       2 
 #define SPARKMAN_JUMP_F    2 * 60
 #define SPARKMAN_SHOOT_F   5 * 60
 #define SPARKMAN_JUMP      3 
-#define SPARKMAN_PREF_DIS_X 3
-#define SPARKMAN_PREF_DIS_Y 2
+#define SPARKMAN_PREF_DIST 3
 
 #define RINGMAN_VEL       5 
 #define RINGMAN_JUMP_F    10 * 60
 #define RINGMAN_SHOOT_F   8 * 60
 #define RINGMAN_JUMP      6 
-#define RINGMAN_PREF_DIS_X 3
-#define RINGMAN_PREF_DIS_Y 2
+#define RINGMAN_PREF_DIST 3
 
 #define FIREMAN_VEL       10
-#define FIREMAN_JUMP_F    2 * 60
+#define FIREMAN_JUMP_F    10 * 60
 #define FIREMAN_SHOOT_F   5 * 60
 #define FIREMAN_JUMP      6 
-#define FIREMAN_PREF_DIS_X 3
-#define FIREMAN_PREF_DIS_Y 2
+#define FIREMAN_PREF_DIST 3
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
@@ -44,59 +40,33 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency),
     jm(jm), players(players){
       tics = 0;
-      b2Vec2 vel;
-      vel.x = velocity;
-      vel.y = 0;
-      body->SetLinearVelocity(vel);
       moving = false;
-      canJump = true;
       determinePositionsToGo();
-}
-
-float Boss::getMaxJumpHeight(){
-  float timeTillMax = (float)jump / 10;
-  float maxHeight;
-  maxHeight = jump * timeTillMax;
-  maxHeight -= (10 * timeTillMax * timeTillMax)/ 2;
-  //maxHeight += 2; // 2 es la base de 1 tile
-  std::cout << "Altura maxima " << maxHeight << std::endl;
-  return maxHeight;
 }
  
 void Boss::determinePositionsToGo(){
-  zm::proto::Position bottomLeft;
-  zm::proto::Position topRight;
+  float left;
   /*12 es el alto fijo del mapa*/
   unsigned int mapLen = jm.imageNumbers.size() / 12;
   /*16 es al ancho fijo del mapa*/
   unsigned int screenCount = mapLen / 16;
 
   /*Faltaria multiplicarlo por metroPorTile*/
-  bottomLeft.x = (screenCount - 1) * 16 + .5f;
-  bottomLeft.y = .5f;
-  topRight.x = (screenCount * 16) - 3;
-  topRight.y = getMaxJumpHeight() + 0.5f;
+  left = (screenCount - 1) * 16;
 
-  for(int i=4; i<1; i++)
+  for (int i=1; i<14; i++)
   {
-    zm::proto::Position position;
-    position.x = topRight.x / i;
-    position.y = topRight.y;
-    positionsCanGo.push_back(position);
-    position.y = bottomLeft.y;
+    float position;
+    position = left + i;
     positionsCanGo.push_back(position);
   }
-
-  /*Por ahora solo puede moverse a estas dos posiciones*/
-  positionsCanGo.push_back(bottomLeft);
-  positionsCanGo.push_back(topRight);
 }
 
 zm::proto::Position Boss::getPlayersAveragePosition()
 {
   zm::proto::Position average;
 
-  for(unsigned int i=0; i<players.size(); i++)
+  for (unsigned int i=0; i<players.size(); i++)
   {
     average.x += players[i]->getPosition().x;
     average.y += players[i]->getPosition().y;
@@ -107,80 +77,45 @@ zm::proto::Position Boss::getPlayersAveragePosition()
 }
 
 void Boss::choosePosition(){
-  /*if (positionToGo.x == positionsCanGo[0].x)
-  {
-    positionToGo.x = positionsCanGo[1].x;
-    positionToGo.y = positionsCanGo[1].y;  
-  } else {
-    positionToGo.x = positionsCanGo[0].x;
-    positionToGo.y = positionsCanGo[0].y;
-  }*/
-  int idealDifX = 4;
-  int idealDifY = 2;  
+  int idealDifX = 10;  
   int idealPositionNumber = 0;
   int bestDifX = 0;
-  int bestDifY = 0;
-  bestDifX = abs(positionsCanGo[0].x - getPlayersAveragePosition().x);
-  bestDifY = abs(positionsCanGo[0].y - getPlayersAveragePosition().y);  
+  bestDifX = abs(positionsCanGo[0] - getPlayersAveragePosition().x);
   for (unsigned int i=1; i<positionsCanGo.size(); i++)
   {
-    int difX = abs(positionsCanGo[i].x - getPlayersAveragePosition().x);
-    int difY = abs(positionsCanGo[i].y - getPlayersAveragePosition().y);
-    /*Si la posicion se acerca mas a la ideal en y quiere esa*/
-    if (abs(idealDifY-difY) < abs(idealDifY-bestDifY))
+    int difX = abs(positionsCanGo[i] - getPlayersAveragePosition().x);
+    //Si la posicion se acerca mas a la ideal quiere esa
+    if (abs(idealDifX-difX) < abs(idealDifX-bestDifX))
     {
       idealPositionNumber = i;
-      bestDifY = difY;
       bestDifX = difX;
     }
-    /*Si la posicion no empeora el y y mejora el x quiero esa*/
-    if (abs(idealDifY-difY) == abs(idealDifY-bestDifY)
-      && abs(idealDifX-difX) < abs(idealDifX-bestDifX))
-    {
-      idealPositionNumber = i;
-      bestDifY = difY;
-      bestDifX = difX; 
-    }
   }
-  positionToGo.x = positionsCanGo[idealPositionNumber].x;
-  positionToGo.y = positionsCanGo[idealPositionNumber].y;  
+  positionToGo = positionsCanGo[idealPositionNumber];
 }
 
 bool Boss::gotCloseEnough(){
   bool gotClose = false;
-  float difX = getPosition().x - positionToGo.x;
-  float difY = getPosition().y - positionToGo.x;
-  float delta = 0.1;
+  float difX = getPosition().x - positionToGo;
+  float delta = 1;
 
-  if ((difX < delta && difX > -delta) &&
-   (difY < delta && difY > -delta))
+  if (abs(difX) < delta)
     gotClose = true;
 
-    return gotClose; 
+  return gotClose; 
 }
 
-b2Vec2 Boss::moveTowardsPosition(){
-  b2Vec2 vel;
+float Boss::moveTowardsPosition(){
+  float xVel;
 
-  bool needsToJump = false;
-  if (getPosition().y > positionToGo.y)
-    needsToJump = true;
-
-  bool crashesOnJump = false;
-
-  if (needsToJump && canJump && !crashesOnJump)
+  if (getPosition().x < positionToGo)
   {
-    vel.y = jump;
-  }
-
-  if (getPosition().x < positionToGo.x)
-  {
-    vel.x = velocity;
+    xVel = velocity;
   } else {
-    vel.x = -velocity;
+    xVel = -velocity;
   }
 
-  return vel;
+  return xVel;
 }
 
 Boss::~Boss(){
@@ -193,36 +128,32 @@ Bullet* Boss::move(){
   Bullet* bullet = NULL;
   b2Vec2 vel = body->GetLinearVelocity();
   if ( tics%jumpFrecuency == 0 )
-    canJump = true;
+    vel.y = jump;
   if ( tics%shootFrecuency == 0 )
   {
-    //moveTowardsPlayer();
     bullet = gun->shoot();
   }
-  if ( tics%(60*3) == 0 )
-    {
-      if (!moving)
-      {
+  //if ( tics%(60*3) == 0 )
+    //{
+      //if (!moving)
+      //{
         choosePosition();
-        moving = true;
-      }
-      if (moving)
-      {
-        vel = moveTowardsPosition();
-      }
-    }
+      //  moving = true;
+      //}
+      //if (moving)
+      //{
+        vel.x = moveTowardsPosition();
+      //}
+    //}
 
-  if (gotCloseEnough())
-  {
-    moving = false;  
-  }  
+  //if (gotCloseEnough())
+  //{
+  //  moving = false;
+  //}  
 
   std::cout << "Posicion actual en x " << getPosition().x << std::endl;
-  std::cout << "Posicion actual en y " << getPosition().y << std::endl;
-  std::cout << "Posicion que quiero en x " << positionToGo.x << std::endl;
-  std::cout << "Posicion que quiero en y " << positionToGo.y << std::endl;
-  std::cout << "Altura maxima es " << getMaxJumpHeight() << std::endl;
-  std::cout << "Posicion del player en x" << players[0]->getPosition().x << std::endl;
+  std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
+  std::cout << "Posicion player x " << players[0]->getPosition().x << std::endl;
 
   body->SetLinearVelocity(vel);
   return bullet;
