@@ -9,7 +9,7 @@ class Boss : public Enemy{
 public:
   explicit Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
-    JsonMap jm, std::vector<Player*>& players);
+    int prefDistance, JsonMap jm, std::vector<Player*>& players);
   virtual ~Boss()=0;
   virtual Bullet* move();
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
@@ -25,9 +25,10 @@ protected:
   const int jump;
   const int shootFrecuency;
   const int jumpFrecuency;
+  const int prefDistance; 
   /*Posicion a la que va a moverse*/
   float positionToGo;
-  bool moving;
+  //bool moving;
   /*Posiciones a las que puede moverse en x*/
   std::vector<float> positionsCanGo;
   JsonMap jm;

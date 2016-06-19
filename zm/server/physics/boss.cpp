@@ -35,12 +35,12 @@
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
-    JsonMap jm, std::vector<Player*>& players) : 
+    int prefDistance, JsonMap jm, std::vector<Player*>& players) : 
     Enemy(physics, x, y), velocity(velocity), jump(jump),
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency),
-    jm(jm), players(players){
+    prefDistance(prefDistance), jm(jm), players(players){
       tics = 0;
-      moving = false;
+      //moving = false;
       determinePositionsToGo();
 }
  
@@ -54,7 +54,7 @@ void Boss::determinePositionsToGo(){
   /*Faltaria multiplicarlo por metroPorTile*/
   left = (screenCount - 1) * 16;
 
-  for (int i=1; i<14; i++)
+  for (int i=0; i<14; i++)
   {
     float position;
     position = left + i;
@@ -76,8 +76,7 @@ zm::proto::Position Boss::getPlayersAveragePosition()
   return average;
 }
 
-void Boss::choosePosition(){
-  int idealDifX = 10;  
+void Boss::choosePosition(){ 
   int idealPositionNumber = 0;
   int bestDifX = 0;
   bestDifX = abs(positionsCanGo[0] - getPlayersAveragePosition().x);
@@ -85,7 +84,7 @@ void Boss::choosePosition(){
   {
     int difX = abs(positionsCanGo[i] - getPlayersAveragePosition().x);
     //Si la posicion se acerca mas a la ideal quiere esa
-    if (abs(idealDifX-difX) < abs(idealDifX-bestDifX))
+    if (abs(prefDistance-difX) < abs(prefDistance-bestDifX))
     {
       idealPositionNumber = i;
       bestDifX = difX;
@@ -162,7 +161,8 @@ Bullet* Boss::move(){
 Bombman::Bombman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) : 
 Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
-  BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F, jm, players){
+  BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F, BOMBMAN_PREF_DIST,
+   jm, players){
   gun = new Bombgun(this, true, physics);
 }
 
@@ -178,7 +178,8 @@ zm::proto::Enemy Bombman::toBean(int xo, int yo){
 Magnetman::Magnetman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) : 
 Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
-  MAGNETMAN_SHOOT_F, MAGNETMAN_JUMP_F, jm, players){
+  MAGNETMAN_SHOOT_F, MAGNETMAN_JUMP_F, MAGNETMAN_PREF_DIST,
+   jm, players){
   gun = new Magnetgun(this, true, physics);
 }
 
@@ -194,7 +195,8 @@ zm::proto::Enemy Magnetman::toBean(int xo, int yo){
 Sparkman::Sparkman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) : 
 Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
-  SPARKMAN_SHOOT_F, SPARKMAN_JUMP_F, jm, players){
+  SPARKMAN_SHOOT_F, SPARKMAN_JUMP_F, SPARKMAN_PREF_DIST,
+   jm, players){
   gun = new Sparkgun(this, true, physics);
 }
 
@@ -210,7 +212,8 @@ zm::proto::Enemy Sparkman::toBean(int xo, int yo){
 Ringman::Ringman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) : 
 Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
-  RINGMAN_SHOOT_F, RINGMAN_JUMP_F, jm, players){
+  RINGMAN_SHOOT_F, RINGMAN_JUMP_F, RINGMAN_PREF_DIST,
+   jm, players){
   gun = new Ringgun(this, true, physics);
 }
 
@@ -226,7 +229,8 @@ zm::proto::Enemy Ringman::toBean(int xo, int yo){
 Fireman::Fireman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) : 
 Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
-  FIREMAN_SHOOT_F, FIREMAN_JUMP_F, jm, players){
+  FIREMAN_SHOOT_F, FIREMAN_JUMP_F, FIREMAN_PREF_DIST,
+   jm, players){
   gun = new Firegun(this, true, physics);
 }
 
