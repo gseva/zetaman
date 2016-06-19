@@ -24,6 +24,7 @@ public:
     zm::proto::ProyectileType type);
   virtual void impact();
   virtual void impact(Enemy* impactBody);
+  virtual void impact(PlayerBody* impactBody);
 protected:
   b2Vec2 vel;
   const bool isEnemy;

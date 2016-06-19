@@ -8,6 +8,7 @@
 
 PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   :  Body(physics, x, y, BodyType::Player) {
+  body->SetUserData(this);
   b2PolygonShape shape;
   shape.SetAsBox(0.4f, 0.4f);
   fixtureDef.shape = &shape;
@@ -16,6 +17,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
+  healt = 2;
 }
 
 PlayerBody::~PlayerBody(){
@@ -81,4 +83,44 @@ bool PlayerBody::collide(Bullet* bullet){
 
 b2Body* PlayerBody::getBody(){
   return body;
+}
+
+void PlayerBody::toImpact(Bomb* bullet){
+  healt -= 4;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+
+void PlayerBody::toImpact(Spark* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+
+void PlayerBody::toImpact(Ring* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+
+void PlayerBody::toImpact(Magnet* bullet){
+  healt -= 2;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+
+void PlayerBody::toImpact(Fire* bullet){
+  healt -= 4;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+
+void PlayerBody::toImpact(Bullet* bullet){
+  healt -= 1;
+  std::cout << "\n\n\n\n\nHEALT: "<< healt <<"\n\n\n\n\n\n";
+
+  if ( healt <= 0 ) {
+    std::cout << "\n\n\n\n\nPLAYER DESTRUIDO\n\n\n\n\n\n";
+    markAsDestroyed();
+  }
 }

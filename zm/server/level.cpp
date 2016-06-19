@@ -89,7 +89,7 @@ void Level::step() {
     (*j)->move();
   }
 
-  for(auto&& player : players) {
+  for ( auto&& player : players ) {
     player->tic();
   }
 }
@@ -112,6 +112,13 @@ void Level::clean() {
       iEnemy = enemies.erase(iEnemy);
     } else {
       ++iEnemy;
+    }
+  }
+
+  std::vector<Player*>::iterator iPlayer;
+  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
+    if ( (*iPlayer)->body->isDestroyed() ) {
+      delete (*iPlayer)->body;
     }
   }
 }
@@ -147,7 +154,7 @@ zm::proto::Game Level::getState(){
 
   for ( std::vector<Player*>::iterator player = players.begin();
     player != players.end(); ++player ) {
-    if ((*player)->connected) {
+    if ((*player)->connected && !(*player)->body->isDestroyed()) {
       zm::proto::Player protoPlayer;
       protoPlayer.pos.x = (*player)->getPosition().x - xo;
       protoPlayer.pos.y = (*player)->getPosition().y;
@@ -178,7 +185,14 @@ zm::proto::Game Level::getState(){
 }
 
 bool Level::checkLoseCondition() {
-  return false;
+  bool lose = true;
+  std::vector<Player*>::iterator iPlayer;
+  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
+    if ( !(*iPlayer)->body->isDestroyed() )
+      lose = false;
+  }
+
+  return lose;
 }
 
 bool Level::checkWinCondition() {

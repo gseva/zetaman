@@ -28,12 +28,12 @@ void ContactListener::BeginContact(b2Contact* contact) {
       static_cast<Bullet*>(bodyUserDataA)->impact(
         static_cast<Enemy*>(bodyUserDataB));
     }
-    /*if (bodyUserDataB &&
+    if (bodyUserDataB &&
         static_cast<Body*>(bodyUserDataB)->type == BodyType::Player) {
-      std::cout << "Deleteo enemigo\n";
-      static_cast<PlayerBody*>(bodyUserDataB)->impact(
-        static_cast<Body*>bodyUserDataA);
-    }*/
+      std::cout << "Deleteo player\n";
+      static_cast<Bullet*>(bodyUserDataA)->impact(
+        static_cast<PlayerBody*>(bodyUserDataB));
+    }
   }
 }
 

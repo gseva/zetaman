@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include "zm/server/physics/bullets.h"
+#include "zm/server/physics/players.h"
 #include "zm/server/physics/enemies.h"
 #define RING_COLLISIONS 3
 
 bool randomBool() {
   return rand() % 2 == 1;
 }
-
 
 Bullet::Bullet(Physics& physics, float32 x, float32 y, int signo, bool isEnemy,
   float32 largo, float32 alto)
@@ -63,6 +63,10 @@ void Bullet::impact(){
 }
 
 void Bullet::impact(Enemy* impactBody){
+  impactBody->toImpact(this);
+}
+
+void Bullet::impact(PlayerBody* impactBody){
   impactBody->toImpact(this);
 }
 

@@ -54,28 +54,32 @@ void Player::setCamera(Camera* camera){
 }
 
 void Player::right(){
-  if ( camera->canMoveRight(this) )
+  if ( camera->canMoveRight(this) && !body->isDestroyed() )
     body->right();
   else
     this->stopHorizontalMove();
 }
 
 void Player::left(){
-  if ( camera->canMoveLeft(this) )
+  if ( camera->canMoveLeft(this) && !body->isDestroyed() )
     body->left();
   else
     this->stopHorizontalMove();
 }
 
 void Player::stopHorizontalMove(){
-  body->stopHorizontalMove();
+  if (!body->isDestroyed() )
+    body->stopHorizontalMove();
 }
 
 void Player::up(){
-  body->up();
+  if (!body->isDestroyed() )
+    body->up();
 }
 
 void Player::shoot(){
+  if (body->isDestroyed() )
+    return; 
   Gun* gun = guns[selectedGun];
   Bullet* bullet = gun->shoot();
   std::cout << "Creo bala " << bullet << std::endl;
