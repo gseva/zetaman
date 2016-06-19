@@ -17,7 +17,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
-  healt = 2;
+  healt = 50;
 }
 
 PlayerBody::~PlayerBody(){

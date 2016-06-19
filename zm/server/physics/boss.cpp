@@ -36,6 +36,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
       vel.x = velocity;
       vel.y = 0;
       body->SetLinearVelocity(vel);
+      healt = 30;
 }
 
 Boss::~Boss(){
@@ -56,6 +57,37 @@ Bullet* Boss::move(){
   vel.x = velocity;
   body->SetLinearVelocity(vel);
   return bullet;
+}
+
+void Boss::toImpact(Bomb* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+void Boss::toImpact(Spark* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+void Boss::toImpact(Ring* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+void Boss::toImpact(Magnet* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+void Boss::toImpact(Fire* bullet){
+  healt -= 3;
+  if ( healt <= 0 )
+    markAsDestroyed();
+}
+void Boss::toImpact(Bullet* bullet){
+  healt -= 1;
+  if ( healt <= 0 )
+    markAsDestroyed();
 }
 
 Bombman::Bombman(Physics& physics, float32 x, float32 y) : 
