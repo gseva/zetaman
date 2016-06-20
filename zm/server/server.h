@@ -12,6 +12,7 @@
 #include "zm/json/jsonserializer.h"
 #include "zm/server/physics/world.h"
 #include "zm/server/level.h"
+#include "zm/server/log.h"
 
 
 class Player;
@@ -26,9 +27,8 @@ public:
 
   zm::proto::Game getState();
   void updateState();
-
   void stopAccepting();
-
+  Log log;
 private:
   zm::Socket* accepter_;
   std::string port_;

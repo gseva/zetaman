@@ -10,16 +10,20 @@
 #include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"
 
+#include "zm/server/log.h"
+
 #define DEFAULT_PATH "build/maps/"
 #define GAME_STEP_FREQUENCY 1000/60
 
 
 Server::Server(const char* port) : accepter_(NULL), port_(port) {
+  log.eventLog("server: levantado");
 }
 
 Server::~Server() {
   if (accepter_)
     delete accepter_;
+  log.eventLog("server: destruido");
 }
 
 void Server::run() {
@@ -51,6 +55,7 @@ Game::Game(Server& s) : server_(s), accepting_(false),  playing_(false),
 
 void Game::acceptHost(zm::Socket* accepter) {
   auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter->accept());
+  server_.log.eventLog("server: host conectado");
   newPlayer(hostSock);
   zm::proto::ServerEvent event(zm::proto::connectedAsHost);
   std::string ev = event.serialize();
@@ -70,6 +75,7 @@ void Game::acceptPlayers(zm::Socket* accepter) {
     std::cout << "Envio evento: " << ev << std::endl;
     playerSock->write(ev);
     newPlayer(std::make_shared<zm::ProtectedSocket>(playerSock));
+    server_.log.eventLog("server: jugador conectado");
   }
 }
 
@@ -82,7 +88,6 @@ void Game::newPlayer(std::shared_ptr<zm::ProtectedSocket> sock) {
   }
 
   std::string name = "player " + std::to_string(players.size());
-
   // Escribo el nombre del nuevo jugador a los jugadores conectados
   for (auto&& pair : proxies) {
     proto::ServerEvent ev(proto::ServerEventType::playerConnected);
@@ -95,6 +100,7 @@ void Game::newPlayer(std::shared_ptr<zm::ProtectedSocket> sock) {
   zm::ClientProxy* cp = new ClientProxy(player, sock);
   proxies.insert({name, cp});
   cp->startListening();
+  server_.log.eventLog("server: jugador " + name);
 }
 
 void Game::selectLevel(int level) {
@@ -105,6 +111,7 @@ void Game::selectLevel(int level) {
     case 2: mapPath_ = "level_3.json"; break;
     case 3: mapPath_ = "level_4.json"; break;
     case 4: mapPath_ = "level_5.json"; break;
+    server_.log.eventLog("server: seleccionar nivel "+ std::to_string(level+1));
   }
   mapPath_ = DEFAULT_PATH + mapPath_;
 
@@ -168,6 +175,7 @@ void Game::startLevel() {
   std::cout << "Creo new level! " << path << std::endl;
   currentLevel = new Level(playersVec, currentMap_);
   mapPath_ = "";
+
 }
 
 void Game::gameLoop() {
@@ -191,8 +199,11 @@ void Game::finishLevel() {
     for (auto&& pair : proxies) {
       pair.second->sendLevelWon();
     }
+    server_.log.eventLog("server: nivel superado");
   } else {
     std::cout << "Lose!" << std::endl;
+    server_.log.eventLog("server: nivel no superado");
+
   }
 }
 
