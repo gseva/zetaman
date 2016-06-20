@@ -39,6 +39,10 @@ void Gun::tic(){
   }
 }
 
+void Gun::addAmmunitions(int amount){
+  ammunitions += amount;
+}
+
 Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) : 
   Gun(proprietor, isEnemy, 2, physics){}
 

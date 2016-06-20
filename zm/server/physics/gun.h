@@ -15,6 +15,7 @@ public:
   virtual Bullet* fire(int direction)=0;
   void tic();
   virtual int getNumber()=0;
+  void addAmmunitions(int amount);
 protected:
   const int ticsToCharge;
   int tics;
