@@ -374,7 +374,7 @@ void Editor::exportCreatedMap()
 
   jMap = createJsonMap();
 
-  s.exportMap(mapName + ".json", jMap);
+  s.exportMap("assets/maps/custom/" + mapName + ".json", jMap);
 }
 
 std::string Editor::getName(std::string imageFullPath)
