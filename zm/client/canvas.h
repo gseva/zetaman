@@ -25,6 +25,7 @@ ImageBuffer buff_;
 Mutex m_;
 std::map<int, drawing::Player*> players_;
 std::map<int, drawing::Enemy*> enemies_;
+std::map<int, drawing::Proyectile*> proyectiles_;
 
 public:
   explicit Canvas(Client& c);

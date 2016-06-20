@@ -65,6 +65,7 @@ enum ProyectileType { Normal=0, Bomb=1, Spark=2,
 struct Proyectile : JsonSerializable {
   Position pos;
   ProyectileType type;
+  int id;
   virtual json getJson();
   static Proyectile deserialize(const json& j);
 };

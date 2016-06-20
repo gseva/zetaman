@@ -15,7 +15,7 @@ namespace drawing {
 
 
 Drawable::Drawable(Client& c) : c_(c), flipped_(false),
-    scaleX(1), scaleY(1) {
+    scaleX(1), scaleY(1), tics(0) {
 }
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
@@ -59,7 +59,24 @@ void Drawable::setScale(float x, float y) {
   scaleY = y;
 }
 
-Player::Player(Client& c) : Drawable(c), tics(0) {
+void Drawable::setPosition(proto::Position pos) {
+  pos_ = pos;
+}
+
+proto::Position& Drawable::getPosition() {
+  return pos_;
+}
+
+void Drawable::setImageName(const std::string& imageName) {
+  imageName_ = imageName;
+}
+
+std::string& Drawable::getImageName() {
+  return imageName_;
+}
+
+
+Player::Player(Client& c) : Drawable(c) {
   setScale(1.5, 1.5); tics = 0;
 }
 
@@ -72,6 +89,7 @@ void Player::setState(proto::Player p) {
   tics++;
 
   p_ = p;
+  setPosition(p_.pos);
 
   setFlipped(p_.o == proto::left);
 
@@ -103,42 +121,18 @@ void Player::setState(proto::Player p) {
       break;
   }
 
-  imageName_ = "player/" + image + ".png";
-}
-
-std::string& Player::getImageName() {
-  return imageName_;
-}
-
-proto::Position& Player::getPosition() {
-  return p_.pos;
+  setImageName("player/" + image + ".png");
 }
 
 
 Enemy::Enemy(Client& c) : Drawable(c) {
 }
 
-void Enemy::setState(proto::Enemy e) {
-  setPosition(e.pos);
-  imageName_ = "enemies/bumby/idle_1.png";
-}
-
-void Enemy::setPosition(proto::Position pos) {
-  pos_ = pos;
-}
-
 Enemy::~Enemy() {}
 
-std::string& Enemy::getImageName() {
-  return imageName_;
-}
-
-void Enemy::setImageName(const std::string& imageName) {
-  imageName_ = imageName;
-}
-
-proto::Position& Enemy::getPosition() {
-  return pos_;
+void Enemy::setState(proto::Enemy e) {
+  setPosition(e.pos);
+  setImageName("enemies/bumby/idle_1.png");
 }
 
 
@@ -409,49 +403,61 @@ void Sparkman::setState(proto::Enemy e) {
     case proto::EnemyState::guarded:
       break;
   }
-  setImageName("enemies/ringman/" + image + ".png");
+
+  setImageName("enemies/sparkman/" + image + ".png");
 }
 
 
-Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c),
-  p_(p) {
-  if ( p.type == proto::ProyectileType::Normal )
-    imageName_ = "proyectiles/normal.png";
-  else if ( p.type == proto::ProyectileType::Bomb )
-    imageName_ = "proyectiles/bomb.png";
-  else if ( p.type == proto::ProyectileType::Spark )
-    imageName_ = "proyectiles/spark.png";
-  else if ( p.type == proto::ProyectileType::Magnet )
-    imageName_ = "proyectiles/magnet_1.png";
-  else if ( p.type == proto::ProyectileType::Ring )
-    imageName_ = "proyectiles/ring.png";
-  else if ( p.type == proto::ProyectileType::Fire )
-    imageName_ = "proyectiles/fire.png";
+Proyectile::Proyectile(Client& c) : Drawable(c) {
+  setScale(1, 1); tics = 0;
+}
+
+void Proyectile::setState(proto::Proyectile p) {
+  setPosition(p.pos);
+  tics++;
+  std::string image = "normal";
+  switch(p.type) {
+    case proto::ProyectileType::Bomb:
+      image = "bomb_" + std::to_string(tics);
+      if (tics >= 8) tics = 0;
+      break;
+    case proto::ProyectileType::Fire:
+      image = "fire_" + std::to_string(tics);
+      if (tics >= 5) tics = 4;
+      break;
+    case proto::ProyectileType::Magnet:
+      // setFlipped(p_.o == proto::left);
+      image = "magnet_" + std::to_string(tics / 2 + 1);
+      if (tics >= 3) tics = 0;
+      break;
+    case proto::ProyectileType::Ring:
+      image = "ring_" + std::to_string(tics);
+      if (tics >= 8) tics = 0;
+      break;
+    case proto::ProyectileType::Spark:
+      image = "spark_" + std::to_string(tics);
+      if (tics >= 8) tics = 4;
+      break;
+    case proto::ProyectileType::Normal: break;
+  }
+
+  if (image != "normal") {
+    std::cout << image << std::endl;
+  }
+  setImageName("proyectiles/" + image + ".png");
 }
 
 Proyectile::~Proyectile() {}
 
-std::string& Proyectile::getImageName() {
-  return imageName_;
-}
 
-proto::Position& Proyectile::getPosition() {
-  return p_.pos;
-}
-
-
-PowerUp::PowerUp(Client& c, proto::PowerUp p) : Drawable(c), p_(p),
-  imageName_("powerups/life.png") {
+PowerUp::PowerUp(Client& c) : Drawable(c) {
 }
 
 PowerUp::~PowerUp() {}
 
-std::string& PowerUp::getImageName() {
-  return imageName_;
-}
-
-proto::Position& PowerUp::getPosition() {
-  return p_.pos;
+void PowerUp::setState(proto::PowerUp p) {
+  setPosition(p.pos);
+  setImageName("powerups/life.png");
 }
 
 

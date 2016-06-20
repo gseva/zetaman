@@ -8,12 +8,13 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy(Client& client) : sender_(NULL),
-    client_(client) {
+ServerProxy::ServerProxy(Client& client, const std::string& port)
+    : sender_(NULL), client_(client), port_(port) {
 }
 
-void ServerProxy::connect(){
-  serverSock_.connect("127.0.0.1", "9090");
+void ServerProxy::connect() {
+  std::cout << "Conectan2 " << port_ << std::endl;
+  serverSock_.connect("127.0.0.1", port_);
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();

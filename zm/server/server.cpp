@@ -14,7 +14,7 @@
 #define GAME_STEP_FREQUENCY 1000/60
 
 
-Server::Server() : accepter_(NULL), port_("9090") {
+Server::Server(const char* port) : accepter_(NULL), port_(port) {
 }
 
 Server::~Server() {

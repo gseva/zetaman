@@ -12,23 +12,23 @@
 #define MAGNETMAN_SHOOT_F   5 * 60
 #define MAGNETMAN_JUMP      3
 
-#define SPARKMAN_VEL       2 
+#define SPARKMAN_VEL       2
 #define SPARKMAN_JUMP_F    2 * 60
 #define SPARKMAN_SHOOT_F   5 * 60
-#define SPARKMAN_JUMP      3 
+#define SPARKMAN_JUMP      3
 
-#define RINGMAN_VEL       5 
+#define RINGMAN_VEL       5
 #define RINGMAN_JUMP_F    10 * 60
 #define RINGMAN_SHOOT_F   8 * 60
-#define RINGMAN_JUMP      6 
+#define RINGMAN_JUMP      6
 
 #define FIREMAN_VEL       10
 #define FIREMAN_JUMP_F    2 * 60
 #define FIREMAN_SHOOT_F   5 * 60
-#define FIREMAN_JUMP      6 
+#define FIREMAN_JUMP      6
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
-    int velocity, int jump, int shootFrecuency, int jumpFrecuency) : 
+    int velocity, int jump, int shootFrecuency, int jumpFrecuency) :
     Enemy(physics, x, y), velocity(velocity), jump(jump),
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency){
       tics = 0;
@@ -84,7 +84,17 @@ void Boss::damage(int hurt){
     markAsDestroyed();
 }
 
-Bombman::Bombman(Physics& physics, float32 x, float32 y) : 
+zm::proto::Enemy Boss::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  if (body->GetLinearVelocity().x >= 0) {
+    protoEnemy.o = zm::proto::right;
+  } else {
+    protoEnemy.o = zm::proto::left;
+  }
+  return protoEnemy;
+}
+
+Bombman::Bombman(Physics& physics, float32 x, float32 y) :
 Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
   BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F){
   gun = new Bombgun(this, true, physics);
@@ -93,13 +103,13 @@ Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
 Bombman::~Bombman(){}
 
 zm::proto::Enemy Bombman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Bombman;
   return protoEnemy;
 }
 
 
-Magnetman::Magnetman(Physics& physics, float32 x, float32 y) : 
+Magnetman::Magnetman(Physics& physics, float32 x, float32 y) :
 Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
   MAGNETMAN_SHOOT_F, MAGNETMAN_JUMP_F){
   gun = new Magnetgun(this, true, physics);
@@ -108,13 +118,13 @@ Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
 Magnetman::~Magnetman(){}
 
 zm::proto::Enemy Magnetman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Magnetman;
   return protoEnemy;
 }
 
 
-Sparkman::Sparkman(Physics& physics, float32 x, float32 y) : 
+Sparkman::Sparkman(Physics& physics, float32 x, float32 y) :
 Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
   SPARKMAN_SHOOT_F, SPARKMAN_JUMP_F){
   gun = new Sparkgun(this, true, physics);
@@ -123,13 +133,13 @@ Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
 Sparkman::~Sparkman(){}
 
 zm::proto::Enemy Sparkman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Sparkman;
   return protoEnemy;
 }
 
 
-Ringman::Ringman(Physics& physics, float32 x, float32 y) : 
+Ringman::Ringman(Physics& physics, float32 x, float32 y) :
 Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
   RINGMAN_SHOOT_F, RINGMAN_JUMP_F){
   gun = new Ringgun(this, true, physics);
@@ -138,13 +148,13 @@ Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
 Ringman::~Ringman(){}
 
 zm::proto::Enemy Ringman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Ringman;
   return protoEnemy;
 }
 
 
-Fireman::Fireman(Physics& physics, float32 x, float32 y) : 
+Fireman::Fireman(Physics& physics, float32 x, float32 y) :
 Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
   FIREMAN_SHOOT_F, FIREMAN_JUMP_F){
   gun = new Firegun(this, true, physics);
@@ -153,7 +163,7 @@ Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
 Fireman::~Fireman(){}
 
 zm::proto::Enemy Fireman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Fireman;
   return protoEnemy;
 }

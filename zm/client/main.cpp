@@ -8,8 +8,13 @@ int main(int argc, char *argv[])
       Gtk::Application::create(argc, argv);
     app->set_flags(Gio::APPLICATION_NON_UNIQUE);
 
-    zm::Client client;
+    if (argc > 2) {
+      zm::Client client(argv[2]);
+      client.run(app);
+    } else {
+      zm::Client client("9090");
+      client.run(app);
+    }
 
-    client.run(app);
     return 0;
 }

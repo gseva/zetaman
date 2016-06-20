@@ -9,7 +9,7 @@ public:
     int velocity, int jump, int shootFrecuency, int jumpFrecuency);
   virtual ~Boss()=0;
   virtual Bullet* move();
-  virtual zm::proto::Enemy toBean(int xo, int yo)=0;
+  virtual zm::proto::Enemy toBean(int xo, int yo);
   virtual void toImpact(Bomb* bullet);
   virtual void toImpact(Spark* bullet);
   virtual void toImpact(Ring* bullet);
@@ -25,7 +25,7 @@ protected:
   const int jumpFrecuency;
 private:
   void damage (int healt);
-  unsigned int tics; 
+  unsigned int tics;
 };
 
 class Bombman : public Boss{

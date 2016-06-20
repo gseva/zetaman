@@ -15,6 +15,7 @@ Canvas::Canvas(Client& c) : c_(c), gameSet_(false), map_(c), buff_(c) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
               &Canvas::on_timeout), 1000/30);
+  std::cout << "Crea2" << std::endl;
 }
 
 Canvas::~Canvas() {
@@ -23,6 +24,9 @@ Canvas::~Canvas() {
   }
   for (auto&& enemy : enemies_) {
     delete enemy.second;
+  }
+  for (auto&& proyectile : proyectiles_) {
+    delete proyectile.second;
   }
 }
 
@@ -57,12 +61,20 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawable->setState(enemy);
     drawable->draw(cr, buff_);
   }
-  for (auto&& proy : game_.proyectiles) {
-    drawing::Proyectile drawable(c_, proy);
-    drawable.draw(cr, buff_);
+  for (auto&& proyectile : game_.proyectiles) {
+    drawing::Proyectile* drawable;
+    if (!proyectiles_.count(proyectile.id)) {
+      drawable = new drawing::Proyectile(c_);
+      proyectiles_.insert({proyectile.id, drawable});
+    } else {
+      drawable = proyectiles_.at(proyectile.id);
+    }
+    drawable->setState(proyectile);
+    drawable->draw(cr, buff_);
   }
   for (auto&& powerUp : game_.powerUps) {
-    drawing::PowerUp drawable(c_, powerUp);
+    drawing::PowerUp drawable(c_);
+    drawable.setState(powerUp);
     drawable.draw(cr, buff_);
   }
 

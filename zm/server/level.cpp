@@ -160,13 +160,12 @@ zm::proto::Game Level::getState(){
   }
 
   for (auto&& enemy : enemies) {
-    zm::proto::Enemy protoEnemy = enemy->toBean(xo, yo);
-    gs.enemies.push_back(protoEnemy);
+    gs.enemies.push_back(enemy->toBean(xo, yo));
   }
 
   for (auto&& bullet : bullets) {
-    zm::proto::Proyectile proyectile = bullet->toBean(xo, yo);
-    gs.proyectiles.push_back(proyectile);
+    zm::proto::Proyectile pr = bullet->toBean(xo, yo);
+    gs.proyectiles.push_back(pr);
   }
 
   if (checkLoseCondition()) {

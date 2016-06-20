@@ -155,13 +155,45 @@
     <file  preprocess="to-pixdata">images/enemies/sparkman/moving_6.png</file>
     <file  preprocess="to-pixdata">images/enemies/sparkman/moving_7.png</file>
 
+    <!-- Proyectiles -->
+
     <file  preprocess="to-pixdata">images/proyectiles/normal.png</file>
-    <file  preprocess="to-pixdata">images/proyectiles/bomb.png</file>
-    <file  preprocess="to-pixdata">images/proyectiles/spark.png</file>
-    <file  preprocess="to-pixdata">images/proyectiles/ring.png</file>
+
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_1.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_2.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_3.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_4.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_5.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_6.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_7.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/bomb_8.png</file>
+
+    <file  preprocess="to-pixdata">images/proyectiles/fire_1.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/fire_2.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/fire_3.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/fire_4.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/fire_5.png</file>
+
     <file  preprocess="to-pixdata">images/proyectiles/magnet_1.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/magnet_2.png</file>
-    <file  preprocess="to-pixdata">images/proyectiles/fire.png</file>
+
+    <file  preprocess="to-pixdata">images/proyectiles/ring_1.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_2.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_3.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_4.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_5.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_6.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_7.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/ring_8.png</file>
+
+    <file  preprocess="to-pixdata">images/proyectiles/spark_1.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_2.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_3.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_4.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_5.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_6.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_7.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/spark_8.png</file>
 
     <file  preprocess="to-pixdata">images/powerups/life.png</file>
     <file  preprocess="to-pixdata">images/powerups/energy.png</file>

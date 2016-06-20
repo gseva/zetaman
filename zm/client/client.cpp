@@ -7,7 +7,8 @@
 
 namespace zm {
 
-Client::Client() : width(800), height(600), serverProxy(*this) {
+Client::Client(const char* port) : port_(port), width(800), height(600),
+    serverProxy(*this, port_) {
   ppm = scaleNum(64);
 }
 

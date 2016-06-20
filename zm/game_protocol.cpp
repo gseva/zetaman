@@ -73,7 +73,7 @@ json Enemy::getJson() {
 
   j["t"] = static_cast<int>(enemyType);
   j["o"] = static_cast<int>(o);
-  j["id"] = id;
+  j["i"] = id;
 
   return j;
 }
@@ -93,7 +93,7 @@ Enemy Enemy::deserialize(const json& j) {
   int orientation = j["o"];
   e.o = static_cast<Orientation>(orientation);
 
-  e.id = j["id"];
+  e.id = j["i"];
 
   return e;
 }
@@ -102,6 +102,7 @@ Enemy Enemy::deserialize(const json& j) {
 json Proyectile::getJson() {
   json j = pos.getJson();
   j["t"] = static_cast<int>(type);
+  j["i"] = id;
   return j;
 }
 
@@ -109,6 +110,7 @@ Proyectile Proyectile::deserialize(const json& j) {
   Proyectile p;
   p.pos.x = j["x"];
   p.pos.y = j["y"];
+  p.id = j["i"];
   int type = j["t"];
   p.type = static_cast<ProyectileType>(type);
   return p;

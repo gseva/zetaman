@@ -108,6 +108,7 @@ void Sender::run() {
   do {
     game = eventQueue_.pop();
     // if (game.state != proto::GameState::playing) continue;
+
     std::string s = game.serialize();
     clientSock_->write(s);
   } while (game.state == proto::GameState::playing);
