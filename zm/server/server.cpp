@@ -6,6 +6,7 @@
 #include <thread>
 #include <unistd.h>
 
+#include "zm/server/config.h"
 #include "zm/server/server.h"
 #include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"
@@ -14,7 +15,7 @@
 #define GAME_STEP_FREQUENCY 1000/60
 
 
-Server::Server() : accepter_(NULL), port_("9090") {
+Server::Server(const char* port) : accepter_(NULL), port_(port) {
 }
 
 Server::~Server() {
@@ -116,6 +117,20 @@ void Game::selectLevel(int level) {
   }
 }
 
+void Game::notifyPlayerReady() {
+  Lock l(m_);
+  bool notify = true;
+  for (auto&& pair : players) {
+    if (!pair.second->isReady) {
+      notify = false;
+      break;
+    }
+  }
+  if (notify) {
+    cond.signal();
+  }
+}
+
 void Game::startLevel() {
   std::cout << "Mi map path es " << mapPath_ << std::endl;
   if (mapPath_ == "") {
@@ -141,6 +156,9 @@ void Game::startLevel() {
     pair.second->startGame();
   }
 
+  // Espero a que todos los jugadores envien readyToPlay
+  cond.wait();
+
   if (currentLevel)
     delete currentLevel;
 
@@ -160,7 +178,7 @@ void Game::gameLoop() {
     currentLevel->step();
 
     std::this_thread::sleep_for(
-         std::chrono::milliseconds(GAME_STEP_FREQUENCY));
+         std::chrono::milliseconds(zm::config::gamePeriod));
 
     updateState();
   }

@@ -18,60 +18,146 @@ namespace drawing {
 
 class Drawable {
 Client& c_;
+bool flipped_;
+float scaleX, scaleY;
+
+proto::Position pos_;
+std::string imageName_;
+
 public:
+  int tics;
+
   explicit Drawable(Client& c);
+  virtual ~Drawable();
+
   void draw(const Cairo::RefPtr<Cairo::Context>& context, ImageBuffer& buff);
 
-  virtual std::string& getImageName() = 0;
-  virtual proto::Position& getPosition() = 0;
+  void setFlipped(bool f);
+  void setScale(float x, float y);
+
+  virtual std::string& getImageName();
+  void setImageName(const std::string& imageName);
+
+  virtual proto::Position& getPosition();
+  void setPosition(proto::Position pos);
 };
 
 
 class Player : public Drawable {
 proto::Player p_;
-std::string imageName_;
 
 public:
-  Player(Client& c, proto::Player p);
+  explicit Player(Client& c);
+  virtual ~Player();
 
-  virtual std::string& getImageName() override;
-  virtual proto::Position& getPosition() override;
+  void setState(proto::Player p);
 };
 
 
 class Enemy : public Drawable {
 proto::Enemy e_;
-std::string imageName_;
 
 public:
-  Enemy(Client& c, proto::Enemy e);
+  explicit Enemy(Client& c);
+  virtual ~Enemy();
 
-  virtual std::string& getImageName() override;
-  virtual proto::Position& getPosition() override;
+  virtual void setState(proto::Enemy e);
+};
+
+
+class Met : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Met(Client& c);
+  virtual ~Met();
+  virtual void setState(proto::Enemy e);
+};
+
+class Bumby : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Bumby(Client& c);
+  virtual ~Bumby();
+  virtual void setState(proto::Enemy e);
+};
+
+class Sniper : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Sniper(Client& c);
+  virtual ~Sniper();
+  virtual void setState(proto::Enemy e);
+};
+
+class Bombman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Bombman(Client& c);
+  virtual ~Bombman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Fireman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Fireman(Client& c);
+  virtual ~Fireman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Magnetman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Magnetman(Client& c);
+  virtual ~Magnetman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Ringman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Ringman(Client& c);
+  virtual ~Ringman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Sparkman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Sparkman(Client& c);
+  virtual ~Sparkman();
+  virtual void setState(proto::Enemy e);
 };
 
 
 class Proyectile : public Drawable {
+int tics;
 proto::Proyectile p_;
-std::string imageName_;
 
 public:
-  Proyectile(Client& c, proto::Proyectile p);
+  explicit Proyectile(Client& c);
+  virtual ~Proyectile();
 
-  virtual std::string& getImageName() override;
-  virtual proto::Position& getPosition() override;
+  virtual void setState(proto::Proyectile p);
 };
 
 
 class PowerUp : public Drawable {
 proto::PowerUp p_;
-std::string imageName_;
 
 public:
-  PowerUp(Client& c, proto::PowerUp p);
+  explicit PowerUp(Client& c);
+  virtual ~PowerUp();
 
-  virtual std::string& getImageName() override;
-  virtual proto::Position& getPosition() override;
+  virtual void setState(proto::PowerUp p);
 };
 
 

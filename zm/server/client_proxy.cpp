@@ -23,6 +23,7 @@ void ClientProxy::startListening() {
 }
 
 void ClientProxy::sendMap(const std::string& map) {
+  player_->isReady = false;
   zm::proto::ServerEvent event(zm::proto::mapSelected);
   event.payload = map;
   clientSock_->write(event.serialize());
@@ -74,6 +75,8 @@ void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
     case proto::selectLevel3: player_->game.selectLevel(2); break;
     case proto::selectLevel4: player_->game.selectLevel(3); break;
     case proto::selectLevel5: player_->game.selectLevel(4); break;
+
+    case proto::readyToPlay: player_->setReady(); break;
   }
 }
 
@@ -104,7 +107,8 @@ void Sender::run() {
   proto::Game game;
   do {
     game = eventQueue_.pop();
-    if (game.state != proto::GameState::playing) continue;
+    // if (game.state != proto::GameState::playing) continue;
+
     std::string s = game.serialize();
     clientSock_->write(s);
   } while (game.state == proto::GameState::playing);

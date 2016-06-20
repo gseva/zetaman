@@ -24,17 +24,20 @@ json Position::getJson() {
 
 json Player::getJson() {
   json j = pos.getJson();
+  j["i"] = id;
   j["h"] = health;
 
   int state;
   switch (ps) {
-    case PlayerState::movingLeft: state = 0; break;
-    case PlayerState::movingRight: state = 1; break;
-    case PlayerState::idle: state = 2; break;
-    case PlayerState::shooting: state = 3; break;
-    case PlayerState::jumping: state = 4; break;
+    case PlayerState::moving: state = 0; break;
+    case PlayerState::idle: state = 1; break;
+    case PlayerState::shooting: state = 2; break;
+    case PlayerState::jumping: state = 3; break;
+    case PlayerState::jumpingShooting: state = 4; break;
+    case PlayerState::climbing: state = 5; break;
   }
   j["st"] = state;
+  j["o"] = static_cast<int>(o);
 
   return j;
 }
@@ -45,6 +48,9 @@ Player Player::deserialize(const json& j) {
   p.pos.y = j["y"];
   int state = j["st"];
   p.ps = static_cast<PlayerState>(state);
+  int orientation = j["o"];
+  p.o = static_cast<Orientation>(orientation);
+  p.id = j["i"];
   return p;
 }
 
@@ -57,38 +63,46 @@ json Enemy::getJson() {
 
   int state;
   switch (enemyState) {
-    case EnemyState::movingLeft: state = 0; break;
-    case EnemyState::movingRight: state = 1; break;
-    case EnemyState::idle: state = 2; break;
-    case EnemyState::shooting: state = 3; break;
-    case EnemyState::jumping: state = 4; break;
-    case EnemyState::guarded: state = 5; break;
-    case EnemyState::unguarded: state = 6; break;
+    case EnemyState::moving: state = 0; break;
+    case EnemyState::idle: state = 1; break;
+    case EnemyState::shooting: state = 2; break;
+    case EnemyState::jumping: state = 3; break;
+    case EnemyState::guarded: state = 4; break;
   }
   j["s"] = state;
 
   j["t"] = static_cast<int>(enemyType);
+  j["o"] = static_cast<int>(o);
+  j["i"] = id;
 
   return j;
 }
 
 Enemy Enemy::deserialize(const json& j) {
-  Enemy p;
-  p.pos.x = j["x"];
-  p.pos.y = j["y"];
+  Enemy e;
+  e.pos.x = j["x"];
+  e.pos.y = j["y"];
+  e.health = j["h"];
 
   int state = j["s"];
-  p.enemyState = static_cast<EnemyState>(state);
+  e.enemyState = static_cast<EnemyState>(state);
 
   int type = j["t"];
-  p.enemyType = static_cast<EnemyType>(type);
-  return p;
+  e.enemyType = static_cast<EnemyType>(type);
+
+  int orientation = j["o"];
+  e.o = static_cast<Orientation>(orientation);
+
+  e.id = j["i"];
+
+  return e;
 }
 
 
 json Proyectile::getJson() {
   json j = pos.getJson();
   j["t"] = static_cast<int>(type);
+  j["i"] = id;
   return j;
 }
 
@@ -96,6 +110,7 @@ Proyectile Proyectile::deserialize(const json& j) {
   Proyectile p;
   p.pos.x = j["x"];
   p.pos.y = j["y"];
+  p.id = j["i"];
   int type = j["t"];
   p.type = static_cast<ProyectileType>(type);
   return p;
@@ -126,7 +141,7 @@ std::string Game::serialize() {
     proyectileJson.push_back(proyectile.getJson());
   }
 
-  json game = {{"x", x}, {"y", y}, {"st", s}, {"cp", camPos.getJson()},
+  json game = {{"st", s}, {"cp", camPos.getJson()},
                {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson}};
   std::string result = game.dump();
   return result;
@@ -137,8 +152,6 @@ Game Game::deserialize(const std::string& s) {
   json j = json::parse(s);
 
   Game game;
-  game.x = j["x"];
-  game.y = j["y"];
   game.camPos.x = j["cp"]["x"];
   game.camPos.y = j["cp"]["y"];
 

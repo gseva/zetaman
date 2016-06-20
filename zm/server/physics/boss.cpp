@@ -1,7 +1,6 @@
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
-#include <vector>
 
 #define BOMBMAN_VEL        2
 #define BOMBMAN_JUMP_F     5 * 60
@@ -15,27 +14,27 @@
 #define MAGNETMAN_JUMP      3
 #define MAGNETMAN_PREF_DIST 5
 
-#define SPARKMAN_VEL       2 
+#define SPARKMAN_VEL       2
 #define SPARKMAN_JUMP_F    2 * 60
 #define SPARKMAN_SHOOT_F   5 * 60
-#define SPARKMAN_JUMP      3 
+#define SPARKMAN_JUMP      3
 #define SPARKMAN_PREF_DIST 5
 
-#define RINGMAN_VEL       5 
+#define RINGMAN_VEL       5
 #define RINGMAN_JUMP_F    10 * 60
 #define RINGMAN_SHOOT_F   8 * 60
-#define RINGMAN_JUMP      6 
+#define RINGMAN_JUMP      6
 #define RINGMAN_PREF_DIST 5
 
 #define FIREMAN_VEL       10
 #define FIREMAN_JUMP_F    10 * 60
 #define FIREMAN_SHOOT_F   5 * 60
-#define FIREMAN_JUMP      6 
+#define FIREMAN_JUMP      6
 #define FIREMAN_PREF_DIST 5
 
 Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
-    int prefDistance, JsonMap jm, std::vector<Player*>& players) : 
+    int prefDistance, JsonMap jm, std::vector<Player*>& players) :
     Enemy(physics, x, y), velocity(velocity), jump(jump),
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency),
     prefDistance(prefDistance), jm(jm), players(players){
@@ -43,7 +42,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
       determinePositionsToGo();
 	  health = 30;
 }
- 
+
 void Boss::determinePositionsToGo(){
   float left;
   /*12 es el alto fijo del mapa*/
@@ -76,7 +75,7 @@ zm::proto::Position Boss::getPlayersAveragePosition()
   return average;
 }
 
-void Boss::choosePosition(){ 
+void Boss::choosePosition(){
   int idealPositionNumber = 0;
   int bestDifX = 0;
   bestDifX = std::abs(positionsCanGo[0] - getPlayersAveragePosition().x);
@@ -131,20 +130,12 @@ Bullet* Boss::move(){
   choosePosition();
   vel.x = moveTowardsPosition();
 
-  std::cout << "Posicion actual en x " << getPosition().x << std::endl;
-  std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
-  std::cout << "Posicion player x " << players[0]->getPosition().x << std::endl;
+  // std::cout << "Posicion actual en x " << getPosition().x << std::endl;
+  // std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
+  // std::cout << "Posicion player x " << players[0]->getPosition().x << std::endl;
 
   body->SetLinearVelocity(vel);
   return bullet;
-}
-
-Bombman::Bombman(Physics& physics, float32 x, float32 y,
-  JsonMap jm, std::vector<Player*>& players) : 
-Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
-  BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F, BOMBMAN_PREF_DIST,
-   jm, players){
-  gun = new Bombgun(this, true, physics);
 }
 
 void Boss::toImpact(Bomb* bullet){
@@ -172,17 +163,35 @@ void Boss::damage(int hurt){
     markAsDestroyed();
 }
 
+zm::proto::Enemy Boss::toBean(int xo, int yo){
+  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  if (body->GetLinearVelocity().x >= 0) {
+    protoEnemy.o = zm::proto::right;
+  } else {
+    protoEnemy.o = zm::proto::left;
+  }
+  return protoEnemy;
+}
+
+Bombman::Bombman(Physics& physics, float32 x, float32 y,
+  JsonMap jm, std::vector<Player*>& players) :
+Boss(physics, x, y, BOMBMAN_VEL, BOMBMAN_JUMP,
+  BOMBMAN_SHOOT_F, BOMBMAN_JUMP_F, BOMBMAN_PREF_DIST,
+   jm, players){
+  gun = new Bombgun(this, true, physics);
+}
+
 Bombman::~Bombman(){}
 
 zm::proto::Enemy Bombman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Bombman;
   return protoEnemy;
 }
 
 
 Magnetman::Magnetman(Physics& physics, float32 x, float32 y,
-  JsonMap jm, std::vector<Player*>& players) : 
+  JsonMap jm, std::vector<Player*>& players) :
 Boss(physics, x, y, MAGNETMAN_VEL, MAGNETMAN_JUMP,
   MAGNETMAN_SHOOT_F, MAGNETMAN_JUMP_F, MAGNETMAN_PREF_DIST,
    jm, players){
@@ -199,7 +208,7 @@ zm::proto::Enemy Magnetman::toBean(int xo, int yo){
 
 
 Sparkman::Sparkman(Physics& physics, float32 x, float32 y,
-  JsonMap jm, std::vector<Player*>& players) : 
+  JsonMap jm, std::vector<Player*>& players) :
 Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
   SPARKMAN_SHOOT_F, SPARKMAN_JUMP_F, SPARKMAN_PREF_DIST,
    jm, players){
@@ -209,14 +218,14 @@ Boss(physics, x, y, SPARKMAN_VEL, SPARKMAN_JUMP,
 Sparkman::~Sparkman(){}
 
 zm::proto::Enemy Sparkman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Sparkman;
   return protoEnemy;
 }
 
 
 Ringman::Ringman(Physics& physics, float32 x, float32 y,
-  JsonMap jm, std::vector<Player*>& players) : 
+  JsonMap jm, std::vector<Player*>& players) :
 Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
   RINGMAN_SHOOT_F, RINGMAN_JUMP_F, RINGMAN_PREF_DIST,
    jm, players){
@@ -226,14 +235,14 @@ Boss(physics, x, y, RINGMAN_VEL, RINGMAN_JUMP,
 Ringman::~Ringman(){}
 
 zm::proto::Enemy Ringman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Ringman;
   return protoEnemy;
 }
 
 
 Fireman::Fireman(Physics& physics, float32 x, float32 y,
-  JsonMap jm, std::vector<Player*>& players) : 
+  JsonMap jm, std::vector<Player*>& players) :
 Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
   FIREMAN_SHOOT_F, FIREMAN_JUMP_F, FIREMAN_PREF_DIST,
    jm, players){
@@ -243,7 +252,7 @@ Boss(physics, x, y, FIREMAN_VEL, FIREMAN_JUMP,
 Fireman::~Fireman(){}
 
 zm::proto::Enemy Fireman::toBean(int xo, int yo){
-  zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
+  zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Fireman;
   return protoEnemy;
 }
