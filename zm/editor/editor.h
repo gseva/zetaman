@@ -66,6 +66,9 @@ class Editor {
     void on_windowEditor_hidden();
     explicit Editor(Glib::RefPtr<Gtk::Application> appl,
     unsigned int len, std::string mapName);
+    explicit Editor(Glib::RefPtr<Gtk::Application> appl,
+    std::string path);
+    ~Editor();
     void connectButtonsWithSignals();
     void createEmptyGrid();
     void runEditor();

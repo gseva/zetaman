@@ -134,6 +134,62 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
   pSelectedBoss->set_from_resource(selectedBoss);
 }
 
+Editor::Editor(Glib::RefPtr<Gtk::Application> appl,
+ std::string path): app(appl) 
+{
+  mapName = path.substr(0, path.size() - 5);
+
+  Glib::RefPtr<Gtk::Builder> builder =
+      Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
+
+  /* Elementos de la ventana del editor*/
+  builder->get_widget("btnCrearJugador", pBtnCrearJugador);
+  builder->get_widget("btnCrearEscalera", pBtnCrearEscalera);
+  builder->get_widget("btnBorrarTile", pBtnBorrarTile);
+  builder->get_widget("btnSaveMap", pBtnSaveMap);
+  builder->get_widget("applicationwindow1", pWindowEditor);
+  builder->get_widget("grid1", pGrid);
+  builder->get_widget("viewport1", pViewPort);
+  builder->get_widget("scrolledwindow1", pScrolledWindow);
+  builder->get_widget("ddlEnemy", pComboBoxEnemy);
+  builder->get_widget("imgSelected", pSelectedImage);
+  builder->get_widget("ddlBoss", pComboBoxBoss);
+  builder->get_widget("ddlTile", pComboBoxTile);
+  builder->get_widget("imgBossSelected", pSelectedBoss);
+
+  pWindowEditor->set_default_size(1024, 768);
+  pScrolledWindow->set_size_request(1024,768);
+
+  initializeComboBoxes();
+  connectButtonsWithSignals();
+  initializeRelationships();
+
+  imagenSeleccionada = IMAGE_PLAYER;
+  pSelectedImage->set_from_resource(imagenSeleccionada);
+  selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
+  pSelectedBoss->set_from_resource(selectedBoss);
+
+  /*eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
+
+  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageMatrix[i] = new Gtk::Image[ALTO];
+
+  imageNamesCurrent = new std::string*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageNamesCurrent[i] = new std::string[ALTO];
+
+  createEmptyGrid();*/
+
+  importExistingMap(path);  
+}
+
+Editor::~Editor()
+{
+}
+
 void Editor::initializeComboBoxes()
 {
   /*Enemigos*/
@@ -386,6 +442,8 @@ void Editor::importExistingMap(std::string path)
   JsonMap jMap;
 
   jMap = s.importMap(path);
+
+  mapLen = jMap.imageNumbers.size();
 }
 
 void EditorMenu::on_buttonAcceptExport_clicked()
@@ -409,6 +467,9 @@ void EditorMenu::on_buttonCreateLevel_clicked()
 
 void EditorMenu::on_buttonEditLevel_clicked()
 {
+  auto appl = Gtk::Application::create("Editor.modificar.app");
+  Editor editor(appl, "editar.json");
+  editor.runEditor();
 }
 
 EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
