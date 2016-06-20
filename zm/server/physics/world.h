@@ -63,10 +63,12 @@ public:
   void destroyBody(b2Body* body);
   std::vector<b2Body*> stairways;
 
+  int getNextId();
 private:
   Mutex mutex;
   World world;
   Ground ground;
+  int id;
 };
 
 class Body {
@@ -81,6 +83,7 @@ public:
   void markAsDestroyed();
   bool isDestroyed();
   virtual void impact();
+  int getId();
   BodyType type;
 protected:
   Mutex mutex;
@@ -90,6 +93,8 @@ protected:
   b2Fixture* fixture;
 
   bool destroyed;
+private:
+  int id;
 };
 
 #endif

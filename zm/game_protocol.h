@@ -23,13 +23,17 @@ struct Position : JsonSerializable {
   virtual json getJson();
 };
 
-enum class PlayerState { movingLeft=0, movingRight=1, idle=2,
-                         shooting=3, jumping=4 };
+enum Orientation { left=1, right=2 };
+
+enum class PlayerState { moving=0, idle=1, shooting=2, jumping=3,
+                         jumpingShooting=4, climbing=5 };
 
 struct Player : JsonSerializable {
   Position pos;
   PlayerState ps;
   int health;
+  int id;
+  Orientation o;
 
   virtual json getJson();
   static Player deserialize(const json& j);
@@ -39,14 +43,15 @@ struct Player : JsonSerializable {
 enum EnemyType { Met=0, Bumby=1, Sniper=2, JumpingSniper=3,
   Bombman=4, Magnetman=6, Sparkman=7, Ringman=8, Fireman=9 };
 
-enum class EnemyState { movingLeft=0, movingRight=1, idle=2,
-                        shooting=3, jumping=4, guarded=5, unguarded=6 };
+enum class EnemyState { moving=0, idle=1, shooting=2, jumping=3, guarded=4 };
 
 struct Enemy : JsonSerializable {
   Position pos;
   EnemyState enemyState;
   EnemyType enemyType;
+  Orientation o;
   int health;
+  int id;
   explicit Enemy(EnemyState state=EnemyState::idle);
 
   virtual json getJson();
@@ -60,6 +65,7 @@ enum ProyectileType { Normal=0, Bomb=1, Spark=2,
 struct Proyectile : JsonSerializable {
   Position pos;
   ProyectileType type;
+  int id;
   virtual json getJson();
   static Proyectile deserialize(const json& j);
 };
@@ -103,7 +109,8 @@ enum ClientEventType { moveLeft, moveRight, jump, moveUp, moveDown,
                        stopMoving, shoot, shutdown, selectLevel1, selectLevel2,
                        selectLevel3, selectLevel4, selectLevel5,
                        selectGun1, selectGun2, selectGun3,
-                       selectGun4, selectGun5, selectGun6 };
+                       selectGun4, selectGun5, selectGun6,
+                       readyToPlay };
 
 struct ClientEvent {
   ClientEventType state;

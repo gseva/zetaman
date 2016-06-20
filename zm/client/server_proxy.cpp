@@ -8,12 +8,13 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy(Client& client) : sender_(NULL),
-    client_(client) {
+ServerProxy::ServerProxy(Client& client, const std::string& port)
+    : sender_(NULL), client_(client), port_(port) {
 }
 
-void ServerProxy::connect(){
-  serverSock_.connect("127.0.0.1", "9090");
+void ServerProxy::connect() {
+  std::cout << "Conectan2 " << port_ << std::endl;
+  serverSock_.connect("127.0.0.1", port_);
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
@@ -81,6 +82,12 @@ void ServerProxy::selectLevel(int level) {
     case 5: type = proto::selectLevel5; break;
   }
   proto::ClientEvent ce(type);
+  eventQueue_.push(ce);
+}
+
+
+void ServerProxy::startPlaying() {
+  proto::ClientEvent ce(proto::ClientEventType::readyToPlay);
   eventQueue_.push(ce);
 }
 
@@ -155,7 +162,15 @@ void Receiver::run() {
       // std::cout << "Recibo " << res << std::endl;
       // std::cout << "Receive events " << receiveEvents << std::endl;
       if (receiveEvents) {
-        proto::ServerEvent ev = proto::ServerEvent::deserialize(res);
+        proto::ServerEvent ev;
+        try {
+          /* code */
+          ev = proto::ServerEvent::deserialize(res);
+        }
+        catch(const std::invalid_argument& e) {
+          std::cerr << e.what() << '\n';
+          continue;
+        }
         if (ev.state == proto::gameStart) receiveEvents = false;
         sp_.dispatchEvent(ev);
       } else {

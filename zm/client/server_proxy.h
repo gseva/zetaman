@@ -43,13 +43,14 @@ Sender* sender_;
 Receiver* receiver_;
 JsonMap map_;
 Client& client_;
+std::string port_;
 
 void getConnection_();
 
 public:
   GameUpdateHandler updateHandler;
 
-  explicit ServerProxy(Client& client);
+  explicit ServerProxy(Client& client, const std::string& port_);
   ~ServerProxy();
 
   void connect();
@@ -64,6 +65,7 @@ public:
   void changeGun(int selectedGun);
 
   void selectLevel(int level);
+  void startPlaying();
 
   void dispatchEvent(proto::ServerEvent event);
 

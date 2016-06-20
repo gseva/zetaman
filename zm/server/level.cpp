@@ -89,7 +89,7 @@ void Level::step() {
     (*j)->move();
   }
 
-  for ( auto&& player : players ) {
+  for (auto&& player : players) {
     player->tic();
   }
 }
@@ -152,26 +152,20 @@ zm::proto::Game Level::getState(){
   int xo = gs.camPos.x;
   int yo = gs.camPos.y;
 
-  for ( std::vector<Player*>::iterator player = players.begin();
-    player != players.end(); ++player ) {
-    if ((*player)->connected && !(*player)->body->isDestroyed()) {
-      zm::proto::Player protoPlayer;
-      protoPlayer.pos.x = (*player)->getPosition().x - xo;
-      protoPlayer.pos.y = (*player)->getPosition().y;
-      gs.players.push_back(protoPlayer);
+
+  for (auto&& player : players) {
+    if (player->connected && !player->body->isDestroyed()) {
+      gs.players.push_back(player->toBean(xo, yo));
     }
   }
 
-  for ( std::vector<Enemy*>::iterator enemy = enemies.begin();
-    enemy != enemies.end(); ++enemy ) {
-    zm::proto::Enemy protoEnemy = (*enemy)->toBean(xo, yo);
-    gs.enemies.push_back(protoEnemy);
+  for (auto&& enemy : enemies) {
+    gs.enemies.push_back(enemy->toBean(xo, yo));
   }
 
-  for ( std::vector<Bullet*>::iterator bullet = bullets.begin();
-    bullet != bullets.end(); ++bullet ) {
-    zm::proto::Proyectile proyectile = (*bullet)->toBean(xo, yo);
-    gs.proyectiles.push_back(proyectile);
+  for (auto&& bullet : bullets) {
+    zm::proto::Proyectile pr = bullet->toBean(xo, yo);
+    gs.proyectiles.push_back(pr);
   }
 
   if (checkLoseCondition()) {

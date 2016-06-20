@@ -12,7 +12,7 @@ public:
     int prefDistance, JsonMap jm, std::vector<Player*>& players);
   virtual ~Boss()=0;
   virtual Bullet* move();
-  virtual zm::proto::Enemy toBean(int xo, int yo)=0;
+  virtual zm::proto::Enemy toBean(int xo, int yo);
   void determinePositionsToGo();
   void choosePosition();
   float moveTowardsPosition();
@@ -39,7 +39,7 @@ protected:
   std::vector<Player*>& players;
 private:
   void damage (int healt);
-  unsigned int tics; 
+  unsigned int tics;
 };
 
 class Bombman : public Boss{
