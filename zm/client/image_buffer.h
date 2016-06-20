@@ -20,8 +20,12 @@ std::map<std::string, Glib::RefPtr<Gdk::Pixbuf>> images_;
 public:
   explicit ImageBuffer(Client& client);
 
-  Glib::RefPtr<Gdk::Pixbuf> getImage(const std::string& key);
+  void loadImage(const std::string& key, bool flipped,
+                 float scaleY, float scaleX);
+  Glib::RefPtr<Gdk::Pixbuf> getImage(const std::string& key, bool flipped,
+      float scaleY, float scaleX);
 }; // zm
+
 
 }
 

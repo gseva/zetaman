@@ -52,8 +52,10 @@ void Window::showCanvas() {
           sigc::mem_fun(*canvas_, &Canvas::updateGameState) );
 
   box_.pack_start(*canvas_);
+  std::cout << "Holanga" << std::endl;
   selectedWidget_ = canvas_;
   canvas_->show();
+  std::cout << "Show!" << std::endl;
 }
 
 void Window::showWinDialog() {

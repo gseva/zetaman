@@ -39,7 +39,7 @@ protected:
   std::vector<Player*>& players;
 private:
   void damage (int healt);
-  unsigned int tics; 
+  unsigned int tics;
 };
 
 class Bombman : public Boss{

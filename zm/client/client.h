@@ -14,11 +14,12 @@ namespace zm {
 
 class Client {
 Window* window_;
+std::string port_;
 public:
   int width, height, ppm;
   ServerProxy serverProxy;
 
-  Client();
+  explicit Client(const char* port);
 
   int scaleNum(int n);
   int scaleWidth(float w);

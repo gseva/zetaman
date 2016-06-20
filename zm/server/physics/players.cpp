@@ -48,12 +48,14 @@ void PlayerBody::stopHorizontalMove(){
   body->SetLinearVelocity(vel);
 }
 
-void PlayerBody::up(){
+bool PlayerBody::up(){
   if ( canGoUp() ) {
     b2Vec2 v = body->GetLinearVelocity();
     v.y = 3;
     body->SetLinearVelocity(v);
+    return true;
   }
+  return false;
 }
 
 bool PlayerBody::canGoUp(){

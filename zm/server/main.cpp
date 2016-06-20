@@ -4,9 +4,15 @@
 
 int main(int argc, char *argv[])
 {
-    Server server;
     srand(time(NULL));
-    server.run();
+
+    if (argc > 2) {
+      Server server(argv[2]);
+      server.run();
+    } else {
+      Server server("9090");
+      server.run();
+    }
 
     return 0;
 }

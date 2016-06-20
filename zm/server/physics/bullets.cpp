@@ -76,6 +76,7 @@ zm::proto::Proyectile Bullet::toBean(float32 xo, float32 yo,
   proyectile.type = type;
   proyectile.pos.x = getPosition().x - xo;
   proyectile.pos.y = getPosition().y;
+  proyectile.id = getId();
   return proyectile;
 }
 
