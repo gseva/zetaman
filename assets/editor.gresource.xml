@@ -2,19 +2,17 @@
 <gresources>
   <gresource prefix="/zm/editor">
     <file preprocess="xml-stripblanks">editor.glade</file>
-    <file>images/player/megaman.png</file>
-    <file>images/void.png</file>
+    <file>images/editor/spawns/player.png</file>
+    <file>images/editor/spawns/bumby.png</file>
+    <file>images/editor/spawns/met.png</file>
+    <file>images/editor/spawns/sniper.png</file>
+    <file>images/editor/spawns/fireman.png</file>
+    <file>images/editor/spawns/magnetman.png</file>
+    <file>images/editor/spawns/sparkman.png</file>
+    <file>images/editor/spawns/ringman.png</file>
+    <file>images/editor/spawns/bombman.png</file>
 
-    <file>images/enemies/bumpy/1.png</file>
-    <file>images/enemies/met/unguarded.png</file>
-    <file>images/enemies/sniper/guarded.png</file>
-
-    <file>images/enemies/fireman/charmeleon.png</file>
-    <file>images/enemies/magnetman/magneton.png</file>
-    <file>images/enemies/sparkman/voltorb.png</file>
-    <file>images/enemies/ringman/mewtwo.png</file>
-    <file>images/enemies/bombman/golem.png</file>
-
+    <file>images/tiles/void.png</file>
     <file>images/tiles/beam.png</file>
     <file>images/tiles/beam_holes.png</file>
     <file>images/tiles/box.png</file>

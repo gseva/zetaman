@@ -4,23 +4,26 @@
 #include <string>
 #include <map>
 
-#define IMAGE_PLAYER "/zm/editor/images/player/megaman.png"
+#define IMAGE_PLAYER "/zm/editor/images/editor/spawns/player.png"
 
-#define IMAGEN_BLANCO "/zm/editor/images/void.png"
+#define IMAGEN_BLANCO "/zm/editor/images/tiles/void.png"
 #define IMAGEN_ESCALERA "/zm/editor/images/tiles/ladder_mid.png"
 
-#define IMAGEN_BUMPY "/zm/editor/images/enemies/bumpy/1.png"
-#define IMAGEN_MET "/zm/editor/images/enemies/met/unguarded.png"
-#define IMAGEN_SNIPER "/zm/editor/images/enemies/sniper/guarded.png"
+#define IMAGEN_BUMBY "/zm/editor/images/editor/spawns/bumby.png"
+#define IMAGEN_MET "/zm/editor/images/editor/spawns/met.png"
+#define IMAGEN_SNIPER "/zm/editor/images/editor/spawns/sniper.png"
 
-#define IMAGE_BOSS_FIREMAN "/zm/editor/images/enemies/fireman/charmeleon.png"
-#define IMAGE_BOSS_SPARKMAN "/zm/editor/images/enemies/sparkman/voltorb.png"
-#define IMAGE_BOSS_MAGNETMAN "/zm/editor/images/enemies/magnetman/magneton.png"
-#define IMAGE_BOSS_BOMBMAN "/zm/editor/images/enemies/bombman/golem.png"
-#define IMAGE_BOSS_RINGMAN "/zm/editor/images/enemies/ringman/mewtwo.png"
+#define IMAGE_BOSS_FIREMAN "/zm/editor/images/editor/spawns/fireman.png"
+#define IMAGE_BOSS_SPARKMAN "/zm/editor/images/editor/spawns/sparkman.png"
+#define IMAGE_BOSS_MAGNETMAN "/zm/editor/images/editor/spawns/magnetman.png"
+#define IMAGE_BOSS_BOMBMAN "/zm/editor/images/editor/spawns/bombman.png"
+#define IMAGE_BOSS_RINGMAN "/zm/editor/images/editor/spawns/ringman.png"
 
 #define IMAGE_GRASS "/zm/editor/images/tiles/grass.png"
 #define IMAGE_TILE_GRASS_HALF "/zm/editor/images/tiles/grass_half.png"
+
+#define TILE_PREFIX "/zm/editor/images/tiles/"
+#define SPAWN_PREFIX "/zm/editor/images/editor/spawns/"
 
 void Editor::on_buttonCrearJugador_clicked()
 {
@@ -169,25 +172,25 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl,
   selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
   pSelectedBoss->set_from_resource(selectedBoss);
 
-  /*eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
-
-  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    imageMatrix[i] = new Gtk::Image[ALTO];
-
-  imageNamesCurrent = new std::string*[ANCHO * mapLen];
-  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
-    imageNamesCurrent[i] = new std::string[ALTO];
-
-  createEmptyGrid();*/
-
   importExistingMap(path);  
 }
 
 Editor::~Editor()
 {
+  for (int i = 0; i < ALTO; i++) {
+    delete[] eventBoxMatrix[i];
+  }
+  delete[] eventBoxMatrix;
+
+  for (int i = 0; i < ALTO; i++) {
+    delete[] imageMatrix[i];
+  }
+  delete[] imageMatrix;
+
+  for (int i = 0; i < ALTO; i++) {
+    delete[] imageNamesCurrent[i];
+  }
+  delete[] imageNamesCurrent;
 }
 
 void Editor::initializeComboBoxes()
@@ -216,7 +219,7 @@ void Editor::initializeRelationships()
 {
   /*Relacion entre nombre de la imagen con numero de spawn*/
   nameToSpawnNumber.insert({IMAGE_PLAYER,0});
-  nameToSpawnNumber.insert({IMAGEN_BUMPY,1});
+  nameToSpawnNumber.insert({IMAGEN_BUMBY,1});
   nameToSpawnNumber.insert({IMAGEN_MET,2});
   nameToSpawnNumber.insert({IMAGEN_SNIPER,3});
   nameToSpawnNumber.insert({IMAGE_BOSS_RINGMAN,4});
@@ -226,7 +229,7 @@ void Editor::initializeRelationships()
   nameToSpawnNumber.insert({IMAGE_BOSS_SPARKMAN,8});
   /*Vector con todos los tipos*/
   spawnTypes.push_back("player");
-  spawnTypes.push_back("bumpy");
+  spawnTypes.push_back("bumby");
   spawnTypes.push_back("met");
   spawnTypes.push_back("sniper");
   spawnTypes.push_back("ringman");
@@ -238,11 +241,11 @@ void Editor::initializeRelationships()
   nameToPhysics.insert({IMAGE_GRASS,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
   nameToPhysics.insert({IMAGE_PLAYER,"void"});
-  nameToPhysics.insert({IMAGEN_BUMPY,"void"});
+  nameToPhysics.insert({IMAGEN_BUMBY,"void"});
   nameToPhysics.insert({IMAGEN_ESCALERA,"stair"});
   /*Relacion entre nombre en ddl con la imagen*/
   ddlToName.insert({"Elegir enemigo", IMAGEN_BLANCO});
-  ddlToName.insert({"Bumpy", IMAGEN_BUMPY});
+  ddlToName.insert({"Bumby", IMAGEN_BUMBY});
   ddlToName.insert({"Met", IMAGEN_MET});
   ddlToName.insert({"Sniper", IMAGEN_SNIPER});
   ddlToName.insert({"Elegir boss", IMAGEN_BLANCO});
@@ -464,8 +467,6 @@ void Editor::importExistingMap(std::string path)
 
 void Editor::createGridFromJsonMap(JsonMap jm)
 {
-  std::string prefix = "/zm/editor/images/tiles/"; 
-
   /*Agrego los event box a la grid*/
   for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
   {
@@ -492,7 +493,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
         int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
         if(imageNumber >=0)
         {
-          imageMatrix[i][j].set_from_resource(prefix + jm.imageNames[imageNumber]);    
+          imageMatrix[i][j].set_from_resource(TILE_PREFIX + jm.imageNames[imageNumber]);    
         } else {
           imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
         }
@@ -519,7 +520,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
       int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
       if(imageNumber >= 0)
       {
-        imageNamesCurrent[i][j] = prefix + jm.imageNames[imageNumber];  
+        imageNamesCurrent[i][j] = TILE_PREFIX + jm.imageNames[imageNumber];  
       } else {
         imageNamesCurrent[i][j] = IMAGEN_BLANCO;
       }
@@ -527,16 +528,22 @@ void Editor::createGridFromJsonMap(JsonMap jm)
     }
   }
 
-  std::cout << jm.spawnsData.size() << std::endl;
   /*Agrego los spawns*/
   for (unsigned int i=0; i < jm.spawnsData.size(); i++)
   {
-    int col;
-    int row;
+    unsigned int col;
+    unsigned int row;
     col = jm.spawnsData[i].column;
     row = jm.spawnsData[i].row;
-    imageMatrix[col][row].set_from_resource("/zm/editor/images/tiles/ladder_mid.png");
-    imageNamesCurrent[col][row] = "/zm/editor/images/tiles/ladder_mid.png";
+    if (col < ANCHO * (mapLen-1))
+    {
+      imageMatrix[col][row].set_from_resource(SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png");
+      std::cout << SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png" << std::endl;
+      imageNamesCurrent[col][row] = SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png"; 
+    } else {
+      selectedBoss = SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png";
+      pSelectedBoss->set_from_resource(selectedBoss);
+    }
   }
 
   pGrid->show_all_children();
