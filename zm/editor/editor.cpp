@@ -489,7 +489,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
-        int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
+        int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
         if(imageNumber >=0)
         {
           imageMatrix[i][j].set_from_resource(TILE_PREFIX + jm.imageNames[imageNumber]);    
@@ -516,7 +516,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
     for (unsigned int j=0; j<ALTO; j++)
     {
-      int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
+      int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
       if(imageNumber >= 0)
       {
         imageNamesCurrent[i][j] = TILE_PREFIX + jm.imageNames[imageNumber];  
