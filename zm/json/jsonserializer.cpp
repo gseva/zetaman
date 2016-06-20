@@ -100,7 +100,7 @@ void JsonSerializer::exportMap(std::string path, const JsonMap& m)
 
   std::fstream newFile;
 
-  newFile.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
+  newFile.open(path, std::fstream::out);
 
   exportable >> newFile; //Guardo json
 

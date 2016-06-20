@@ -130,7 +130,6 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
 
   initializeRelationships();
 
-
   imagenSeleccionada = IMAGE_PLAYER;
   pSelectedImage->set_from_resource(imagenSeleccionada);
   selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
@@ -419,7 +418,7 @@ JsonMap Editor::createJsonMap()
       {
         SpawnData data;
         data.column = j;
-        data.row = i;
+        data.row = ALTO-i-1;
         data.type = nameToSpawnNumber[image];
         jMap.spawnsData.push_back(data);
       }
@@ -534,7 +533,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
     unsigned int col;
     unsigned int row;
     col = jm.spawnsData[i].column;
-    row = jm.spawnsData[i].row;
+    row = ALTO - jm.spawnsData[i].row -1;
     if (col < ANCHO * (mapLen-1))
     {
       imageMatrix[col][row].set_from_resource(SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png");
