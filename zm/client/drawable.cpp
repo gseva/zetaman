@@ -416,7 +416,7 @@ void Proyectile::setState(proto::Proyectile p) {
   setPosition(p.pos);
   tics++;
   std::string image = "normal";
-  switch(p.type) {
+  switch (p.type) {
     case proto::ProyectileType::Bomb:
       image = "bomb_" + std::to_string(tics);
       if (tics >= 8) tics = 0;

@@ -19,7 +19,7 @@ class Player;
 
 class Server{
 public:
-  Server(const char* port);
+  explicit Server(const char* port);
   ~Server();
 
   void run();

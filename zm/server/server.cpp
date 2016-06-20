@@ -119,7 +119,7 @@ void Game::selectLevel(int level) {
 void Game::notifyPlayerReady() {
   Lock l(m_);
   bool notify = true;
-  for(auto&& pair : players) {
+  for (auto&& pair : players) {
     if (!pair.second->isReady) {
       notify = false;
       break;

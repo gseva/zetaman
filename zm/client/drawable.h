@@ -143,7 +143,7 @@ int tics;
 proto::Proyectile p_;
 
 public:
-  Proyectile(Client& c);
+  explicit Proyectile(Client& c);
   virtual ~Proyectile();
 
   virtual void setState(proto::Proyectile p);
@@ -154,7 +154,7 @@ class PowerUp : public Drawable {
 proto::PowerUp p_;
 
 public:
-  PowerUp(Client& c);
+  explicit PowerUp(Client& c);
   virtual ~PowerUp();
 
   virtual void setState(proto::PowerUp p);
