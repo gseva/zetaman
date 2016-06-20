@@ -7,14 +7,15 @@
 class Gun{
 public:
   explicit Gun(Body* proprietor, bool isEnemy, int ticsToCharge,
-    Physics& physics);
+    Physics& physics, int ammunitions = 10);
   virtual ~Gun()=0;
-  Bullet* shoot();
-  Bullet* shoot(int direction);
+  virtual Bullet* shoot();
+  virtual Bullet* shoot(int direction);
   virtual Bullet* fire()=0;
   virtual Bullet* fire(int direction)=0;
   void tic();
   virtual int getNumber()=0;
+  void addAmmunitions(int amount);
 protected:
   const int ticsToCharge;
   int tics;
@@ -22,12 +23,15 @@ protected:
   bool isEnemy;
   Body* proprietor;
   Physics& physics;
+  int ammunitions;
 };
 
 class Normalgun : public Gun{
 public:
   explicit Normalgun(Body* proprietor, bool isEnemy, Physics& physics);
   virtual ~Normalgun();
+  virtual Bullet* shoot();
+  virtual Bullet* shoot(int direction);
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();

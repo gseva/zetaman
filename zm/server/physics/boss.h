@@ -9,7 +9,8 @@ class Boss : public Enemy{
 public:
   explicit Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
-    int prefDistance, JsonMap jm, std::vector<Player*>& players);
+    int prefDistance, JsonMap jm, std::vector<Player*>& players,
+    float32 largo = 0.4f, float32 alto = 0.4f);
   virtual ~Boss()=0;
   virtual Bullet* move();
   virtual zm::proto::Enemy toBean(int xo, int yo);
