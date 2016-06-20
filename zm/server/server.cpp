@@ -6,6 +6,7 @@
 #include <thread>
 #include <unistd.h>
 
+#include "zm/server/config.h"
 #include "zm/server/server.h"
 #include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"
@@ -177,7 +178,7 @@ void Game::gameLoop() {
     currentLevel->step();
 
     std::this_thread::sleep_for(
-         std::chrono::milliseconds(GAME_STEP_FREQUENCY));
+         std::chrono::milliseconds(zm::config::gamePeriod));
 
     updateState();
   }

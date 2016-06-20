@@ -152,6 +152,7 @@ assets_dir = assets/
 images_config = $(assets_dir)image.gresource.xml
 editor_config = $(assets_dir)editor.gresource.xml
 maps_dir = $(assets_dir)maps
+server_config = $(assets_dir)defaultConfig.json
 
 # Si no especifica archivos, tomo todos.
 client_sources ?= $(wildcard $(client_dir)*.$(extension))
@@ -183,6 +184,7 @@ o_all_files =  $(o_client_only_files) $(o_common_files) $(o_server_only_files) $
 
 o_client_resources = $(resources_dir)client_resources.o
 o_editor_resources = $(resources_dir)editor_resources.o
+o_server_config = $(build_dir)config.json
 
 lint_extensions = --extensions=$(header_extension),$(extension)
 lint_filters =  --filter=`cat lint/filter_options`
@@ -222,6 +224,9 @@ $(o_client_resources): $(client_resources)
 $(o_editor_resources): $(editor_resources)
 	$(link_res)
 
+$(o_server_config):
+	@cp $(server_config) $(o_server_config)
+
 create_dirs:
 	@$(foreach file, $(o_all_files) $(resources_dir) , mkdir -p $(dir $(file));)
 	@mkdir -p $(resources_dir) $(build_dir)maps
@@ -229,7 +234,7 @@ create_dirs:
 client: create_dirs client_assets $(o_client_all_files)
 	$(LD) $(o_client_all_files) $(o_client_resources) -o $(client_target) $(CL_LDFLAGS)
 
-server: create_dirs client_assets $(o_server_all_files)
+server: create_dirs server_assets $(o_server_all_files)
 	$(LD) $(o_server_all_files) -o $(server_target) $(SRV_LDFLAGS)
 
 editor: create_dirs editor_assets $(o_editor_all_files)
@@ -242,6 +247,8 @@ client_assets: create_dirs $(client_resources) $(o_client_resources)
 	@cp -r $(maps_dir)/* $(build_dir)maps
 
 editor_assets: create_dirs $(editor_resources) $(o_editor_resources)
+
+server_assets: create_dirs $(server_config) $(o_server_config)
 
 clean_assets:
 	@$(RM) -fv $(client_resources) $(o_client_resources) $(editor_resources) $(o_editor_resources)
