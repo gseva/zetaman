@@ -29,7 +29,7 @@
 
 Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
   : state(zm::proto::playing), players(connectedPlayers), jm(jsonMap),
-    camera(players)
+    camera(players, jm)
 {
   physics.setMap(jm);
   unsigned int amountPlayers = 0;

@@ -2,10 +2,10 @@
 #include "zm/server/physics/enemies.h"
 
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y)
+Enemy::Enemy(Physics& physics, float32 x, float32 y, float32 largo, float32 alto)
     : Body(physics, x, y, BodyType::Enemy), orientation(zm::proto::left) {
   b2PolygonShape shape;
-  shape.SetAsBox(0.4f, 0.4f);
+  shape.SetAsBox(largo, alto);
   fixtureDef.shape = &shape;
   fixtureDef.friction = 1.0f;
   fixtureDef.filter.categoryBits = ENEMY_TYPE;
@@ -72,7 +72,7 @@ void Enemy::toImpact(Bullet* bullet){
 }
 
 Met::Met(Physics& physics, float32 x, float32 y) :
-  Enemy(physics, x, y), period(60*3) {
+  Enemy(physics, x, y, 0.35f, 0.2), period(60*3) {
     shoots = 0;
     tics = 0;
     protected_ = false;
