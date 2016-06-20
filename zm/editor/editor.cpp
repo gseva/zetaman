@@ -536,11 +536,11 @@ void Editor::createGridFromJsonMap(JsonMap jm)
     row = ALTO - jm.spawnsData[i].row -1;
     if (col < ANCHO * (mapLen-1))
     {
-      imageMatrix[col][row].set_from_resource(SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png");
-      std::cout << SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png" << std::endl;
-      imageNamesCurrent[col][row] = SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png"; 
+      imageMatrix[col][row].set_from_resource(SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png");
+      std::cout << SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png" << std::endl;
+      imageNamesCurrent[col][row] = SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png"; 
     } else {
-      selectedBoss = SPAWN_PREFIX + spawnTypes[jm.spawnsData[i].type] + ".png";
+      selectedBoss = SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png";
       pSelectedBoss->set_from_resource(selectedBoss);
     }
   }
