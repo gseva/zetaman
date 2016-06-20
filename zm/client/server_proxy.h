@@ -64,6 +64,7 @@ public:
   void changeGun(int selectedGun);
 
   void selectLevel(int level);
+  void startPlaying();
 
   void dispatchEvent(proto::ServerEvent event);
 

@@ -47,9 +47,6 @@
     <file  preprocess="to-pixdata">images/player/shooting_2.png</file>
 
     <!-- Enemies -->
-    <file  preprocess="to-pixdata">images/enemies/bumpy/1.png</file>
-    <file  preprocess="to-pixdata">images/enemies/bumpy/2.png</file>
-
     <file  preprocess="to-pixdata">images/enemies/met/guarded_1.png</file>
     <file  preprocess="to-pixdata">images/enemies/met/guarded_2.png</file>
     <file  preprocess="to-pixdata">images/enemies/met/guarded_3.png</file>
@@ -66,9 +63,26 @@
     <file  preprocess="to-pixdata">images/enemies/met/moving_9.png</file>
     <file  preprocess="to-pixdata">images/enemies/met/moving_10.png</file>
 
-    <file  preprocess="to-pixdata">images/enemies/sniper/guarded.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_7.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_8.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_9.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_10.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_11.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bumby/idle_12.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/sniper/guarded_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/jumping_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sniper/shooting_2.png</file>
     <file  preprocess="to-pixdata">images/enemies/sniper/unguarded.png</file>
-    <file  preprocess="to-pixdata">images/enemies/sniper/jumping.png</file>
 
     <file  preprocess="to-pixdata">images/proyectiles/normal.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/bomb.png</file>

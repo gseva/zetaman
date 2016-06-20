@@ -35,6 +35,7 @@ void Client::startConnection() {
 
 void Client::startGame() {
   window_->showCanvas();
+  serverProxy.startPlaying();
 }
 
 void Client::waitForPlayers() {

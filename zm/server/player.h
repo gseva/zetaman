@@ -25,6 +25,7 @@ public:
   std::string name;
   bool isHost;
   bool isAlive;
+  bool isReady;
 
   Player(zm::Game& g, std::string name, bool host);
   ~Player();
@@ -32,6 +33,7 @@ public:
   void setPosition(int x, int y);
   void setCamera(Camera* camera);
   void createBody(Physics* physics, float32 x, float32 y);
+  void setReady();
 
   void right();
 	void left();

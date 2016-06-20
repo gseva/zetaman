@@ -286,6 +286,7 @@ Bullet* JumpingSniper::move(){
 
 zm::proto::Enemy JumpingSniper::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Sniper::toBean(xo, yo);
+  protoEnemy.enemyType = zm::proto::JumpingSniper;
   if (protected_) {
     protoEnemy.enemyState = zm::proto::EnemyState::guarded;
   }

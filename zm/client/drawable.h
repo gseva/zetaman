@@ -81,6 +81,24 @@ public:
   virtual void setState(proto::Enemy e);
 };
 
+class Bumby : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Bumby(Client& c);
+  virtual ~Bumby();
+  virtual void setState(proto::Enemy e);
+};
+
+class Sniper : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Sniper(Client& c);
+  virtual ~Sniper();
+  virtual void setState(proto::Enemy e);
+};
+
 class Proyectile : public Drawable {
 proto::Proyectile p_;
 std::string imageName_;

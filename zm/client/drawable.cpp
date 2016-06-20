@@ -21,6 +21,7 @@ Drawable::Drawable(Client& c) : c_(c), flipped_(false),
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
                     ImageBuffer& buff) {
   context->save();
+  // std::cout << getImageName() << std::endl;
   auto image = buff.getImage(getImageName(), flipped_, scaleX, scaleY);
 
   // int width = image->get_width();
@@ -120,21 +121,7 @@ Enemy::Enemy(Client& c) : Drawable(c) {
 void Enemy::setState(proto::Enemy e) {
   setPosition(e.pos);
   imageName_ = "enemies/bumpy/1.png";
-  if ( e.enemyType == proto::EnemyType::Bumby ) {
-    imageName_ = "enemies/bumpy/1.png";
-  } else if ( e.enemyType == proto::EnemyType::Sniper ){
-    switch ( e.enemyState ) {
-      case proto::EnemyState::guarded:
-        imageName_ = "enemies/sniper/guarded.png";
-        break;
-      case proto::EnemyState::jumping:
-        imageName_ = "enemies/sniper/jumping.png";
-        break;
-      default:
-        imageName_ = "enemies/sniper/unguarded.png";
-        break;
-    }
-  } else if ( e.enemyType == proto::EnemyType::Fireman ) {
+  if ( e.enemyType == proto::EnemyType::Fireman ) {
     imageName_ = "enemies/fireman/charmeleon.png";
   } else if ( e.enemyType == proto::EnemyType::Magnetman ) {
     imageName_ = "enemies/magnetman/magneton.png";
@@ -198,6 +185,62 @@ void Met::setState(proto::Enemy e) {
   }
   setImageName("enemies/met/" + image + ".png");
 }
+
+
+Bumby::Bumby(Client& c) : Enemy(c) {
+  setScale(1.8, 1.8);
+}
+
+Bumby::~Bumby() {}
+
+void Bumby::setState(proto::Enemy e) {
+  e_ = e;
+  setPosition(e_.pos);
+  tics++;
+
+
+  std::string image = "idle_" + std::to_string(tics);
+  if (tics >= 12) tics = 0;
+
+  setImageName("enemies/bumby/" + image + ".png");
+}
+
+
+Sniper::Sniper(Client& c) : Enemy(c) {
+  setScale(1.3, 1.3);
+}
+
+Sniper::~Sniper() {}
+
+void Sniper::setState(proto::Enemy e) {
+  if (e.enemyState != e_.enemyState) {
+    tics = 0;
+  }
+  e_ = e;
+  setPosition(e_.pos);
+  tics++;
+
+  setFlipped(e_.o == proto::right);
+
+  std::string image = "unguarded";
+  switch (e.enemyState) {
+    case proto::EnemyState::moving: break;
+    case proto::EnemyState::idle: break;
+    case proto::EnemyState::shooting:
+      image = "shooting_" + std::to_string(tics);
+      if (tics >= 2) tics = 1;
+      return;
+    case proto::EnemyState::jumping:
+      image = "jumping_" + std::to_string(tics);
+      if (tics >= 2) tics = 1;
+      break;
+    case proto::EnemyState::guarded:
+      image = "guarded_1";
+      break;
+  }
+  setImageName("enemies/sniper/" + image + ".png");
+}
+
 
 Proyectile::Proyectile(Client& c, proto::Proyectile p) : Drawable(c),
   p_(p) {

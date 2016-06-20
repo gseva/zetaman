@@ -43,6 +43,7 @@ ConditionVariable cond;
 Server& server_;
 JsonMap currentMap_;
 std::string mapPath_;
+Mutex m_;
 
 std::map<std::string, Player*> players;
 std::map<std::string, zm::ClientProxy*> proxies;
@@ -60,6 +61,7 @@ public:
   void acceptPlayers(zm::Socket* accepter);
 
   void newPlayer(std::shared_ptr<zm::ProtectedSocket> sock);
+  void notifyPlayerReady();
 
   void selectLevel(int level);
   void selectMap();

@@ -11,7 +11,7 @@
 namespace zm {
 
 
-Canvas::Canvas(Client& c) : c_(c), map_(c), buff_(c) {
+Canvas::Canvas(Client& c) : c_(c), gameSet_(false), map_(c), buff_(c) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
               &Canvas::on_timeout), 1000/30);
@@ -32,6 +32,7 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
   // const int height = allocation.get_height();
 
   // int radius = 35;
+  if (!gameSet_) return true;
 
   map_.draw(cr, game_.camPos.x, game_.camPos.y);
 
@@ -74,6 +75,13 @@ drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
     case proto::Met:
       enemy = new drawing::Met(c_);
       break;
+    case proto::Bumby:
+      enemy = new drawing::Bumby(c_);
+      break;
+    case proto::Sniper:
+    case proto::JumpingSniper:
+      enemy = new drawing::Sniper(c_);
+      break;
     default:
       enemy = new drawing::Enemy(c_);
       break;
@@ -85,12 +93,8 @@ drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
 void Canvas::updateGameState(proto::Game game) {
   // Lock l(m_);
   game_ = game;
+  gameSet_ = true;
   // redraw();
-}
-
-bool Canvas::on_expose_event(GdkEventExpose* event) {
-  std::cout << "Expose!" << std::endl;
-  return on_expose_event(event);
 }
 
 bool Canvas::on_timeout() {

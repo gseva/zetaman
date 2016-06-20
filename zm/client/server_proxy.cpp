@@ -84,6 +84,12 @@ void ServerProxy::selectLevel(int level) {
   eventQueue_.push(ce);
 }
 
+
+void ServerProxy::startPlaying() {
+  proto::ClientEvent ce(proto::ClientEventType::readyToPlay);
+  eventQueue_.push(ce);
+}
+
 void ServerProxy::dispatchEvent(proto::ServerEvent event) {
   switch (event.state) {
     case proto::connected: client_.waitForPlayers(); break;
@@ -155,7 +161,15 @@ void Receiver::run() {
       // std::cout << "Recibo " << res << std::endl;
       // std::cout << "Receive events " << receiveEvents << std::endl;
       if (receiveEvents) {
-        proto::ServerEvent ev = proto::ServerEvent::deserialize(res);
+        proto::ServerEvent ev;
+        try {
+          /* code */
+          ev = proto::ServerEvent::deserialize(res);
+        }
+        catch(const std::invalid_argument& e) {
+          std::cerr << e.what() << '\n';
+          continue;
+        }
         if (ev.state == proto::gameStart) receiveEvents = false;
         sp_.dispatchEvent(ev);
       } else {

@@ -139,7 +139,7 @@ std::string Game::serialize() {
     proyectileJson.push_back(proyectile.getJson());
   }
 
-  json game = {{"x", x}, {"y", y}, {"st", s}, {"cp", camPos.getJson()},
+  json game = {{"st", s}, {"cp", camPos.getJson()},
                {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson}};
   std::string result = game.dump();
   return result;
@@ -150,8 +150,6 @@ Game Game::deserialize(const std::string& s) {
   json j = json::parse(s);
 
   Game game;
-  game.x = j["x"];
-  game.y = j["y"];
   game.camPos.x = j["cp"]["x"];
   game.camPos.y = j["cp"]["y"];
 

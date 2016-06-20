@@ -18,6 +18,7 @@ namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
 Client& c_;
+bool gameSet_;
 proto::Game game_;
 Map map_;
 ImageBuffer buff_;
@@ -35,8 +36,6 @@ protected:
   void redraw();
 
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-
-  bool on_expose_event(GdkEventExpose* event);
 
   bool on_timeout();
 

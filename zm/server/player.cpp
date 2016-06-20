@@ -13,7 +13,7 @@
 
 
 Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
-  isHost(host), isAlive(false), orientation(zm::proto::right),
+  isHost(host), isAlive(false), isReady(false), orientation(zm::proto::right),
   action(LastAction::idle) {
   connected = true;
 }
@@ -57,6 +57,11 @@ void Player::setPosition(int x, int y){
 
 void Player::setCamera(Camera* camera){
   this->camera = camera;
+}
+
+void Player::setReady() {
+  isReady = true;
+  game.notifyPlayerReady();
 }
 
 void Player::right(){

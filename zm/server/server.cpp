@@ -116,6 +116,20 @@ void Game::selectLevel(int level) {
   }
 }
 
+void Game::notifyPlayerReady() {
+  Lock l(m_);
+  bool notify = true;
+  for(auto&& pair : players) {
+    if (!pair.second->isReady) {
+      notify = false;
+      break;
+    }
+  }
+  if (notify) {
+    cond.signal();
+  }
+}
+
 void Game::startLevel() {
   std::cout << "Mi map path es " << mapPath_ << std::endl;
   if (mapPath_ == "") {
@@ -140,6 +154,9 @@ void Game::startLevel() {
   for (auto&& pair : proxies) {
     pair.second->startGame();
   }
+
+  // Espero a que todos los jugadores envien readyToPlay
+  cond.wait();
 
   if (currentLevel)
     delete currentLevel;
