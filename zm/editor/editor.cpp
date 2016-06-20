@@ -527,6 +527,18 @@ void Editor::createGridFromJsonMap(JsonMap jm)
     }
   }
 
+  std::cout << jm.spawnsData.size() << std::endl;
+  /*Agrego los spawns*/
+  for (unsigned int i=0; i < jm.spawnsData.size(); i++)
+  {
+    int col;
+    int row;
+    col = jm.spawnsData[i].column;
+    row = jm.spawnsData[i].row;
+    imageMatrix[col][row].set_from_resource("/zm/editor/images/tiles/ladder_mid.png");
+    imageNamesCurrent[col][row] = "/zm/editor/images/tiles/ladder_mid.png";
+  }
+
   pGrid->show_all_children();
 }
 
