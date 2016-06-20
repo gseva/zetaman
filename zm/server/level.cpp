@@ -59,15 +59,15 @@ Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
     } else if ( type == JUMPINGSNIPER ) {
       enemy = new JumpingSniper(physics, x, y);
     } else if ( type == BOMBMAN ) {
-      enemy = new Bombman(physics, x, y);
+      enemy = new Bombman(physics, x, y, jm, players);
     } else if ( type == FIREMAN ) {
-      enemy = new Fireman(physics, x, y);
+      enemy = new Fireman(physics, x, y, jm, players);
     } else if ( type == MAGNETMAN ) {
-      enemy = new Magnetman(physics, x, y);
+      enemy = new Magnetman(physics, x, y, jm, players);
     } else if ( type == SPARKMAN ) {
-      enemy = new Sparkman(physics, x, y);
+      enemy = new Sparkman(physics, x, y, jm, players);
     } else if ( type == RINGMAN ) {
-      enemy = new Ringman(physics, x, y);
+      enemy = new Ringman(physics, x, y, jm, players);
     }
     enemies.push_back(enemy);
   }

@@ -23,7 +23,6 @@ struct Position : JsonSerializable {
   virtual json getJson();
 };
 
-
 enum class PlayerState { movingLeft=0, movingRight=1, idle=2,
                          shooting=3, jumping=4 };
 
