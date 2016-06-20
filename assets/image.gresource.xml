@@ -84,24 +84,89 @@
     <file  preprocess="to-pixdata">images/enemies/sniper/shooting_2.png</file>
     <file  preprocess="to-pixdata">images/enemies/sniper/unguarded.png</file>
 
+    <!-- Bosses -->
+
+    <file  preprocess="to-pixdata">images/enemies/bombman/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/jumping_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_7.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_8.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/moving_9.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/shooting_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/bombman/shooting_3.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/fireman/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/shooting_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/shooting_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/fireman/shooting_4.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/magnetman/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/jumping_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/jumping_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/moving_7.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/shooting_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/shooting_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/magnetman/shooting_4.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/ringman/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/jumping_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/jumping_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/jumping_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/jumping_shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_7.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/moving_8.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/shooting_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/shooting_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/ringman/shooting_3.png</file>
+
+    <file  preprocess="to-pixdata">images/enemies/sparkman/idle_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/jumping_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_1.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_2.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_3.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_4.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_5.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_6.png</file>
+    <file  preprocess="to-pixdata">images/enemies/sparkman/moving_7.png</file>
+
     <file  preprocess="to-pixdata">images/proyectiles/normal.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/bomb.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/spark.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/ring.png</file>
-    <file  preprocess="to-pixdata">images/proyectiles/magnet.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/magnet_1.png</file>
+    <file  preprocess="to-pixdata">images/proyectiles/magnet_2.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/fire.png</file>
 
     <file  preprocess="to-pixdata">images/powerups/life.png</file>
     <file  preprocess="to-pixdata">images/powerups/energy.png</file>
     <file  preprocess="to-pixdata">images/powerups/bigplasma.png</file>
     <file  preprocess="to-pixdata">images/powerups/plasma.png</file>
-
-    <file  preprocess="to-pixdata">images/enemies/fireman/charmeleon.png</file>
-    <file  preprocess="to-pixdata">images/enemies/magnetman/magneton.png</file>
-    <file  preprocess="to-pixdata">images/enemies/sparkman/voltorb.png</file>
-    <file  preprocess="to-pixdata">images/enemies/ringman/mewtwo.png</file>
-    <file  preprocess="to-pixdata">images/enemies/bombman/golem.png</file>
-
 
   </gresource>
 </gresources>

@@ -99,6 +99,52 @@ public:
   virtual void setState(proto::Enemy e);
 };
 
+class Bombman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Bombman(Client& c);
+  virtual ~Bombman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Fireman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Fireman(Client& c);
+  virtual ~Fireman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Magnetman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Magnetman(Client& c);
+  virtual ~Magnetman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Ringman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Ringman(Client& c);
+  virtual ~Ringman();
+  virtual void setState(proto::Enemy e);
+};
+
+class Sparkman : public Enemy {
+proto::Enemy e_;
+
+public:
+  explicit Sparkman(Client& c);
+  virtual ~Sparkman();
+  virtual void setState(proto::Enemy e);
+};
+
+
 class Proyectile : public Drawable {
 proto::Proyectile p_;
 std::string imageName_;

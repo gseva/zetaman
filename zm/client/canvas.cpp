@@ -73,18 +73,24 @@ drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
   drawing::Enemy* enemy;
   switch (e.enemyType) {
     case proto::Met:
-      enemy = new drawing::Met(c_);
-      break;
+      enemy = new drawing::Met(c_); break;
     case proto::Bumby:
-      enemy = new drawing::Bumby(c_);
-      break;
+      enemy = new drawing::Bumby(c_); break;
     case proto::Sniper:
     case proto::JumpingSniper:
-      enemy = new drawing::Sniper(c_);
-      break;
+      enemy = new drawing::Sniper(c_); break;
+    case proto::Bombman:
+      enemy = new drawing::Bombman(c_); break;
+    case proto::Fireman:
+      enemy = new drawing::Fireman(c_); break;
+    case proto::Magnetman:
+      enemy = new drawing::Magnetman(c_); break;
+    case proto::Ringman:
+      enemy = new drawing::Ringman(c_); break;
+    case proto::Sparkman:
+      enemy = new drawing::Sparkman(c_); break;
     default:
-      enemy = new drawing::Enemy(c_);
-      break;
+      enemy = new drawing::Enemy(c_); break;
   }
   enemies_.insert({e.id, enemy});
   return enemy;
