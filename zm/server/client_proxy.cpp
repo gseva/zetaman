@@ -4,6 +4,7 @@
 
 #include "zm/server/client_proxy.h"
 #include "zm/server/server.h"
+#include "zm/server/physics/players.h"
 
 namespace zm {
 
@@ -14,6 +15,7 @@ ClientProxy::ClientProxy(Player* p,
 }
 
 void ClientProxy::updateState(proto::Game gs) {
+  gs.playerId = player_->body->getId();
   eventQueue_.push(gs);
 }
 

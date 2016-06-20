@@ -57,7 +57,7 @@ public:
 private:
   Camera* camera;
   std::map<int, Gun*> guns;
-  int selectedGun;
+  zm::proto::ProyectileType selectedGun;
   zm::proto::Orientation orientation;
   LastAction action;
 };

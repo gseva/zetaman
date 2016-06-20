@@ -37,11 +37,15 @@ int Socket::connect(const std::string& hostname, const std::string& port) {
 
   getaddrinfo(hostname.c_str(), port.c_str(), &hints, &servinfo);
 
+  int result = -1;
   for (p = servinfo; p != NULL; p = p->ai_next) {
-    if (::connect(fd_, p->ai_addr, p->ai_addrlen) != -1) {
+    result = ::connect(fd_, p->ai_addr, p->ai_addrlen);
+    if (result != -1) {
       break;
     }
   }
+  std::cout << "Connection result: " << result << std::endl;
+  if (result) return result;
 
   freeaddrinfo(servinfo);
   return 0;

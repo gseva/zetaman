@@ -37,7 +37,7 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
   addGun(gun);
   gun = new Bombgun(body, false, *physics);
   addGun(gun);
-  selectedGun = 0;
+  selectedGun = zm::proto::Normal;
 }
 
 void Player::jump(){
@@ -102,7 +102,7 @@ void Player::up(){
 void Player::shoot(){
   if (body->isDestroyed() )
     return;
-  Gun* gun = guns[selectedGun];
+  Gun* gun = guns[static_cast<int>(selectedGun)];
   Bullet* bullet = gun->shoot();
   std::cout << "Creo bala " << bullet << std::endl;
   if (bullet) {
@@ -129,7 +129,8 @@ void Player::addGun(Gun* gun){
 
 void Player::changeGun(int numberOfGun) {
   std::map<int, Gun*>::iterator iGun = guns.find(numberOfGun);
-  selectedGun = iGun != guns.end() ? numberOfGun : selectedGun;
+  int gun = iGun != guns.end() ? numberOfGun : selectedGun;
+  selectedGun = static_cast<zm::proto::ProyectileType>(gun);
 }
 
 void Player::tic(){
@@ -161,6 +162,7 @@ zm::proto::Player Player::toBean(int xo, int yo) {
   }
   player.ps = state;
   player.id = body->getId();
+  player.weapon = selectedGun;
   player.health = body->health;
   player.o = orientation;
   player.pos.x = getPosition().x - xo;

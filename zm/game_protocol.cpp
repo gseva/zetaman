@@ -38,6 +38,7 @@ json Player::getJson() {
   }
   j["st"] = state;
   j["o"] = static_cast<int>(o);
+  j["w"] = static_cast<int>(weapon);
 
   return j;
 }
@@ -46,11 +47,15 @@ Player Player::deserialize(const json& j) {
   Player p;
   p.pos.x = j["x"];
   p.pos.y = j["y"];
+  p.id = j["i"];
+
   int state = j["st"];
   p.ps = static_cast<PlayerState>(state);
   int orientation = j["o"];
   p.o = static_cast<Orientation>(orientation);
-  p.id = j["i"];
+  int weapon = j["w"];
+  p.weapon = static_cast<ProyectileType>(weapon);
+
   return p;
 }
 
@@ -141,7 +146,7 @@ std::string Game::serialize() {
     proyectileJson.push_back(proyectile.getJson());
   }
 
-  json game = {{"st", s}, {"cp", camPos.getJson()},
+  json game = {{"st", s}, {"cp", camPos.getJson()}, {"i", playerId},
                {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson}};
   std::string result = game.dump();
   return result;
@@ -154,6 +159,7 @@ Game Game::deserialize(const std::string& s) {
   Game game;
   game.camPos.x = j["cp"]["x"];
   game.camPos.y = j["cp"]["y"];
+  game.playerId = j["i"];
 
   int st = j["st"];
   game.state = static_cast<GameState>(st);

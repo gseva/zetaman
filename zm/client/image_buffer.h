@@ -22,8 +22,8 @@ public:
 
   void loadImage(const std::string& key, bool flipped,
                  float scaleY, float scaleX);
-  Glib::RefPtr<Gdk::Pixbuf> getImage(const std::string& key, bool flipped,
-      float scaleY, float scaleX);
+  Glib::RefPtr<Gdk::Pixbuf> getImage(const std::string& key,
+      bool flipped=false, float scaleY=1, float scaleX=1);
 }; // zm
 
 

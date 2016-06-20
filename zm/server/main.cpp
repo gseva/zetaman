@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
 
     zm::config::loadConfigFile("build/config.json");
 
-    if (argc > 2) {
-      Server server(argv[2]);
+    if (argc > 1) {
+      Server server(argv[1]);
       server.run();
     } else {
       Server server("9090");
