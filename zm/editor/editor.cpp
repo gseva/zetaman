@@ -194,7 +194,7 @@ void Editor::initializeComboBoxes()
 {
   /*Enemigos*/
   pComboBoxEnemy->append("Elegir enemigo");
-  pComboBoxEnemy->append("Bumpy");
+  pComboBoxEnemy->append("Bumby");
   pComboBoxEnemy->append("Met");
   pComboBoxEnemy->append("Sniper");
   pComboBoxEnemy->set_active(0);
@@ -443,7 +443,91 @@ void Editor::importExistingMap(std::string path)
 
   jMap = s.importMap(path);
 
-  mapLen = jMap.imageNumbers.size();
+  mapLen = jMap.imageNumbers.size() / ALTO;
+
+  mapLen = mapLen / ANCHO;
+
+  eventBoxMatrix = new Gtk::EventBox*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    eventBoxMatrix[i] = new Gtk::EventBox[ALTO];
+
+  imageMatrix = new Gtk::Image*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageMatrix[i] = new Gtk::Image[ALTO];
+
+  imageNamesCurrent = new std::string*[ANCHO * mapLen];
+  for ( size_t i = 0; i < ANCHO * mapLen; ++i )
+    imageNamesCurrent[i] = new std::string[ALTO];
+
+  createGridFromJsonMap(jMap);
+}
+
+void Editor::createGridFromJsonMap(JsonMap jm)
+{
+  std::string prefix = "/zm/editor/images/tiles/"; 
+
+  /*Agrego los event box a la grid*/
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
+  {
+      for (unsigned int j = 0; j < ALTO; j++)
+      {
+          pGrid->attach(eventBoxMatrix[i][j], i, j, 1, 1);
+      }
+  }
+
+  /*Agrego las imagenes a los event box*/
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
+  {
+      for (unsigned int j = 0; j < ALTO; j++)
+      {
+          eventBoxMatrix[i][j].add(imageMatrix[i][j]);
+      }
+  }
+
+  /*Seteo las imagenes*/
+  for (unsigned int i = 0; i < ANCHO * (mapLen-1); i++)
+  {
+      for (unsigned int j = 0; j < ALTO; j++)
+      {
+        int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
+        if(imageNumber >=0)
+        {
+          imageMatrix[i][j].set_from_resource(prefix + jm.imageNames[imageNumber]);    
+        } else {
+          imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
+        }
+      }
+  }
+
+  /*Seteo el evento en los event box*/
+  for (unsigned int i=0; i<ANCHO * (mapLen-1); i++)
+  {
+    for (unsigned int j=0; j<ALTO; j++)
+    {
+      eventBoxMatrix[i][j].set_events(Gdk::BUTTON_PRESS_MASK);
+      eventBoxMatrix[i][j].signal_button_press_event().connect(
+        sigc::bind<Gtk::Image*>(sigc::mem_fun(
+            this,&Editor::on_eventbox_button_press), &imageMatrix[i][j], i, j));
+    }
+  }
+
+  /*Seteo datos de esta pantalla*/
+  for (unsigned int i=0; i<ANCHO * mapLen; i++)
+  {
+    for (unsigned int j=0; j<ALTO; j++)
+    {
+      int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-i-1] - 1;
+      if(imageNumber >= 0)
+      {
+        imageNamesCurrent[i][j] = prefix + jm.imageNames[imageNumber];  
+      } else {
+        imageNamesCurrent[i][j] = IMAGEN_BLANCO;
+      }
+      
+    }
+  }
+
+  pGrid->show_all_children();
 }
 
 void EditorMenu::on_buttonAcceptExport_clicked()

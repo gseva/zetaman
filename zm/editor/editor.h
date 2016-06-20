@@ -71,6 +71,7 @@ class Editor {
     ~Editor();
     void connectButtonsWithSignals();
     void createEmptyGrid();
+    void createGridFromJsonMap(JsonMap jm);
     void runEditor();
     void exportCreatedMap();
     JsonMap createJsonMap();
@@ -84,7 +85,6 @@ class EditorMenu {
   private:
     unsigned int mapLen;
 
-    // Gtk::Window* pWindowEditor;
     Gtk::SpinButton* pSpinLength;
     Glib::RefPtr<Gtk::Application> app;
 
