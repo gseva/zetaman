@@ -3,22 +3,30 @@
 
 #include "zm/server/camera.h"
 #include "zm/server/physics/players.h"
+#include "zm/json/jsonserializer.h"
 
-#define XMAX 47
-#define XMIN 0
 #define INITIAL_X 4
 #define INITIAL_Y 0
+#define ALTO_TOTAL 12
+#define ANCHO_PANTALLA 16
+#define DELTA 0.5
 
-Camera::Camera(std::vector<Player*>& players) : players(players) {
+Camera::Camera(std::vector<Player*>& players, const JsonMap& jm) : 
+players(players) {
   position.x = INITIAL_X;
   position.y = INITIAL_Y;
-  bossPosition.x = XMAX;
+
+  bossPosition.x = jm.imageNumbers.size()/ALTO_TOTAL - ANCHO_PANTALLA - 1;
   bossPosition.y = 0;
+  xMin=0;
+  xMax = jm.imageNumbers.size()/ALTO_TOTAL - ANCHO_PANTALLA - 1;
 }
 
 Camera::~Camera(){}
 
 bool Camera::canMoveRight(Player* player){
+  if ( areInBossFrame() )
+    return player->getPosition().x < position.x + ANCHO_PANTALLA -1  - DELTA;
   bool canMove = true;
   std::vector<Player*>::iterator iPlayer;
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
@@ -29,6 +37,8 @@ bool Camera::canMoveRight(Player* player){
 }
 
 bool Camera::canMoveLeft(Player* player){
+ if ( areInBossFrame() )
+  return player->getPosition().x > position.x + DELTA;
  bool canMove = true;
   std::vector<Player*>::iterator iPlayer;
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
@@ -43,6 +53,10 @@ bool Camera::isInFrame(Body* body){
   int center = position.x + 8;
   int dist = x - center;
   return (-8 < dist) && (dist < 8);
+}
+
+bool Camera::areInBossFrame(){
+  return position.x >= bossPosition.x;
 }
 
 bool Camera::isInCenter(PlayerBody* playerBody){
@@ -67,10 +81,10 @@ zm::proto::Position Camera::getPosition(){
       xmax = (*player)->getPosition().x;
   }
   xo = (xmax + xmin) / 2 - 8;
-  if ( xo > XMAX )
-    xo = XMAX;
-  if ( xo < XMIN )
-    xo = XMIN;
+  if ( xo > xMax )
+    xo = xMax;
+  if ( xo < xMin )
+    xo = xMin;
 
   zm::proto::Position newPos;
   newPos.x = xo;

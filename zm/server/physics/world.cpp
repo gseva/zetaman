@@ -25,7 +25,7 @@ Physics::~Physics() {}
 void Physics::setMap(const JsonMap& jm){
   std::vector<int> matriz = jm.imageNumbers;
   for ( int j = 0; j < ALTO_TOTAL; ++j ) {
-    for ( int i = 0; i < ANCHO_TOTAL; ++i ) {
+    for ( unsigned int i = 0; i < jm.imageNumbers.size()/ALTO_TOTAL; ++i ) {
       if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == SOLID ) {
           b2BodyDef blockBodyDef;// = new b2BodyDef();
           b2Body* blockBody;
