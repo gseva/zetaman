@@ -12,6 +12,8 @@
 Camera::Camera(std::vector<Player*>& players) : players(players) {
   position.x = INITIAL_X;
   position.y = INITIAL_Y;
+  bossPosition.x = XMAX;
+  bossPosition.y = 0;
 }
 
 Camera::~Camera(){}
@@ -77,6 +79,12 @@ zm::proto::Position Camera::getPosition(){
 }
 
 zm::proto::Position Camera::calculatePosition(){
+  if (bossPosition.x - 8 <= position.x && 
+    bossPosition.y == position.y ){
+    position = bossPosition;
+    return position;
+}
+
   bool areInCenter = true;
   std::vector<Player*>::iterator iPlayer;
 

@@ -18,6 +18,7 @@ private:
   bool isInCenter(PlayerBody* playerBody);
   std::vector<Player*>& players;
   zm::proto::Position position;
+  zm::proto::Position bossPosition;
 };
 
 #endif
