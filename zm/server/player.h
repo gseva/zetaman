@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include <string>
 #include <map>
+#include <set>
 
 #include "zm/game_protocol.h"
 #include "zm/server/physics/world.h"
@@ -52,6 +53,8 @@ public:
   PlayerBody *body;
   bool connected;
 
+  void deleteGuns();
+  void addNewGun(int gun);
   void addGun(Gun* gun);
   void changeGun(int numberOfGun);
   Gun* getCurrentGun();
@@ -63,6 +66,7 @@ private:
   int lifes;
   Camera* camera;
   std::map<int, Gun*> guns;
+  std::set<zm::proto::ProyectileType> gunsWon;
   zm::proto::ProyectileType selectedGun;
   zm::proto::Orientation orientation;
   LastAction action;

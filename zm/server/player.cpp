@@ -18,32 +18,40 @@ Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
   action(LastAction::idle) {
   connected = true;
   lifes = zm::config::lifes;
+  gunsWon.insert(zm::proto::Normal);
 }
 
 Player::~Player(){
   if ( body != NULL )
     delete body;
 
+  deleteGuns();
+}
+
+void Player::deleteGuns() {
   for(auto&& pair : guns) {
     delete pair.second;
   }
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
+  deleteGuns();
   isAlive = true;
+
   body = new PlayerBody(*physics, x, y);
-  Gun* gun = new Normalgun(body, false, *physics);
-  addGun(gun);
-  gun = new Firegun(body, false, *physics);
-  addGun(gun);
-  gun = new Ringgun(body, false, *physics);
-  addGun(gun);
-  gun = new Sparkgun(body, false, *physics);
-  addGun(gun);
-  gun = new Magnetgun(body, false, *physics);
-  addGun(gun);
-  gun = new Bombgun(body, false, *physics);
-  addGun(gun);
+
+  for(auto&& proyectileType : gunsWon) {
+    Gun* g;
+    switch(proyectileType) {
+      case zm::proto::Normal: g = new Normalgun(body, false, *physics); break;
+      case zm::proto::Fire: g = new Firegun(body, false, *physics); break;
+      case zm::proto::Ring: g = new Ringgun(body, false, *physics); break;
+      case zm::proto::Spark: g = new Sparkgun(body, false, *physics); break;
+      case zm::proto::Magnet: g = new Magnetgun(body, false, *physics); break;
+      case zm::proto::Bomb: g = new Bombgun(body, false, *physics); break;
+    }
+    addGun(g);
+  }
   selectedGun = zm::proto::Normal;
 }
 
@@ -139,6 +147,10 @@ bool Player::collide(Bullet *bullet){
 
 void Player::disconnect(){
   connected = false;
+}
+
+void Player::addNewGun(int gun) {
+  gunsWon.insert(static_cast<zm::proto::ProyectileType>(gun));
 }
 
 void Player::addGun(Gun* gun){

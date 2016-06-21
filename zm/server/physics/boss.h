@@ -25,6 +25,7 @@ public:
   virtual void toImpact(Fire* bullet);
   virtual void toImpact(Bullet* bullet);
 
+  int getGunNumber();
 protected:
   int velocity;
   Gun* gun;

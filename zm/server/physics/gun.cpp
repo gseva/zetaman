@@ -1,3 +1,4 @@
+#include "zm/game_protocol.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
@@ -88,7 +89,7 @@ Bullet* Normalgun::fire(int direction){
 }
 
 int Normalgun::getNumber(){
-  return 0;
+  return static_cast<int>(zm::proto::Normal);
 }
 
 void Normalgun::consumeAmmunition(){
@@ -117,7 +118,7 @@ Bullet* Bombgun::fire(int direction){
 }
 
 int Bombgun::getNumber(){
-  return 1;
+  return static_cast<int>(zm::proto::Bomb);
 }
 
 void Bombgun::consumeAmmunition(){
@@ -146,7 +147,7 @@ Bullet* Magnetgun::fire(int direction){
 }
 
 int Magnetgun::getNumber(){
-  return 2;
+  return static_cast<int>(zm::proto::Magnet);
 }
 
 
@@ -176,7 +177,7 @@ Bullet* Sparkgun::fire(int direction){
 }
 
 int Sparkgun::getNumber(){
-  return 3;
+  return static_cast<int>(zm::proto::Spark);
 }
 
 
@@ -206,7 +207,7 @@ Bullet* Ringgun::fire(int direction){
 }
 
 int Ringgun::getNumber(){
-  return 4;
+  return static_cast<int>(zm::proto::Ring);
 }
 
 void Ringgun::consumeAmmunition(){
@@ -235,7 +236,7 @@ Bullet* Firegun::fire(int direction){
 }
 
 int Firegun::getNumber(){
-  return 5;
+  return static_cast<int>(zm::proto::Fire);
 }
 
 void Firegun::consumeAmmunition(){

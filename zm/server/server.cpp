@@ -194,6 +194,9 @@ void Game::finishLevel() {
     for (auto&& pair : proxies) {
       pair.second->sendLevelWon();
     }
+    for (auto&& pair : players) {
+      pair.second->addNewGun(currentLevel->boss->getGunNumber());
+    }
   } else {
     std::cout << "Lose!" << std::endl;
     for (auto&& pair : proxies) {

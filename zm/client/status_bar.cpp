@@ -40,12 +40,12 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   setImage(context, image, step * 2, maxHeight / 2);
   context->paint();
 
-  image = buff.getImage("proyectiles/magnet_1.png", false, 1.2, 1.2);
-  setImage(context, image, step * 3, maxHeight / 2 + 5);
+  image = buff.getImage("proyectiles/spark_1.png", false, 1.5, 1.5);
+  setImage(context, image, step * 3, maxHeight / 2);
   context->paint();
 
-  image = buff.getImage("proyectiles/spark_1.png", false, 1.5, 1.5);
-  setImage(context, image, step * 4, maxHeight / 2);
+  image = buff.getImage("proyectiles/magnet_1.png", false, 1.2, 1.2);
+  setImage(context, image, step * 4, maxHeight / 2 + 5);
   context->paint();
 
   image = buff.getImage("proyectiles/ring_1.png", false, 1.4, 1.4);
