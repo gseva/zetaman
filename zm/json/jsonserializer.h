@@ -36,6 +36,5 @@ class JsonSerializer
   public:
   JsonMap importMap(std::string path);
   void exportMap(std::string path, const JsonMap& m);
-  std::map<std::string,int> importarEnte(std::string path);
 };
 #endif

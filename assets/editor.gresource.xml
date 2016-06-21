@@ -2,13 +2,33 @@
 <gresources>
   <gresource prefix="/zm/editor">
     <file preprocess="xml-stripblanks">editor.glade</file>
-    <file>images/grass_mid.png</file>
-    <file>images/player/megaman.png</file>
-    <file>images/enemy.png</file>
-    <file>images/void.png</file>
+    <file>images/editor/spawns/player.png</file>
+    <file>images/editor/spawns/bumby.png</file>
+    <file>images/editor/spawns/met.png</file>
+    <file>images/editor/spawns/sniper.png</file>
+    <file>images/editor/spawns/jumpingsniper.png</file>
+    <file>images/editor/spawns/fireman.png</file>
+    <file>images/editor/spawns/magnetman.png</file>
+    <file>images/editor/spawns/sparkman.png</file>
+    <file>images/editor/spawns/ringman.png</file>
+    <file>images/editor/spawns/bombman.png</file>
+
+    <file>images/tiles/void.png</file>
+    <file>images/tiles/beam.png</file>
+    <file>images/tiles/beam_holes.png</file>
+    <file>images/tiles/box.png</file>
+    <file>images/tiles/brown.png</file>
+    <file>images/tiles/brown_box.png</file>
+    <file>images/tiles/grass.png</file>
+    <file>images/tiles/grass_half.png</file>
+    <file>images/tiles/grass_mid.png</file>
+    <file>images/tiles/dirt.png</file>
+    <file>images/tiles/ice.png</file>
     <file>images/tiles/ladder_mid.png</file>
-    <file>images/enemies/bumpy/1.png</file>
-    <file>images/enemies/met/unguarded.png</file>
-    <file>images/enemies/sniper/guarded.png</file>
+    <file>images/tiles/metal_mid.png</file>
+    <file>images/tiles/sand.png</file>
+    <file>images/tiles/snow.png</file>
+    <file>images/tiles/stone_mid.png</file>
+    <file>images/tiles/tundra_mid.png</file>
   </gresource>
 </gresources>
