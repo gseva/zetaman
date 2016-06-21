@@ -140,7 +140,7 @@ JsonMap& ServerProxy::getJsonMap() {
 
 
 Sender::Sender(Queue<proto::ClientEvent>& eventQueue,
-               ProtectedSocket& serverSock) :
+               zm::Socket& serverSock) :
                eventQueue_(eventQueue), serverSock_(serverSock) {
 }
 
@@ -155,7 +155,7 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
+Receiver::Receiver(ServerProxy& sp, zm::Socket& serverSock)
     : sp_(sp), serverSock_(serverSock), receiveEvents(true), stop(false) {
 }
 
