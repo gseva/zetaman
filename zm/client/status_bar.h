@@ -20,6 +20,8 @@ public:
 private:
   void setImage(const Cairo::RefPtr<Cairo::Context>& context,
                 Glib::RefPtr<Gdk::Pixbuf> image, int width, int heigth);
+  void drawFilledCircle(const Cairo::RefPtr<Cairo::Context>& context,
+                int width, int height, float percentage, int radius);
 };
 
 } // zm

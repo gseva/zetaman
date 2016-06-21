@@ -36,6 +36,7 @@ struct Player : JsonSerializable {
   PlayerState ps;
   int health;
   int id;
+  int ammo;
   Orientation o;
   ProyectileType weapon;
 

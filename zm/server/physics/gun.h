@@ -7,7 +7,7 @@
 class Gun{
 public:
   explicit Gun(Body* proprietor, bool isEnemy, int ticsToCharge,
-    Physics& physics, int ammunitions = 10);
+    Physics& physics, int ammunitions = 100);
   virtual ~Gun()=0;
   virtual Bullet* shoot();
   virtual Bullet* shoot(int direction);
@@ -16,6 +16,7 @@ public:
   void tic();
   virtual int getNumber()=0;
   void addAmmunitions(int amount);
+  int getAmmunition();
 protected:
   const int ticsToCharge;
   int tics;
@@ -82,7 +83,7 @@ public:
 class Firegun : public Gun{
 public:
   explicit Firegun(Body* proprietor, bool isEnemy, Physics& physics);
-  virtual ~Firegun();  
+  virtual ~Firegun();
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();

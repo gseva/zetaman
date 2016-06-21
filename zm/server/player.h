@@ -50,6 +50,7 @@ public:
   bool connected;
   void addGun(Gun* gun);
   void changeGun(int numberOfGun);
+  Gun* getCurrentGun();
   void tic();
 
   zm::proto::Player toBean(int xo, int yo);

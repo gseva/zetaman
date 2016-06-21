@@ -21,6 +21,10 @@ Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
 Player::~Player(){
   if ( body != NULL )
     delete body;
+
+  for(auto&& pair : guns) {
+    delete pair.second;
+  }
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
@@ -99,10 +103,14 @@ void Player::up(){
   }
 }
 
+Gun* Player::getCurrentGun() {
+  return guns[static_cast<int>(selectedGun)];
+}
+
 void Player::shoot(){
   if (body->isDestroyed() )
     return;
-  Gun* gun = guns[static_cast<int>(selectedGun)];
+  Gun* gun = getCurrentGun();
   Bullet* bullet = gun->shoot();
   std::cout << "Creo bala " << bullet << std::endl;
   if (bullet) {
@@ -162,9 +170,11 @@ zm::proto::Player Player::toBean(int xo, int yo) {
   }
   player.ps = state;
   player.id = body->getId();
+
   player.weapon = selectedGun;
   player.health = body->health;
   player.o = orientation;
+  player.ammo = getCurrentGun()->getAmmunition();
   player.pos.x = getPosition().x - xo;
   player.pos.y = getPosition().y;
   return player;

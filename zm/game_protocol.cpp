@@ -26,6 +26,7 @@ json Player::getJson() {
   json j = pos.getJson();
   j["i"] = id;
   j["h"] = health;
+  j["a"] = ammo;
 
   int state;
   switch (ps) {
@@ -48,6 +49,7 @@ Player Player::deserialize(const json& j) {
   p.pos.x = j["x"];
   p.pos.y = j["y"];
   p.id = j["i"];
+  p.ammo = j["a"];
 
   int state = j["st"];
   p.ps = static_cast<PlayerState>(state);
