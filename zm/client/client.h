@@ -20,7 +20,7 @@ public:
   int width, height, statusBarHeight, ppm;
   ServerProxy serverProxy;
 
-  explicit Client();
+  Client();
 
   int scaleNum(int n);
   int scaleWidth(float w);
