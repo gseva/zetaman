@@ -24,6 +24,7 @@ Bullet* Gun::shoot(){
     return NULL; // si ya se disparo y aun no se recargo
   if (!isEnemy && ammunitions <= 0)
     return NULL;
+  consumeAmmunition();
   return fire();
 }
 
