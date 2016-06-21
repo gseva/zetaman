@@ -116,6 +116,20 @@ Proyectile Proyectile::deserialize(const json& j) {
   return p;
 }
 
+json PowerUp::getJson() {
+  json j = pos.getJson();
+  j["t"] = static_cast<int>(type);
+  return j;
+} 
+
+PowerUp PowerUp::deserialize(const json& j) {
+  PowerUp po;
+  po.pos.x = j["x"];
+  po.pos.y = j["y"];
+  int type = j["t"];
+  po.type = static_cast<PowerUpType>(type);
+  return po;
+}
 
 Game::Game() : state(GameState::playing) {
 }
@@ -141,8 +155,14 @@ std::string Game::serialize() {
     proyectileJson.push_back(proyectile.getJson());
   }
 
+  json powerUpJson = json::array();
+  for (auto&& powerUp : powerUps) {
+    powerUpJson.push_back(powerUp.getJson());
+  }
+
   json game = {{"st", s}, {"cp", camPos.getJson()},
-               {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson}};
+               {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson},
+               {"po", powerUpJson}};
   std::string result = game.dump();
   return result;
 }

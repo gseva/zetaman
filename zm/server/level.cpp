@@ -12,6 +12,7 @@
 #include "zm/server/level.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/players.h"
+#include "zm/server/physics/powerup.h"
 
 #define PLAYER "player"
 #define MET "met"
@@ -108,6 +109,10 @@ void Level::clean() {
   std::vector<Enemy*>::iterator iEnemy;
   for (iEnemy = enemies.begin(); iEnemy != enemies.end();) {
     if ((*iEnemy)->isDestroyed()) {
+      PowerUp* powerUp = createPowerUp((*iEnemy)->getPosition());
+      if ( powerUp ) {
+        powerUps.push_back(powerUp);
+      }
       delete (*iEnemy);
       iEnemy = enemies.erase(iEnemy);
     } else {
@@ -119,6 +124,16 @@ void Level::clean() {
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     if ( (*iPlayer)->body->isDestroyed() ) {
       delete (*iPlayer)->body;
+    }
+  }
+
+ std::vector<PowerUp*>::iterator iPowerUp;
+  for (iPowerUp = powerUps.begin(); iPowerUp != powerUps.end(); ) {
+    if ( (*iPowerUp)->isDestroyed() ) {
+      delete (*iPowerUp);
+      iPowerUp = powerUps.erase(iPowerUp);
+    } else {
+      ++iPowerUp;
     }
   }
 }
@@ -143,6 +158,12 @@ Level::~Level() {
     delete (*iBullet);
     iBullet = bullets.erase(iBullet);
   }
+  std::vector<PowerUp*>::iterator iPowerUp;
+  for ( iPowerUp = powerUps.begin(); iPowerUp != powerUps.end(); ) {
+    delete (*iPowerUp);
+    iPowerUp = powerUps.erase(iPowerUp);
+  }
+
 }
 
 zm::proto::Game Level::getState(){
@@ -166,6 +187,11 @@ zm::proto::Game Level::getState(){
   for (auto&& bullet : bullets) {
     zm::proto::Proyectile pr = bullet->toBean(xo, yo);
     gs.proyectiles.push_back(pr);
+  }
+
+  for (auto&& powerUp : powerUps) {
+    zm::proto::PowerUp po = powerUp->toBean(xo, yo);
+    gs.powerUps.push_back(po);
   }
 
   if (checkLoseCondition()) {
@@ -196,3 +222,13 @@ bool Level::checkWinCondition() {
 void Level::addBullet(Bullet* bullet){
   bullets.push_back(bullet);
 }
+
+PowerUp* Level::createPowerUp(b2Vec2 pos){
+  //agregar logica de random
+  int random = 1;
+  if ( random == 1 )
+    return new SmallEnergy(physics, pos);
+
+  return NULL;
+}
+

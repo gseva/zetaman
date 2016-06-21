@@ -15,7 +15,8 @@
 #define BLOCK_TYPE 0x0003
 #define STAIR_TYPE 0x0004
 #define PLAYER_BULLET_TYPE 0x0005
-#define ENEMY_BULLET_TYPE 0x0006
+#define ENEMY_BULLET_TYPE 0x006
+#define POWERUP_TYPE 0x0007
 #define NONE_CONTACT 0x0000
 #define ALL_CONTACT 0xffff
 
@@ -24,7 +25,7 @@ class Enemy;
 class Bullet;
 
 enum class BodyType {
-  Enemy, Player, Bullet
+  Enemy, Player, Bullet, PowerUp
 };
 
 
