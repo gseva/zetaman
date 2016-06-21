@@ -1,7 +1,7 @@
 #include "powerup.h"
 #include <Box2D/Box2D.h>
 
-PowerUp::PowerUp(Physics& physics, b2Vec2 pos) : 
+PowerUp::PowerUp(Physics& physics, b2Vec2 pos) :
 Body(physics, pos.x, pos.y, BodyType::PowerUp){
   body->SetUserData(this);
   b2PolygonShape shape;
@@ -19,12 +19,8 @@ PowerUp::~PowerUp(){}
 zm::proto::PowerUp PowerUp::toBean(int xo, int yo){
   zm::proto::PowerUp protoPowerUp;
   protoPowerUp.pos.x = getPosition().x - xo;
-  protoPowerUp.pos.y = getPosition().x - yo;
+  protoPowerUp.pos.y = getPosition().y;
   return protoPowerUp;
-}
-
-bool PowerUp::collide(Bullet* bullet){
-  return false;
 }
 
 SmallEnergy::SmallEnergy(Physics& physics, b2Vec2 pos) : PowerUp(physics, pos)

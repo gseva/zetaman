@@ -79,7 +79,6 @@ public:
   void setPosition(int x, int y);
   b2Vec2 getPosition();
   b2Body* body;
-  virtual bool collide(Bullet* bullet)=0;
 
   void markAsDestroyed();
   bool isDestroyed();

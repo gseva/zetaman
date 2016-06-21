@@ -16,9 +16,6 @@ public:
     bool isEnemy);
   virtual ~Bullet();
   virtual void move();
-  virtual bool collide(Enemy* enemy);
-  virtual bool collide(PlayerBody* player);
-  virtual bool collide(Bullet* bullet);
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo);
   virtual zm::proto::Proyectile toBean(float32 xo, float32 yo,
     zm::proto::ProyectileType type);

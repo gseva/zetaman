@@ -18,7 +18,6 @@ public:
   void stopHorizontalMove();
   bool up();
   Bullet* shoot();
-  virtual bool collide(Bullet* bullet);
   b2Body* getBody();
 
   virtual void toImpact(Bomb* bullet);

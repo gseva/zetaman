@@ -80,10 +80,6 @@ Bullet* PlayerBody::shoot(){
   return bullet;
 }
 
-bool PlayerBody::collide(Bullet* bullet){
-  return bullet->collide(this);
-}
-
 b2Body* PlayerBody::getBody(){
   return body;
 }

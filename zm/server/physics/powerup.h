@@ -10,7 +10,6 @@ public:
   explicit PowerUp(Physics& physics, b2Vec2 pos);
   virtual ~PowerUp();
   virtual zm::proto::PowerUp toBean(int xo, int yo)=0;
-  virtual bool collide(Bullet* bullet);
 };
 
 class SmallEnergy : public PowerUp{
