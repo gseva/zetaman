@@ -18,6 +18,8 @@ int lifes = 50;
 std::string port = "9090";
 std::string host = "localhost";
 
+int screenWidth = 800;
+
 
 void loadConfigFile(const std::string& file) {
   std::ifstream fs(file);
@@ -45,6 +47,9 @@ void loadConfigFile(const std::string& file) {
 
   host = j.value("host", host);
   std::cout << "host: " << host << std::endl;
+
+  screenWidth = j.value("screenWidth", screenWidth);
+  std::cout << "screenWidth: " << screenWidth << std::endl;
 }
 
 

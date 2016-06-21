@@ -4,5 +4,6 @@
   "playerLife": 50,
   "lifes": 3,
   "port": "9090",
-  "host": "localhost"
+  "host": "localhost",
+  "screenWidth": 800
 }

@@ -2,13 +2,14 @@
 #include <string>
 #include <glibmm/main.h>
 
+#include "zm/config.h"
 #include "zm/client/client.h"
 
 
 namespace zm {
 
-Client::Client() : connected_(false), width(800), height(600),
-    statusBarHeight(64), serverProxy(*this) {
+Client::Client() : connected_(false), width(zm::config::screenWidth),
+    height(width * 3 / 4), statusBarHeight(64), serverProxy(*this) {
   ppm = scaleNum(64);
 }
 

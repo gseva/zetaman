@@ -16,6 +16,8 @@ namespace config
     extern std::string port;
     extern std::string host;
 
+    extern int screenWidth;
+
     void loadConfigFile(const std::string& file);
 } //config
 
