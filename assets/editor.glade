@@ -312,6 +312,40 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
+              <object class="GtkLabel" id="label5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="yalign">1</property>
+                <property name="ypad">25</property>
+                <property name="label" translatable="yes">Bienvenido al editor!</property>
+                <property name="angle">0.10000000000000001</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkListBoxRow" id="listboxrow8">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
+              <object class="GtkLabel" id="label6">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="ypad">25</property>
+                <property name="label" translatable="yes">¿ Qué desea hacer ?</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkListBoxRow" id="listboxrow17">
+            <property name="width_request">100</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <child>
               <object class="GtkButton" id="btnCreateLevel">
                 <property name="label" translatable="yes">Crear nuevo nivel</property>
                 <property name="visible">True</property>
@@ -322,7 +356,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkListBoxRow" id="listboxrow8">
+          <object class="GtkListBoxRow" id="listboxrow18">
             <property name="width_request">100</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>

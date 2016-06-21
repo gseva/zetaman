@@ -99,7 +99,6 @@ class EditorMenu {
 
     Gtk::FileChooserDialog* pFCLevelToEdit;
     Gtk::Button* pBtnFCAcceptEdit;
-    Gtk::Button* pBtnFCCancelEdit;
 
     std::string mapName;
 

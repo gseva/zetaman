@@ -662,6 +662,11 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
   builder->get_widget("fcEditLevel", pFCLevelToEdit);
   builder->get_widget("btnAcceptEditFC", pBtnFCAcceptEdit);
 
+  pWindowNewLevel -> set_position(Gtk::WIN_POS_CENTER);
+  pWindowMenu -> set_position(Gtk::WIN_POS_CENTER);
+  pWindowMenu -> set_default_size(468,320);
+  pFCLevelToEdit -> set_position(Gtk::WIN_POS_CENTER);
+
   connectButtonsWithSignals();
 }
 
