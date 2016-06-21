@@ -7,8 +7,8 @@
 #include "zm/server/physics/bullets.h"
 
 
-PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
-  :  Body(physics, x, y, BodyType::Player) {
+PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y, Player* p)
+  :  Body(physics, x, y, BodyType::Player), player_(p) {
   body->SetUserData(this);
   b2PolygonShape shape;
   shape.SetAsBox(0.35f, 0.2f);
@@ -108,8 +108,16 @@ void PlayerBody::toImpact(Bullet* bullet){
   damage(1);
 }
 
+Player* PlayerBody::getPlayer() {
+  return player_;
+}
+
+void PlayerBody::addHealth(int amount) {
+  health += amount;
+}
+
 void PlayerBody::damage(int hurt){
-  health -= hurt;
+  addHealth(-hurt);
   if ( health <= 0 )
     markAsDestroyed();
 }

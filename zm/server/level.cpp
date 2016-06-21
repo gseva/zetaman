@@ -231,9 +231,29 @@ void Level::addBullet(Bullet* bullet){
 
 PowerUp* Level::createPowerUp(b2Vec2 pos){
   //agregar logica de random
-  int random = 1;
-  if ( random == 1 )
+  double val = (double) rand() / RAND_MAX;
+  // if ( val <= .05 ) {
+  //   return new LargeEnergy(physics, pos);
+  // } else if ( val <= .1 ) {
+  //   return new LargePlasma(physics, pos);
+  // } else if ( val <= .2 ) {
+  //   return new SmallEnergy(physics, pos);
+  // } else if ( val <= .3 ) {
+  //   return new SmallPlasma(physics, pos);
+  // } else if ( val <= .31 ) {
+  //   return new Life(physics, pos);
+  // }
+  if ( val <= .2 ) {
+    return new LargeEnergy(physics, pos);
+  } else if ( val <= .4 ) {
+    return new LargePlasma(physics, pos);
+  } else if ( val <= .6 ) {
     return new SmallEnergy(physics, pos);
+  } else if ( val <= .8 ) {
+    return new SmallPlasma(physics, pos);
+  } else if ( val <= 1 ) {
+    return new Life(physics, pos);
+  }
 
   return NULL;
 }

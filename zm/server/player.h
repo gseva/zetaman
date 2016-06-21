@@ -60,6 +60,10 @@ public:
   Gun* getCurrentGun();
   void tic();
 
+  bool addHealth(int amount);
+  bool addAmmo(int amount);
+  bool addLife();
+
   zm::proto::Player toBean(int xo, int yo);
 
 private:

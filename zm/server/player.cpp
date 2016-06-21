@@ -2,6 +2,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <algorithm>
 
 #include "zm/config.h"
 #include "zm/server/camera.h"
@@ -38,7 +39,7 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
   deleteGuns();
   isAlive = true;
 
-  body = new PlayerBody(*physics, x, y);
+  body = new PlayerBody(*physics, x, y, this);
 
   for(auto&& proyectileType : gunsWon) {
     Gun* g;
@@ -141,10 +142,6 @@ b2Body* Player::getBody(){
   return body->getBody();
 }
 
-bool Player::collide(Bullet *bullet){
-  return body->collide(bullet);
-}
-
 void Player::disconnect(){
   connected = false;
 }
@@ -168,6 +165,29 @@ void Player::tic(){
   for ( iGun = guns.begin(); iGun != guns.end(); ++iGun ) {
     (iGun->second)->tic();
   }
+}
+
+
+bool Player::addLife() {
+  if (lifes == zm::config::lifes) return false;
+  lifes++;
+  return true;
+}
+
+bool Player::addAmmo(int amount) {
+  Gun* gun = getCurrentGun();
+  int actualAmount = gun->getAmmunition();
+  if (actualAmount >= 100) return false;
+
+  gun->addAmmunitions(std::min(amount, 100 - actualAmount));
+  return true;
+}
+
+bool Player::addHealth(int amount) {
+  if (body->health >= zm::config::playerLife) return false;
+
+  body->addHealth(std::min(amount, zm::config::playerLife - body->health));
+  return true;
 }
 
 
