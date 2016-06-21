@@ -123,7 +123,7 @@ void Player::shoot(){
   if (!isAlive)
     return;
   Gun* gun = getCurrentGun();
-  Bullet* bullet = gun->shoot();
+  Bullet* bullet = gun->shoot((orientation == zm::proto::right) ? 1 : -1);
   std::cout << "Creo bala " << bullet << std::endl;
   if (bullet) {
     action = LastAction::shoot;

@@ -22,7 +22,7 @@ Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics,
 Gun::~Gun(){}
 
 Bullet* Gun::shoot(){
-  if ( tics != 0 || used )
+  if ( used )
     return NULL; // si ya se disparo y aun no se recargo
   if (!isEnemy && ammunitions <= 0)
     return NULL;
@@ -31,7 +31,7 @@ Bullet* Gun::shoot(){
 }
 
 Bullet* Gun::shoot(int direction){
-  if ( tics != 0 || used )
+  if ( used )
     return NULL; // si ya se disparo y aun no se recargo
   if ( !isEnemy && ammunitions <= 0 )
     return NULL;
@@ -56,18 +56,18 @@ int Gun::getAmmunition() {
 }
 
 Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 2, physics){}
+  Gun(proprietor, isEnemy, 20, physics){}
 
 Normalgun::~Normalgun(){}
 
 Bullet* Normalgun::shoot(){
-  if ( tics != 0 || used )
+  if ( used )
     return NULL; // si ya se disparo y aun no se recargo
   return fire();
 }
 
 Bullet* Normalgun::shoot(int direction){
-  if ( tics != 0 || used )
+  if ( used )
     return NULL; // si ya se disparo y aun no se recargo
   return fire(direction);
 }
@@ -97,7 +97,7 @@ void Normalgun::consumeAmmunition(){
 }
 
 Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 100, physics){}
 
 Bombgun::~Bombgun(){}
 
@@ -126,7 +126,7 @@ void Bombgun::consumeAmmunition(){
 }
 
 Magnetgun::Magnetgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 50, physics){}
 
 Magnetgun::~Magnetgun(){}
 
@@ -156,7 +156,7 @@ void Magnetgun::consumeAmmunition(){
 }
 
 Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 20, physics){}
 
 Sparkgun::~Sparkgun(){}
 
@@ -186,7 +186,7 @@ void Sparkgun::consumeAmmunition(){
 }
 
 Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 50, physics){}
 
 Ringgun::~Ringgun(){}
 
@@ -215,7 +215,7 @@ void Ringgun::consumeAmmunition(){
 }
 
 Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) :
-  Gun(proprietor, isEnemy, 10, physics){}
+  Gun(proprietor, isEnemy, 100, physics){}
 
 Firegun::~Firegun(){}
 
