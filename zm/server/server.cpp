@@ -6,7 +6,7 @@
 #include <thread>
 #include <unistd.h>
 
-#include "zm/server/config.h"
+#include "zm/config.h"
 #include "zm/server/server.h"
 #include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"

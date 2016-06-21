@@ -104,8 +104,10 @@ void ServerProxy::dispatchEvent(proto::ServerEvent event) {
       break;
     case proto::gameStart: break;
     case proto::levelLost:
+      client_.showLoseAnimation();
+      break;
     case proto::levelWon:
-      client_.showFinishAnimation();
+      client_.showWinAnimation();
       break;
     case proto::selectLevel: client_.showWinDialog(); break;
     case proto::selectLevelHost: client_.selectLevel(); break;

@@ -89,11 +89,12 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
 
   if (winScreen_) {
     cr->set_source_rgba(.5, 1.0, .5, 1.0 - (tics / 100.));
-    cr->rectangle(0, 0, c_.width, c_.height + c_.statusBarHeight);
-    cr->fill();
-    tics--;
-    if (tics < 0) tics = 1;
+    showScreenAnimation(cr);
+  } else if (loseScreen_) {
+    cr->set_source_rgba(1.0, .5, .5, 1.0 - (tics / 100.));
+    showScreenAnimation(cr);
   }
+
 
   return true;
 }
@@ -134,6 +135,13 @@ void Canvas::setWinScreen() {
 void Canvas::setLoseScreen() {
   loseScreen_ = true;
   tics = 100;
+}
+
+void Canvas::showScreenAnimation(const Cairo::RefPtr<Cairo::Context>& cr) {
+  cr->rectangle(0, 0, c_.width, c_.height + c_.statusBarHeight);
+  cr->fill();
+  tics--;
+  if (tics < 0) tics = 1;
 }
 
 void Canvas::updateGameState(proto::Game game) {

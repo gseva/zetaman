@@ -1,6 +1,7 @@
 
 #include <vector>
 
+#include "zm/config.h"
 #include "zm/server/physics/players.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
@@ -17,7 +18,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   fixtureDef.filter.categoryBits = PLAYER_TYPE;
   fixtureDef.filter.maskBits = ALL_CONTACT & ~STAIR_TYPE;
   fixture = body->CreateFixture(&fixtureDef);
-  health = 50;
+  health = zm::config::playerLife;
 }
 
 PlayerBody::~PlayerBody(){

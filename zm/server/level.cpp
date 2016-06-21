@@ -24,8 +24,6 @@
 #define SPARKMAN "sparkman"
 #define RINGMAN "ringman"
 
-#define XMAX 47
-#define XMIN 0
 
 Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
   : state(zm::proto::playing), players(connectedPlayers), jm(jsonMap),
@@ -120,9 +118,12 @@ void Level::clean() {
   }
 
   std::vector<Player*>::iterator iPlayer;
-  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
-    if ( (*iPlayer)->body->isDestroyed() ) {
-      delete (*iPlayer)->body;
+  for ( iPlayer = players.begin(); iPlayer != players.end(); ) {
+    if ((*iPlayer)->body->isDestroyed()) {
+      (*iPlayer)->destroy();
+      iPlayer = players.erase(iPlayer);
+    } else {
+      ++iPlayer;
     }
   }
 }
@@ -188,12 +189,12 @@ zm::proto::Game Level::getState(){
 
 bool Level::checkLoseCondition() {
   bool lose = true;
-  std::vector<Player*>::iterator iPlayer;
-  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
-    if ( !(*iPlayer)->body->isDestroyed() )
-      lose = false;
-  }
 
+  for(auto&& player : players) {
+    if (!player->body->isDestroyed()) {
+      lose = false;
+    }
+  }
   return lose;
 }
 

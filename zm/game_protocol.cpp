@@ -49,6 +49,7 @@ Player Player::deserialize(const json& j) {
   p.pos.x = j["x"];
   p.pos.y = j["y"];
   p.id = j["i"];
+  p.health = j["h"];
   p.ammo = j["a"];
 
   int state = j["st"];

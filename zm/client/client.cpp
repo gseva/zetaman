@@ -55,8 +55,11 @@ void Client::showConnectedPlayer(const std::string& playerName) {
   std::cout << "Connected " << playerName << std::endl;
 }
 
-void Client::showFinishAnimation() {
-  window_->showFinishAnimation();
+void Client::showWinAnimation() {
+  window_->showWinAnimation();
+}
+void Client::showLoseAnimation() {
+  window_->showLoseAnimation();
 }
 
 void Client::showWinDialog() {

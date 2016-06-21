@@ -1,5 +1,5 @@
 
-#include "zm/server/config.h"
+#include "zm/config.h"
 #include "zm/server/server.h"
 #include <stdlib.h>
 #include <time.h>

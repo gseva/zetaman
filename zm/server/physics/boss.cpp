@@ -1,4 +1,4 @@
-#include "zm/server/config.h"
+#include "zm/config.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"

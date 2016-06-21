@@ -2,6 +2,7 @@
 #include <gdkmm/cursor.h> // Necesario para que no tire el famoso error
 #include <gdkmm/general.h> // set_source_pixbuf()
 
+#include "zm/config.h"
 #include "zm/client/status_bar.h"
 #include "zm/client/client.h"
 
@@ -64,6 +65,10 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   }
   drawFilledCircle(context, selectedWeaponOffset, maxHeight / 2, perc,
                    circleRadius);
+
+  context->set_source_rgba(1.0, .5, .5, 0.8);
+  perc = player.health * 100 / config::playerLife;
+  drawFilledCircle(context, step * 8, maxHeight / 2, perc, circleRadius);
 
   context->restore();
 }

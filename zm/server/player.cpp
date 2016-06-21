@@ -2,8 +2,9 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "zm/server/camera.h"
 
+#include "zm/config.h"
+#include "zm/server/camera.h"
 #include "zm/server/player.h"
 #include "zm/server/server.h"
 #include "zm/server/physics/players.h"
@@ -16,6 +17,7 @@ Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
   isHost(host), isAlive(false), isReady(false), orientation(zm::proto::right),
   action(LastAction::idle) {
   connected = true;
+  lifes = zm::config::lifes;
 }
 
 Player::~Player(){
@@ -28,6 +30,7 @@ Player::~Player(){
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
+  isAlive = true;
   body = new PlayerBody(*physics, x, y);
   Gun* gun = new Normalgun(body, false, *physics);
   addGun(gun);
@@ -45,7 +48,7 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
 }
 
 void Player::jump(){
-  if (!body->isDestroyed()) {
+  if (isAlive) {
     body->jump();
     action = LastAction::jump;
   }
@@ -70,7 +73,7 @@ void Player::setReady() {
 
 void Player::right(){
   orientation = zm::proto::right;
-  if ( camera->canMoveRight(this) && !body->isDestroyed() ) {
+  if ( camera->canMoveRight(this) && isAlive ) {
     body->right();
     action = LastAction::right;
   } else {
@@ -79,24 +82,24 @@ void Player::right(){
   }
 }
 
-void Player::left(){
+void Player::left() {
   orientation = zm::proto::left;
-  if ( camera->canMoveLeft(this) && !body->isDestroyed() ) {
+  if ( camera->canMoveLeft(this) && isAlive ) {
     body->left();
     action = LastAction::left;
-  } else {
+  } else if (isAlive) {
     this->stopHorizontalMove();
     action = LastAction::right;
   }
 }
 
 void Player::stopHorizontalMove(){
-  if (!body->isDestroyed() )
+  if (isAlive)
     body->stopHorizontalMove();
 }
 
 void Player::up(){
-  if (body->up() && !body->isDestroyed()) {
+  if (body->up() && isAlive) {
     action = LastAction::up;
   } else {
     action = LastAction::idle;
@@ -108,7 +111,7 @@ Gun* Player::getCurrentGun() {
 }
 
 void Player::shoot(){
-  if (body->isDestroyed() )
+  if (!isAlive)
     return;
   Gun* gun = getCurrentGun();
   Bullet* bullet = gun->shoot();
@@ -118,6 +121,13 @@ void Player::shoot(){
     game.currentLevel->addBullet(bullet);
   }
 }
+
+void Player::destroy() {
+  lifes--;
+  isAlive = false;
+  delete body;
+}
+
 
 b2Body* Player::getBody(){
   return body->getBody();

@@ -10,6 +10,8 @@ namespace config
 {
     extern int gamePeriod;
     extern int bossLife;
+    extern int playerLife;
+    extern int lifes;
 
     void loadConfigFile(const std::string& file);
 } //config

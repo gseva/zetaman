@@ -66,8 +66,12 @@ void Window::showWinDialog() {
   dialog.run();
 }
 
-void Window::showFinishAnimation() {
+void Window::showWinAnimation() {
   canvas_->setWinScreen();
+}
+
+void Window::showLoseAnimation() {
+  canvas_->setLoseScreen();
 }
 
 bool Window::on_key_press_event(GdkEventKey* event) {

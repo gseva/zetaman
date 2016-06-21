@@ -42,12 +42,16 @@ public:
   void up();
   void shoot();
 
+  void destroy();
+
   void disconnect();
   b2Vec2 getPosition();
   b2Body* getBody();
   bool collide(Bullet *bullet);
+
   PlayerBody *body;
   bool connected;
+
   void addGun(Gun* gun);
   void changeGun(int numberOfGun);
   Gun* getCurrentGun();
@@ -56,6 +60,7 @@ public:
   zm::proto::Player toBean(int xo, int yo);
 
 private:
+  int lifes;
   Camera* camera;
   std::map<int, Gun*> guns;
   zm::proto::ProyectileType selectedGun;
