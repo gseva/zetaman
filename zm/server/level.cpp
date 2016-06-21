@@ -49,27 +49,25 @@ Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
       continue;
     }
 
-    Enemy* enemy;
     if ( type == BUMBY ) {
-      enemy = new Bumby(physics, x, y);
+      enemies.push_back(new Bumby(physics, x, y));
     } else if ( type == MET ) {
-      enemy = new Met(physics, x, y);
+      enemies.push_back(new Met(physics, x, y));
     } else if ( type == SNIPER ) {
-      enemy = new Sniper(physics, x, y);
+      enemies.push_back(new Sniper(physics, x, y));
     } else if ( type == JUMPINGSNIPER ) {
-      enemy = new JumpingSniper(physics, x, y);
+      enemies.push_back(new JumpingSniper(physics, x, y));
     } else if ( type == BOMBMAN ) {
-      enemy = new Bombman(physics, x, y, jm, players);
+      boss = new Bombman(physics, x, y, jm, players);
     } else if ( type == FIREMAN ) {
-      enemy = new Fireman(physics, x, y, jm, players);
+      boss = new Fireman(physics, x, y, jm, players);
     } else if ( type == MAGNETMAN ) {
-      enemy = new Magnetman(physics, x, y, jm, players);
+      boss = new Magnetman(physics, x, y, jm, players);
     } else if ( type == SPARKMAN ) {
-      enemy = new Sparkman(physics, x, y, jm, players);
+      boss = new Sparkman(physics, x, y, jm, players);
     } else if ( type == RINGMAN ) {
-      enemy = new Ringman(physics, x, y, jm, players);
+      boss = new Ringman(physics, x, y, jm, players);
     }
-    enemies.push_back(enemy);
   }
 }
 
@@ -84,6 +82,12 @@ void Level::step() {
       bullets.push_back(bullet);
     }
   }
+
+  Bullet* bullet = boss->move();
+  if ( bullet != NULL ) {
+    bullets.push_back(bullet);
+  }
+
   std::vector<Bullet*>::iterator j;
   for ( j = bullets.begin(); j != bullets.end(); ++j ) {
     (*j)->move();
@@ -143,6 +147,8 @@ Level::~Level() {
     delete (*iBullet);
     iBullet = bullets.erase(iBullet);
   }
+
+  delete boss;
 }
 
 zm::proto::Game Level::getState(){
@@ -162,6 +168,8 @@ zm::proto::Game Level::getState(){
   for (auto&& enemy : enemies) {
     gs.enemies.push_back(enemy->toBean(xo, yo));
   }
+
+  gs.enemies.push_back(boss->toBean(xo, yo));
 
   for (auto&& bullet : bullets) {
     zm::proto::Proyectile pr = bullet->toBean(xo, yo);
@@ -190,7 +198,7 @@ bool Level::checkLoseCondition() {
 }
 
 bool Level::checkWinCondition() {
-  return !enemies.size();
+  return boss->isDestroyed();
 }
 
 void Level::addBullet(Bullet* bullet){

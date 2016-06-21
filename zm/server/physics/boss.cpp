@@ -1,3 +1,4 @@
+#include "zm/server/config.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
@@ -42,7 +43,7 @@
 #define FIREMAN_LARGO     0.55
 #define FIREMAN_ALTO      0.7
 
-Boss::Boss(Physics& physics, float32 x, float32 y, 
+Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
     int prefDistance, JsonMap jm, std::vector<Player*>& players,
     float32 largo, float32 alto) :
@@ -51,7 +52,7 @@ Boss::Boss(Physics& physics, float32 x, float32 y,
     prefDistance(prefDistance), jm(jm), players(players){
       tics = 0;
       determinePositionsToGo();
-	  health = 30;
+	  health = zm::config::bossLife;
 }
 
 void Boss::determinePositionsToGo(){

@@ -19,7 +19,8 @@ namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
 Client& c_;
-bool gameSet_;
+bool gameSet_, winScreen_, loseScreen_;
+int tics;
 proto::Game game_;
 Map map_;
 ImageBuffer buff_;
@@ -35,6 +36,8 @@ public:
 
   void updateGameState(proto::Game gs);
 
+  void setWinScreen();
+  void setLoseScreen();
 protected:
   void redraw();
 

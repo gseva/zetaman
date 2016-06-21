@@ -103,8 +103,12 @@ void ServerProxy::dispatchEvent(proto::ServerEvent event) {
       client_.startGame();
       break;
     case proto::gameStart: break;
-    case proto::levelWon: client_.showWinDialog(); break;
-    case proto::levelWonHost: client_.selectLevel(); break;
+    case proto::levelLost:
+    case proto::levelWon:
+      client_.showFinishAnimation();
+      break;
+    case proto::selectLevel: client_.showWinDialog(); break;
+    case proto::selectLevelHost: client_.selectLevel(); break;
   }
 }
 
@@ -164,7 +168,6 @@ void Receiver::run() {
       if (receiveEvents) {
         proto::ServerEvent ev;
         try {
-          /* code */
           ev = proto::ServerEvent::deserialize(res);
         }
         catch(const std::invalid_argument& e) {

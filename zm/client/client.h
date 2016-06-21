@@ -35,6 +35,7 @@ public:
 
   void showConnectedPlayer(const std::string& playerName);
   void showWinDialog();
+  void showFinishAnimation();
 };
 
 } // zm

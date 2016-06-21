@@ -1,5 +1,6 @@
 
 #include "zm/client/canvas.h"
+#include "zm/client/client.h"
 #include "zm/client/drawable.h"
 
 #include <glibmm/main.h>
@@ -86,6 +87,14 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     }
   }
 
+  if (winScreen_) {
+    cr->set_source_rgba(.5, 1.0, .5, 1.0 - (tics / 100.));
+    cr->rectangle(0, 0, c_.width, c_.height + c_.statusBarHeight);
+    cr->fill();
+    tics--;
+    if (tics < 0) tics = 1;
+  }
+
   return true;
 }
 
@@ -114,6 +123,17 @@ drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
   }
   enemies_.insert({e.id, enemy});
   return enemy;
+}
+
+
+void Canvas::setWinScreen() {
+  winScreen_ = true;
+  tics = 100;
+}
+
+void Canvas::setLoseScreen() {
+  loseScreen_ = true;
+  tics = 100;
 }
 
 void Canvas::updateGameState(proto::Game game) {

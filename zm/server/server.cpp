@@ -187,6 +187,7 @@ void Game::gameLoop() {
   finishLevel();
 }
 
+
 void Game::finishLevel() {
   if (currentLevel->state == zm::proto::won) {
     std::cout << "Win!" << std::endl;
@@ -195,6 +196,16 @@ void Game::finishLevel() {
     }
   } else {
     std::cout << "Lose!" << std::endl;
+    for (auto&& pair : proxies) {
+      pair.second->sendLevelLost();
+    }
+  }
+
+  std::this_thread::sleep_for(
+       std::chrono::milliseconds(4000));
+
+  for (auto&& pair : proxies) {
+    pair.second->sendSelectLevel();
   }
 }
 

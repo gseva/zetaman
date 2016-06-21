@@ -9,6 +9,7 @@
 #include "zm/server/camera.h"
 #include "zm/server/client_proxy.h"
 #include "zm/server/physics/world.h"
+#include "zm/server/physics/boss.h"
 #include "zm/server/physics/enemies.h"
 #include "zm/server/physics/bullets.h"
 
@@ -16,6 +17,7 @@
 class Level{
 public:
   zm::proto::GameState state;
+  Boss* boss;
 
   Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap);
   ~Level();

@@ -10,6 +10,7 @@ namespace zm {
 namespace config {
 
 int gamePeriod = 1000/60;
+int bossLife = 30;
 
 
 void loadConfigFile(const std::string& file) {
@@ -23,6 +24,9 @@ void loadConfigFile(const std::string& file) {
 
   gamePeriod = j.value("gamePeriod", gamePeriod);
   std::cout << "Game period: " << gamePeriod << std::endl;
+
+  bossLife = j.value("bossLife", bossLife);
+  std::cout << "Boss life: " << bossLife << std::endl;
 }
 
 

@@ -31,7 +31,7 @@ protected:
   const int jump;
   const int shootFrecuency;
   const int jumpFrecuency;
-  const int prefDistance; 
+  const int prefDistance;
   /*Posicion a la que va a moverse*/
   float positionToGo;
   /*Posiciones a las que puede moverse en x*/
@@ -39,7 +39,7 @@ protected:
   JsonMap jm;
   std::vector<Player*>& players;
 private:
-  void damage (int healt);
+  void damage (int health);
   unsigned int tics;
 };
 

@@ -9,6 +9,7 @@ namespace zm {
 namespace config
 {
     extern int gamePeriod;
+    extern int bossLife;
 
     void loadConfigFile(const std::string& file);
 } //config
