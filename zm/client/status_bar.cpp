@@ -66,9 +66,9 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   drawFilledCircle(context, selectedWeaponOffset, maxHeight / 2, perc,
                    circleRadius);
 
-  context->set_source_rgba(1.0, .5, .5, 0.8);
+  context->set_source_rgba(1.0, .4, .4, 0.9);
   perc = player.health * 100 / config::playerLife;
-  drawFilledCircle(context, step * 8, maxHeight / 2, perc, circleRadius);
+  drawFilledCircle(context, step * 10, maxHeight / 2, perc, circleRadius);
 
   context->restore();
 }

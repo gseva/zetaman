@@ -73,7 +73,7 @@ void Player::setReady() {
 
 void Player::right(){
   orientation = zm::proto::right;
-  if ( camera->canMoveRight(this) && isAlive ) {
+  if ( isAlive && camera->canMoveRight(this) ) {
     body->right();
     action = LastAction::right;
   } else {
@@ -84,7 +84,7 @@ void Player::right(){
 
 void Player::left() {
   orientation = zm::proto::left;
-  if ( camera->canMoveLeft(this) && isAlive ) {
+  if ( isAlive && camera->canMoveLeft(this) ) {
     body->left();
     action = LastAction::left;
   } else if (isAlive) {
@@ -99,7 +99,7 @@ void Player::stopHorizontalMove(){
 }
 
 void Player::up(){
-  if (body->up() && isAlive) {
+  if ( isAlive &&  body->up() ) {
     action = LastAction::up;
   } else {
     action = LastAction::idle;

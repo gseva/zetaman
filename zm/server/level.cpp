@@ -120,8 +120,10 @@ void Level::clean() {
   std::vector<Player*>::iterator iPlayer;
   for ( iPlayer = players.begin(); iPlayer != players.end(); ) {
     if ((*iPlayer)->body->isDestroyed()) {
+      std::cout << "Destruyo al jugador" << std::endl;
       (*iPlayer)->destroy();
       iPlayer = players.erase(iPlayer);
+      std::cout << "Quedan " << players.size() << std::endl;
     } else {
       ++iPlayer;
     }

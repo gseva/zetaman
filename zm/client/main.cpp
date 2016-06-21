@@ -7,8 +7,9 @@ int main(int argc, char *argv[])
 {
     zm::config::loadConfigFile("build/config.json");
 
+    int appArgs = 1;
     Glib::RefPtr<Gtk::Application> app =
-      Gtk::Application::create();
+      Gtk::Application::create(appArgs, argv);
     app->set_flags(Gio::APPLICATION_NON_UNIQUE);
 
     if (argc > 1) {
