@@ -28,7 +28,7 @@ int Client::scaleHeight(float h) {
 void Client::run(Glib::RefPtr<Gtk::Application> app) {
   window_ = new Window(this);
   // window_->set_default_size(1024, 768);
-  app->run(*window_);
+  app->run(*window_,0,0);
 }
 
 void Client::startConnection() {
