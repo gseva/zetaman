@@ -24,6 +24,7 @@ protected:
   Body* proprietor;
   Physics& physics;
   int ammunitions;
+  virtual void consumeAmmunition()=0;
 };
 
 class Normalgun : public Gun{
@@ -35,6 +36,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 class Bombgun : public Gun{
@@ -44,6 +46,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 class Magnetgun : public Gun{
@@ -53,6 +56,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 class Sparkgun : public Gun{
@@ -62,6 +66,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 class Ringgun : public Gun{
@@ -71,6 +76,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 class Firegun : public Gun{
@@ -80,6 +86,7 @@ public:
   virtual Bullet* fire();
   virtual Bullet* fire(int direction);
   virtual int getNumber();
+  virtual void consumeAmmunition();
 };
 
 #endif

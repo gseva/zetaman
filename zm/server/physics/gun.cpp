@@ -1,6 +1,12 @@
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
+#define NORMAL_CONSUME_AMMUNITION 0
+#define BOMB_CONSUME_AMMUNITION   1
+#define SPARK_CONSUME_AMMUNITION  3
+#define RING_CONSUME_AMMUNITION   4
+#define MAGNET_CONSUME_AMMUNITION 3
+#define FIRE_CONSUME_AMMUNITION   5
 
 Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics,int ammunitions) :
   ticsToCharge(ticsToCharge), physics(physics){
@@ -18,7 +24,6 @@ Bullet* Gun::shoot(){
     return NULL; // si ya se disparo y aun no se recargo
   if (!isEnemy && ammunitions <= 0)
     return NULL;
-  ammunitions--;
   return fire();
 }
 
@@ -27,7 +32,7 @@ Bullet* Gun::shoot(int direction){
     return NULL; // si ya se disparo y aun no se recargo
   if ( !isEnemy && ammunitions <= 0 )
     return NULL;
-  ammunitions--;
+  consumeAmmunition();
   return fire(direction);
 }
 
@@ -80,6 +85,10 @@ int Normalgun::getNumber(){
   return 0;
 }
 
+void Normalgun::consumeAmmunition(){
+  ammunitions -= NORMAL_CONSUME_AMMUNITION;
+}
+
 Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) : 
   Gun(proprietor, isEnemy, 10, physics){}
 
@@ -103,6 +112,10 @@ Bullet* Bombgun::fire(int direction){
 
 int Bombgun::getNumber(){
   return 1;
+}
+
+void Bombgun::consumeAmmunition(){
+  ammunitions -= BOMB_CONSUME_AMMUNITION; 
 }
 
 Magnetgun::Magnetgun(Body* proprietor, bool isEnemy, Physics& physics) :
@@ -130,6 +143,11 @@ int Magnetgun::getNumber(){
   return 2;
 }
 
+
+void Magnetgun::consumeAmmunition(){
+  ammunitions -= MAGNET_CONSUME_AMMUNITION; 
+}
+
 Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) : 
   Gun(proprietor, isEnemy, 10, physics){}
 
@@ -153,6 +171,11 @@ Bullet* Sparkgun::fire(int direction){
 
 int Sparkgun::getNumber(){
   return 3;
+}
+
+
+void Sparkgun::consumeAmmunition(){
+  ammunitions -= MAGNET_CONSUME_AMMUNITION; 
 }
 
 Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) : 
@@ -180,6 +203,10 @@ int Ringgun::getNumber(){
   return 4;
 }
 
+void Ringgun::consumeAmmunition(){
+  ammunitions -= RING_CONSUME_AMMUNITION; 
+}
+
 Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) : 
   Gun(proprietor, isEnemy, 10, physics){}
 
@@ -205,3 +232,6 @@ int Firegun::getNumber(){
   return 5;
 }
 
+void Firegun::consumeAmmunition(){
+  ammunitions -= FIRE_CONSUME_AMMUNITION; 
+}
