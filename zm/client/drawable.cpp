@@ -15,7 +15,7 @@ namespace drawing {
 
 
 Drawable::Drawable(Client& c) : c_(c), flipped_(false),
-    scaleX(1), scaleY(1), tics(0) {
+    scaleX(1), scaleY(1), offset_(c.statusBarHeight), tics(0) {
 }
 
 void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
@@ -33,7 +33,7 @@ void Drawable::draw(const Cairo::RefPtr<Cairo::Context>& context,
 
   // Gdk::Cairo::set_source_pixbuf(context, image, pos.x + width / 2,
   //                               pos.y - height / 2);
-  Gdk::Cairo::set_source_pixbuf(context, image, x, y);
+  Gdk::Cairo::set_source_pixbuf(context, image, x, offset_ + y);
   context->paint();
 
   // context->set_source_rgb(0.8, 0.0, 0.0);
@@ -441,9 +441,9 @@ void Proyectile::setState(proto::Proyectile p) {
     case proto::ProyectileType::Normal: break;
   }
 
-  if (image != "normal") {
-    std::cout << image << std::endl;
-  }
+  // if (image != "normal") {
+    // std::cout << image << std::endl;
+  // }
   setImageName("proyectiles/" + image + ".png");
 }
 

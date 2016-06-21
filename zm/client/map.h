@@ -23,6 +23,7 @@ JsonMap& jsonMap_;
 Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
 Glib::RefPtr<Gdk::Pixbuf> background_;
 bool hasBackground;
+int offset_;
 void loadImages();
 
 public:

@@ -52,6 +52,7 @@ Game::Game(Server& s) : server_(s), accepting_(false),  playing_(false),
 
 void Game::acceptHost(zm::Socket* accepter) {
   auto hostSock = std::make_shared<zm::ProtectedSocket>(accepter->accept());
+  std::cout << "Acepto host!" << std::endl;
   newPlayer(hostSock);
   zm::proto::ServerEvent event(zm::proto::connectedAsHost);
   std::string ev = event.serialize();

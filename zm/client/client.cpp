@@ -7,8 +7,8 @@
 
 namespace zm {
 
-Client::Client(const char* port) : port_(port), width(800), height(600),
-    serverProxy(*this, port_) {
+Client::Client(const char* port) : port_(port), connected_(false),
+    width(800), height(600), statusBarHeight(64), serverProxy(*this, port_) {
   ppm = scaleNum(64);
 }
 
@@ -31,7 +31,10 @@ void Client::run(Glib::RefPtr<Gtk::Application> app) {
 }
 
 void Client::startConnection() {
-  serverProxy.connect();
+  if (!connected_) {
+    connected_ = true;
+    serverProxy.connect();
+  }
 }
 
 void Client::startGame() {

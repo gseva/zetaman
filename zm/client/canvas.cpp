@@ -11,7 +11,8 @@
 namespace zm {
 
 
-Canvas::Canvas(Client& c) : c_(c), gameSet_(false), map_(c), buff_(c) {
+Canvas::Canvas(Client& c) : c_(c), gameSet_(false), map_(c), buff_(c),
+    statusBar_(c) {
   std::cout << "Creo canvas" << std::endl;
   sigc::connection conn = Glib::signal_timeout().connect(sigc::mem_fun(*this,
               &Canvas::on_timeout), 1000/30);
@@ -76,6 +77,13 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawing::PowerUp drawable(c_);
     drawable.setState(powerUp);
     drawable.draw(cr, buff_);
+  }
+
+  for (auto&& player : game_.players) {
+    if (player.id == game_.playerId) {
+      statusBar_.draw(cr, buff_, player);
+      break;
+    }
   }
 
   return true;
