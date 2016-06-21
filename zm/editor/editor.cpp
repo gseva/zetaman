@@ -101,9 +101,9 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
 }
 
 Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
-  std::string mapName): mapLen(len),app(appl) 
+  std::string mapName): mapLen(len),app(appl)
 {
-  mapPath = "assets/maps/custom/" + mapName + ".json";
+  mapPath = "build/maps/custom/" + mapName + ".json";
 
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
@@ -153,7 +153,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
 }
 
 Editor::Editor(Glib::RefPtr<Gtk::Application> appl,
- std::string path): app(appl), mapPath(path) 
+ std::string path): app(appl), mapPath(path)
 {
   Glib::RefPtr<Gtk::Builder> builder =
     Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
@@ -185,7 +185,7 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl,
   selectedBoss = ddlToName[pComboBoxBoss->get_active_text()];
   pSelectedBoss->set_from_resource(selectedBoss);
 
-  importExistingMap(path);  
+  importExistingMap(path);
 }
 
 Editor::~Editor()
@@ -386,7 +386,7 @@ void Editor::createEmptyGrid()
       {
         if (j == ALTO-1)
         {
-         imageMatrix[i][j].set_from_resource(IMAGE_GRASS); 
+         imageMatrix[i][j].set_from_resource(IMAGE_GRASS);
         } else {
           imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
         }
@@ -412,9 +412,9 @@ void Editor::createEmptyGrid()
     {
       if (j==ALTO-1)
       {
-        imageNamesCurrent[i][j] = IMAGE_GRASS;  
+        imageNamesCurrent[i][j] = IMAGE_GRASS;
       } else {
-        imageNamesCurrent[i][j] = IMAGEN_BLANCO;  
+        imageNamesCurrent[i][j] = IMAGEN_BLANCO;
       }
     }
   }
@@ -425,7 +425,7 @@ void Editor::createEmptyGrid()
 void Editor::exportCreatedMap()
 {
   JsonSerializer s;
-  
+
   JsonMap jMap;
 
   jMap = createJsonMap();
@@ -456,16 +456,16 @@ JsonMap Editor::createJsonMap()
       if (nameToNumber.count(image) == 0 && nameToSpawnNumber.count(image)==0)
       {
         nameToNumber.insert({image,numeroImagen});
-        numeroImagen++;          
-        
+        numeroImagen++;
+
         jMap.imageNames.push_back(getName(image));
-        
+
         jMap.physics.push_back(nameToPhysics[image]);
       }
 
       if (nameToSpawnNumber.count(image)==0)
       {
-        jMap.imageNumbers.push_back(nameToNumber[image]);  
+        jMap.imageNumbers.push_back(nameToNumber[image]);
       } else {
         jMap.imageNumbers.push_back(nameToNumber[IMAGEN_BLANCO]);
       }
@@ -487,7 +487,7 @@ JsonMap Editor::createJsonMap()
   SpawnData bossData;
   bossData.column = (ANCHO * mapLen) - 2;
   bossData.row = 4;
-  bossData.type = nameToSpawnNumber[selectedBoss]; 
+  bossData.type = nameToSpawnNumber[selectedBoss];
   jMap.spawnsData.push_back(bossData);
 
   return jMap;
@@ -496,7 +496,7 @@ JsonMap Editor::createJsonMap()
 void Editor::importExistingMap(std::string path)
 {
   JsonSerializer s;
-  
+
   JsonMap jMap;
 
   jMap = s.importMap(path);
@@ -545,12 +545,12 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
-        int imageNumber = 
+        int imageNumber =
         jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
         if (imageNumber >=0)
         {
           imageMatrix[i][j].set_from_resource(
-            TILE_PREFIX + jm.imageNames[imageNumber]);    
+            TILE_PREFIX + jm.imageNames[imageNumber]);
         } else {
           imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
         }
@@ -574,11 +574,11 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
     for (unsigned int j=0; j<ALTO; j++)
     {
-      int imageNumber = 
+      int imageNumber =
         jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
       if (imageNumber >= 0)
       {
-        imageNamesCurrent[i][j] = TILE_PREFIX + jm.imageNames[imageNumber];  
+        imageNamesCurrent[i][j] = TILE_PREFIX + jm.imageNames[imageNumber];
       } else {
         imageNamesCurrent[i][j] = IMAGEN_BLANCO;
       }
@@ -597,7 +597,7 @@ void Editor::createGridFromJsonMap(JsonMap jm)
       imageMatrix[col][row].set_from_resource(
         SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png");
       imageNamesCurrent[col][row] =
-       SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png"; 
+       SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png";
     } else {
       selectedBoss =
        SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png";
@@ -644,8 +644,8 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
 {
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
-      
-  /*Elementos de la ventana crear nuevo nivel*/    
+
+  /*Elementos de la ventana crear nuevo nivel*/
   builder->get_widget("windowNewLevel", pWindowNewLevel);
   builder->get_widget("btnAcceptExport", pBtnAcceptExport);
   builder->get_widget("entryExportMapName", pEntryExportMapName);

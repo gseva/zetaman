@@ -233,6 +233,10 @@
     <file  preprocess="to-pixdata">images/powerups/life_2.png</file>
     <file  preprocess="to-pixdata">images/powerups/life_3.png</file>
     <file  preprocess="to-pixdata">images/powerups/life_4.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_5.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_6.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_7.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_8.png</file>
 
   </gresource>
 </gresources>

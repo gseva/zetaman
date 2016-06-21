@@ -24,9 +24,10 @@ Physics::~Physics() {}
 
 void Physics::setMap(const JsonMap& jm){
   std::vector<int> matriz = jm.imageNumbers;
+  int ancho = matriz.size() / ALTO_TOTAL;
   for ( int j = 0; j < ALTO_TOTAL; ++j ) {
     for ( unsigned int i = 0; i < jm.imageNumbers.size()/ALTO_TOTAL; ++i ) {
-      if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == SOLID ) {
+      if ( jm.physics[matriz[i + j*ancho]] == SOLID ) {
           b2BodyDef blockBodyDef;// = new b2BodyDef();
           b2Body* blockBody;
           blockBodyDef.position.Set(i, ALTO_TOTAL - j); //centro
@@ -43,7 +44,7 @@ void Physics::setMap(const JsonMap& jm){
           fixtureDef.filter.maskBits = ALL_CONTACT;
           blockBody->CreateFixture(&fixtureDef);
           ground.addBlock(blockBody);
-      } else if ( jm.physics[matriz[i + j*ANCHO_TOTAL]] == STAIR ) {
+      } else if ( jm.physics[matriz[i + j*ancho]] == STAIR ) {
           b2BodyDef stairBodyDef;// = new b2BodyDef();
           b2Body* stairBody;
           stairBodyDef.position.Set(i, ALTO_TOTAL - j); //centro

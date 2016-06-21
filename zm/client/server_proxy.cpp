@@ -101,7 +101,9 @@ void ServerProxy::dispatchEvent(proto::ServerEvent event) {
       client_.showConnectedPlayer(event.payload);
       break;
     case proto::mapSelected:
+      std::cout << event.payload << std::endl;
       map_.fromReducedString(event.payload);
+      std::cout << map_.imageNumbers.size() << std::endl;
       client_.startGame();
       break;
     case proto::gameStart: break;

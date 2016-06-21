@@ -20,7 +20,7 @@ class Client;
 class Map {
 Client& client_;
 JsonMap& jsonMap_;
-Glib::RefPtr<Gdk::Pixbuf> images_[N_IMAGES];
+std::vector<Glib::RefPtr<Gdk::Pixbuf>> images_;
 Glib::RefPtr<Gdk::Pixbuf> background_;
 bool hasBackground;
 int offset_;

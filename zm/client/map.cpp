@@ -21,6 +21,7 @@ Map::Map(Client& client) : client_(client),
 void Map::loadImages() {
   std::string prefix = "/zm/images/tiles/";
   int ppm = client_.ppm;
+  images_.resize(jsonMap_.imageNames.size());
   for (unsigned int i = 0; i < jsonMap_.imageNames.size(); ++i) {
     std::string resource_name = prefix + jsonMap_.imageNames[i];
 
@@ -55,7 +56,8 @@ void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
   }
   // om.tercio // 2
 
-  int largo = 64;
+  int largo = jsonMap_.imageNumbers.size() / 12;
+  // std:.cout << largo
 
   for (int i = 0; i < 16; ++i) {
     for (int j = 0; j < 12; ++j) {
