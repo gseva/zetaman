@@ -30,7 +30,7 @@ Player::~Player(){
 }
 
 void Player::deleteGuns() {
-  for(auto&& pair : guns) {
+  for (auto&& pair : guns) {
     delete pair.second;
   }
 }
@@ -41,9 +41,9 @@ void Player::createBody(Physics* physics, float32 x, float32 y){
 
   body = new PlayerBody(*physics, x, y, this);
 
-  for(auto&& proyectileType : gunsWon) {
+  for (auto&& proyectileType : gunsWon) {
     Gun* g;
-    switch(proyectileType) {
+    switch (proyectileType) {
       case zm::proto::Normal: g = new Normalgun(body, false, *physics); break;
       case zm::proto::Fire: g = new Firegun(body, false, *physics); break;
       case zm::proto::Ring: g = new Ringgun(body, false, *physics); break;

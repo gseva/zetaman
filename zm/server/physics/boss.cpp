@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "zm/config.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
@@ -141,10 +143,6 @@ Bullet* Boss::move(){
   }
   choosePosition();
   vel.x = moveTowardsPosition();
-
-  // std::cout << "Posicion actual en x " << getPosition().x << std::endl;
-  // std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
-  // std::cout << "Posicion player x " << players[0]->getPosition().x << std::endl;
 
   body->SetLinearVelocity(vel);
   return bullet;

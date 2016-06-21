@@ -212,7 +212,7 @@ zm::proto::Game Level::getState(){
 bool Level::checkLoseCondition() {
   bool lose = true;
 
-  for(auto&& player : players) {
+  for (auto&& player : players) {
     if (!player->body->isDestroyed()) {
       lose = false;
     }

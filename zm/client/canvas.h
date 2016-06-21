@@ -40,6 +40,7 @@ public:
   void setWinScreen();
   void setLoseScreen();
   void showScreenAnimation(const Cairo::RefPtr<Cairo::Context>& cr);
+
 protected:
   void redraw();
 

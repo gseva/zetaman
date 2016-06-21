@@ -16,6 +16,7 @@ class Client {
 Window* window_;
 std::string port_;
 bool connected_;
+
 public:
   int width, height, statusBarHeight, ppm;
   ServerProxy serverProxy;

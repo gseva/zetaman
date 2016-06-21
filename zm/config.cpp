@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #include "zm/json/json.hpp"
 #include "zm/config.h"

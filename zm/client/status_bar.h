@@ -14,7 +14,7 @@ class Client;
 class StatusBar {
 Client& client_;
 public:
-  StatusBar(Client& c);
+  explicit StatusBar(Client& c);
   void draw(const Cairo::RefPtr<Cairo::Context>& context,
             ImageBuffer& buff, const proto::Player& player);
 private:
