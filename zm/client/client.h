@@ -14,14 +14,13 @@ namespace zm {
 
 class Client {
 Window* window_;
-std::string port_;
 bool connected_;
 
 public:
   int width, height, statusBarHeight, ppm;
   ServerProxy serverProxy;
 
-  explicit Client(const char* port);
+  explicit Client();
 
   int scaleNum(int n);
   int scaleWidth(float w);

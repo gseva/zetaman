@@ -1,4 +1,5 @@
 
+#include "zm/config.h"
 #include "zm/client/server_proxy.h"
 #include "zm/client/client.h"
 
@@ -8,13 +9,14 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy(Client& client, const std::string& port)
-    : sender_(NULL), client_(client), port_(port) {
+ServerProxy::ServerProxy(Client& client)
+    : sender_(NULL), client_(client) {
 }
 
 void ServerProxy::connect() {
-  std::cout << "Conectan2 " << port_ << std::endl;
-  serverSock_.connect("127.0.0.1", port_);
+  std::cout << "Conectan2 " << zm::config::host << ":"
+    << zm::config::port << std::endl;
+  serverSock_.connect(zm::config::host, zm::config::port);
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();

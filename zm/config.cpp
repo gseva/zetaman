@@ -15,6 +15,9 @@ int bossLife = 30;
 int playerLife = 50;
 int lifes = 50;
 
+std::string port = "9090";
+std::string host = "localhost";
+
 
 void loadConfigFile(const std::string& file) {
   std::ifstream fs(file);
@@ -36,6 +39,12 @@ void loadConfigFile(const std::string& file) {
 
   lifes = j.value("lifes", lifes);
   std::cout << "lifes: " << lifes << std::endl;
+
+  port = j.value("port", port);
+  std::cout << "port: " << port << std::endl;
+
+  host = j.value("host", host);
+  std::cout << "host: " << host << std::endl;
 }
 
 

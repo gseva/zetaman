@@ -15,7 +15,7 @@
 #define GAME_STEP_FREQUENCY 1000/60
 
 
-Server::Server(const char* port) : accepter_(NULL), port_(port) {
+Server::Server() : accepter_(NULL) {
 }
 
 Server::~Server() {
@@ -25,7 +25,7 @@ Server::~Server() {
 
 void Server::run() {
   accepter_ = new zm::Socket();
-  accepter_->bindAndListen(port_);
+  accepter_->bindAndListen(zm::config::port.c_str());
 
   zm::Game game(*this);
 

@@ -13,6 +13,9 @@ namespace config
     extern int playerLife;
     extern int lifes;
 
+    extern std::string port;
+    extern std::string host;
+
     void loadConfigFile(const std::string& file);
 } //config
 
