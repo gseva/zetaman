@@ -72,11 +72,14 @@ struct Proyectile : JsonSerializable {
 };
 
 
-enum PowerUpType { Life, SmallEnergy, LargeEnergy, SmallPlasma, LargePlasma };
+enum PowerUpType { Life=0, SmallEnergy=1, LargeEnergy=2,
+  SmallPlasma=3, LargePlasma=4 };
 
 struct PowerUp {
   Position pos;
   PowerUpType type;
+  virtual json getJson();
+  static PowerUp deserialize(const json& j);
 };
 
 

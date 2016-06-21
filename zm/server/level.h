@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-
+#include <Box2D/Box2D.h>
 #include "zm/json/jsonserializer.h"
 #include "zm/server/player.h"
 #include "zm/server/camera.h"
@@ -12,6 +12,7 @@
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/enemies.h"
 #include "zm/server/physics/bullets.h"
+#include "zm/server/physics/powerup.h"
 
 
 class Level{
@@ -36,10 +37,12 @@ public:
   std::vector<Player*> players;
   std::vector<Enemy*> enemies;
   std::vector<Bullet*> bullets;
+  std::vector<PowerUp*> powerUps;
 
 private:
   Physics physics;
   JsonMap& jm;
   Camera camera;
+  PowerUp* createPowerUp(b2Vec2 pos);
 };
 #endif
