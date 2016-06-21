@@ -12,6 +12,7 @@
 #define IMAGEN_BUMBY "/zm/editor/images/editor/spawns/bumby.png"
 #define IMAGEN_MET "/zm/editor/images/editor/spawns/met.png"
 #define IMAGEN_SNIPER "/zm/editor/images/editor/spawns/sniper.png"
+#define IMAGE_JUMPING_SNIPER "/zm/editor/images/editor/spawns/jumpingsniper.png"
 
 #define IMAGE_BOSS_FIREMAN "/zm/editor/images/editor/spawns/fireman.png"
 #define IMAGE_BOSS_SPARKMAN "/zm/editor/images/editor/spawns/sparkman.png"
@@ -21,6 +22,19 @@
 
 #define IMAGE_GRASS "/zm/editor/images/tiles/grass.png"
 #define IMAGE_TILE_GRASS_HALF "/zm/editor/images/tiles/grass_half.png"
+#define IMAGE_TILE_GRASS_MID "/zm/editor/images/tiles/grass_mid.png"
+#define IMAGE_TILE_BEAM "/zm/editor/images/tiles/beam.png"
+#define IMAGE_TILE_BEAM_HOLES "/zm/editor/images/tiles/beam_holes.png"
+#define IMAGE_TILE_BOX "/zm/editor/images/tiles/box.png"
+#define IMAGE_TILE_BROWN "/zm/editor/images/tiles/brown.png"
+#define IMAGE_TILE_BROWN_BOX "/zm/editor/images/tiles/brown_box.png"
+#define IMAGE_TILE_DIRT "/zm/editor/images/tiles/dirt.png"
+#define IMAGE_TILE_ICE "/zm/editor/images/tiles/ice.png"
+#define IMAGE_TILE_METAL "/zm/editor/images/tiles/metal_mid.png"
+#define IMAGE_TILE_SAND "/zm/editor/images/tiles/sand.png"
+#define IMAGE_TILE_SNOW "/zm/editor/images/tiles/snow.png"
+#define IMAGE_TILE_STONE_MID "/zm/editor/images/tiles/stone_mid.png"
+#define IMAGE_TILE_TUNDRA_MID "/zm/editor/images/tiles/tundra_mid.png"
 
 #define TILE_PREFIX "/zm/editor/images/tiles/"
 #define SPAWN_PREFIX "/zm/editor/images/editor/spawns/"
@@ -199,6 +213,7 @@ void Editor::initializeComboBoxes()
   pComboBoxEnemy->append("Bumby");
   pComboBoxEnemy->append("Met");
   pComboBoxEnemy->append("Sniper");
+  pComboBoxEnemy->append("Jumping sniper");
   pComboBoxEnemy->set_active(0);
   /*Bosses*/
   pComboBoxBoss->append("Sparkman");
@@ -210,7 +225,20 @@ void Editor::initializeComboBoxes()
   /*Tiles*/
   pComboBoxTile->append("Elegir terreno");
   pComboBoxTile->append("Pasto");
+  pComboBoxTile->append("Pasto redondeado");
   pComboBoxTile->append("Pasto reducido");
+  pComboBoxTile->append("Vigas");
+  pComboBoxTile->append("Vigas agujereadas");
+  pComboBoxTile->append("Caja");
+  pComboBoxTile->append("Caja marron");
+  pComboBoxTile->append("Nieve");
+  pComboBoxTile->append("Arena");
+  pComboBoxTile->append("Marron");
+  pComboBoxTile->append("Tundra");
+  pComboBoxTile->append("Piedra");
+  pComboBoxTile->append("Metal");
+  pComboBoxTile->append("Hielo");
+  pComboBoxTile->append("Tierra");
   pComboBoxTile->set_active(0);
 }
 
@@ -226,6 +254,7 @@ void Editor::initializeRelationships()
   nameToSpawnNumber.insert({IMAGE_BOSS_FIREMAN,6});
   nameToSpawnNumber.insert({IMAGE_BOSS_BOMBMAN,7});
   nameToSpawnNumber.insert({IMAGE_BOSS_SPARKMAN,8});
+  nameToSpawnNumber.insert({IMAGE_JUMPING_SNIPER,9});
   /*Vector con todos los tipos*/
   spawnTypes.push_back("player");
   spawnTypes.push_back("bumby");
@@ -236,17 +265,31 @@ void Editor::initializeRelationships()
   spawnTypes.push_back("fireman");
   spawnTypes.push_back("bombman");
   spawnTypes.push_back("sparkman");
+  spawnTypes.push_back("jumpingsniper");
   /*Relacion entre nombre de la imagen con la fisica*/
   nameToPhysics.insert({IMAGE_GRASS,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_GRASS_MID,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_GRASS_HALF,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_BEAM,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_BOX,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_BEAM_HOLES,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_SNOW,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_SAND,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_DIRT,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_BROWN,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_BROWN_BOX,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_METAL,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_ICE,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_TUNDRA_MID,"solid"});
+  nameToPhysics.insert({IMAGE_TILE_STONE_MID,"solid"});
   nameToPhysics.insert({IMAGEN_BLANCO,"void"});
-  nameToPhysics.insert({IMAGE_PLAYER,"void"});
-  nameToPhysics.insert({IMAGEN_BUMBY,"void"});
   nameToPhysics.insert({IMAGEN_ESCALERA,"stair"});
   /*Relacion entre nombre en ddl con la imagen*/
   ddlToName.insert({"Elegir enemigo", IMAGEN_BLANCO});
   ddlToName.insert({"Bumby", IMAGEN_BUMBY});
   ddlToName.insert({"Met", IMAGEN_MET});
   ddlToName.insert({"Sniper", IMAGEN_SNIPER});
+  ddlToName.insert({"Jumping sniper", IMAGE_JUMPING_SNIPER});
   ddlToName.insert({"Elegir boss", IMAGEN_BLANCO});
   ddlToName.insert({"Fireman", IMAGE_BOSS_FIREMAN});
   ddlToName.insert({"Sparkman", IMAGE_BOSS_SPARKMAN});
@@ -254,8 +297,21 @@ void Editor::initializeRelationships()
   ddlToName.insert({"Ringman", IMAGE_BOSS_RINGMAN});
   ddlToName.insert({"Bombman", IMAGE_BOSS_BOMBMAN});
   ddlToName.insert({"Elegir terreno", IMAGEN_BLANCO});
-  ddlToName.insert({"Pasto", IMAGE_GRASS});
+  ddlToName.insert({"Pasto", IMAGE_TILE_GRASS_MID});
+  ddlToName.insert({"Pasto redondeado", IMAGE_GRASS});
   ddlToName.insert({"Pasto reducido", IMAGE_TILE_GRASS_HALF});
+  ddlToName.insert({"Vigas", IMAGE_TILE_BEAM});
+  ddlToName.insert({"Caja", IMAGE_TILE_BOX});
+  ddlToName.insert({"Vigas agujereadas", IMAGE_TILE_BEAM_HOLES});
+  ddlToName.insert({"Nieve", IMAGE_TILE_SNOW});
+  ddlToName.insert({"Arena", IMAGE_TILE_SAND});
+  ddlToName.insert({"Tierra", IMAGE_TILE_DIRT});
+  ddlToName.insert({"Marron", IMAGE_TILE_BROWN});
+  ddlToName.insert({"Caja marron", IMAGE_TILE_BROWN_BOX});
+  ddlToName.insert({"Metal", IMAGE_TILE_METAL});
+  ddlToName.insert({"Hielo", IMAGE_TILE_ICE});
+  ddlToName.insert({"Tundra", IMAGE_TILE_TUNDRA_MID});
+  ddlToName.insert({"Piedra", IMAGE_TILE_STONE_MID});
 }
 
 void Editor::connectButtonsWithSignals()

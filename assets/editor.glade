@@ -261,7 +261,7 @@
   </object>
   <object class="GtkFileChooserDialog" id="fcEditLevel">
     <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
+    <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="filechooserdialog-vbox1">
         <property name="can_focus">False</property>
