@@ -2,6 +2,7 @@
 #include <gdkmm/cursor.h> // Necesario para que no tire el famoso error
 #include <gdkmm/general.h> // set_source_pixbuf()
 
+#include "zm/config.h"
 #include "zm/client/status_bar.h"
 #include "zm/client/client.h"
 
@@ -24,11 +25,10 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   context->fill();
   context->restore();
 
-  int weaponOffset = static_cast<int>(player.weapon);
+  int selectedWeaponOffset = step * (static_cast<int>(player.weapon) + 1);
   context->set_source_rgba(1.0, 1.0, 1.0, 0.8);
   int circleRadius = client_.scaleNum(30);
-  context->arc(step * (weaponOffset + 1), maxHeight / 2,
-               circleRadius, 0, 2 * M_PI);
+  context->arc(selectedWeaponOffset, maxHeight / 2, circleRadius, 0, 2 * M_PI);
   context->fill();
   context->restore();
 
@@ -40,12 +40,12 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   setImage(context, image, step * 2, maxHeight / 2);
   context->paint();
 
-  image = buff.getImage("proyectiles/magnet_1.png", false, 1.2, 1.2);
-  setImage(context, image, step * 3, maxHeight / 2 + 5);
+  image = buff.getImage("proyectiles/spark_1.png", false, 1.5, 1.5);
+  setImage(context, image, step * 3, maxHeight / 2);
   context->paint();
 
-  image = buff.getImage("proyectiles/spark_1.png", false, 1.5, 1.5);
-  setImage(context, image, step * 4, maxHeight / 2);
+  image = buff.getImage("proyectiles/magnet_1.png", false, 1.2, 1.2);
+  setImage(context, image, step * 4, maxHeight / 2 + 5);
   context->paint();
 
   image = buff.getImage("proyectiles/ring_1.png", false, 1.4, 1.4);
@@ -55,6 +55,20 @@ void StatusBar::draw(const Cairo::RefPtr<Cairo::Context>& context,
   image = buff.getImage("proyectiles/fire_1.png");
   setImage(context, image, step * 6, maxHeight / 2 + 10);
   context->paint();
+
+  int perc = 100;
+  if (player.ammo >= 0) {
+    context->set_source_rgba(.5, 1.0, .5, 0.4);
+    perc = player.ammo;
+  } else {
+    context->set_source_rgba(1.0, .5, .5, 0.4);
+  }
+  drawFilledCircle(context, selectedWeaponOffset, maxHeight / 2, perc,
+                   circleRadius);
+
+  context->set_source_rgba(1.0, .4, .4, 0.9);
+  perc = player.health * 100 / config::playerLife;
+  drawFilledCircle(context, step * 10, maxHeight / 2, perc, circleRadius);
 
   context->restore();
 }
@@ -67,7 +81,13 @@ void StatusBar::setImage(const Cairo::RefPtr<Cairo::Context>& context,
   width = width - imageWidth / 2;
   heigth = heigth - imageHeight / 2;
   Gdk::Cairo::set_source_pixbuf(context, image, width, heigth);
+}
 
+void StatusBar::drawFilledCircle(const Cairo::RefPtr<Cairo::Context>& context,
+                   int width, int height, float percentage, int radius) {
+  float angle = percentage * 360. * M_PI / 18000.;
+  context->arc(width, height, radius, 0, angle);
+  context->fill();
 }
 
 } // zm

@@ -19,7 +19,8 @@ namespace zm {
 
 class Canvas : public Gtk::DrawingArea {
 Client& c_;
-bool gameSet_;
+bool gameSet_, winScreen_, loseScreen_;
+int tics;
 proto::Game game_;
 Map map_;
 ImageBuffer buff_;
@@ -28,12 +29,17 @@ Mutex m_;
 std::map<int, drawing::Player*> players_;
 std::map<int, drawing::Enemy*> enemies_;
 std::map<int, drawing::Proyectile*> proyectiles_;
+std::map<int, drawing::PowerUp*> powerUps_;
 
 public:
   explicit Canvas(Client& c);
   virtual ~Canvas();
 
   void updateGameState(proto::Game gs);
+
+  void setWinScreen();
+  void setLoseScreen();
+  void showScreenAnimation(const Cairo::RefPtr<Cairo::Context>& cr);
 
 protected:
   void redraw();

@@ -26,6 +26,7 @@ json Player::getJson() {
   json j = pos.getJson();
   j["i"] = id;
   j["h"] = health;
+  j["a"] = ammo;
 
   int state;
   switch (ps) {
@@ -48,6 +49,8 @@ Player Player::deserialize(const json& j) {
   p.pos.x = j["x"];
   p.pos.y = j["y"];
   p.id = j["i"];
+  p.health = j["h"];
+  p.ammo = j["a"];
 
   int state = j["st"];
   p.ps = static_cast<PlayerState>(state);
@@ -121,6 +124,23 @@ Proyectile Proyectile::deserialize(const json& j) {
   return p;
 }
 
+json PowerUp::getJson() {
+  json j = pos.getJson();
+  j["i"] = id;
+  j["t"] = static_cast<int>(type);
+  return j;
+}
+
+PowerUp PowerUp::deserialize(const json& j) {
+  PowerUp po;
+  po.pos.x = j["x"];
+  po.pos.y = j["y"];
+  po.id = j["i"];
+
+  int type = j["t"];
+  po.type = static_cast<PowerUpType>(type);
+  return po;
+}
 
 Game::Game() : state(GameState::playing) {
 }
@@ -146,8 +166,14 @@ std::string Game::serialize() {
     proyectileJson.push_back(proyectile.getJson());
   }
 
+  json powerUpJson = json::array();
+  for (auto&& powerUp : powerUps) {
+    powerUpJson.push_back(powerUp.getJson());
+  }
+
   json game = {{"st", s}, {"cp", camPos.getJson()}, {"i", playerId},
-               {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson}};
+               {"p", playersJson}, {"e", enemiesJson}, {"pr", proyectileJson},
+               {"po", powerUpJson}};
   std::string result = game.dump();
   return result;
 }
@@ -174,6 +200,10 @@ Game Game::deserialize(const std::string& s) {
 
   for (const json &proyectileJson : j["pr"]) {
     game.proyectiles.push_back(Proyectile::deserialize(proyectileJson));
+  }
+
+  for (const json &powerUpJson : j["po"]) {
+    game.powerUps.push_back(PowerUp::deserialize(powerUpJson));
   }
 
   return game;

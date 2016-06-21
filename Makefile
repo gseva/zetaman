@@ -251,7 +251,8 @@ editor_assets: create_dirs $(editor_resources) $(o_editor_resources)
 server_assets: create_dirs $(server_config) $(o_server_config)
 
 clean_assets:
-	@$(RM) -fv $(client_resources) $(o_client_resources) $(editor_resources) $(o_editor_resources)
+	@$(RM) -fv $(client_resources) $(o_client_resources) $(editor_resources) \
+					$(o_editor_resources) $(o_server_config)
 
 clean:
 	@$(RM) -fv $(o_client_only_files) $(o_server_only_files) $(o_common_files) \

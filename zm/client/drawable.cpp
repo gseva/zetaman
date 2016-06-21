@@ -451,13 +451,41 @@ Proyectile::~Proyectile() {}
 
 
 PowerUp::PowerUp(Client& c) : Drawable(c) {
+  setScale(1, 1); tics = 0;
 }
 
 PowerUp::~PowerUp() {}
 
+
 void PowerUp::setState(proto::PowerUp p) {
   setPosition(p.pos);
-  setImageName("powerups/life.png");
+  tics++;
+  std::string image;
+  switch (p.type) {
+    case proto::Life:
+      image = "life_" + std::to_string(tics);
+      if (tics >= 8) tics = 0;
+      break;
+    case proto::SmallEnergy:
+      image = "health_" + std::to_string(tics);
+      if (tics >= 4) tics = 0;
+      break;
+    case proto::LargeEnergy:
+      // setFlipped(p_.o == proto::left);
+      image = "big_health_" + std::to_string(tics);
+      if (tics >= 8) tics = 0;
+      break;
+    case proto::SmallPlasma:
+      image = "ammo_" + std::to_string(tics);
+      if (tics >= 4) tics = 0;
+      break;
+    case proto::LargePlasma:
+      image = "ammo_big_" + std::to_string(tics);
+      if (tics >= 12) tics = 0;
+      break;
+  }
+  setPosition(p.pos);
+  setImageName("powerups/" + image + ".png");
 }
 
 

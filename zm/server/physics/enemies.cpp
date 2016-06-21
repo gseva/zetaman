@@ -2,7 +2,8 @@
 #include "zm/server/physics/enemies.h"
 
 
-Enemy::Enemy(Physics& physics, float32 x, float32 y, float32 largo, float32 alto)
+Enemy::Enemy(Physics& physics, float32 x, float32 y,
+            float32 largo, float32 alto)
     : Body(physics, x, y, BodyType::Enemy), orientation(zm::proto::left) {
   b2PolygonShape shape;
   shape.SetAsBox(largo, alto);
@@ -15,10 +16,6 @@ Enemy::Enemy(Physics& physics, float32 x, float32 y, float32 largo, float32 alto
 }
 
 Enemy::~Enemy(){}
-
-bool Enemy::collide(Bullet* bullet){
-  return bullet->collide(this);
-}
 
 void Enemy::setOrientation(zm::proto::Orientation o) {
   orientation = o;

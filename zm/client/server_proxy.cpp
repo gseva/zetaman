@@ -1,4 +1,5 @@
 
+#include "zm/config.h"
 #include "zm/client/server_proxy.h"
 #include "zm/client/client.h"
 
@@ -8,13 +9,14 @@
 
 namespace zm {
 
-ServerProxy::ServerProxy(Client& client, const std::string& port)
-    : sender_(NULL), client_(client), port_(port) {
+ServerProxy::ServerProxy(Client& client)
+    : sender_(NULL), client_(client) {
 }
 
 void ServerProxy::connect() {
-  std::cout << "Conectan2 " << port_ << std::endl;
-  serverSock_.connect("127.0.0.1", port_);
+  std::cout << "Conectan2 " << zm::config::host << ":"
+    << zm::config::port << std::endl;
+  serverSock_.connect(zm::config::host, zm::config::port);
 
   sender_ = new Sender(eventQueue_, serverSock_);
   sender_->start();
@@ -103,8 +105,14 @@ void ServerProxy::dispatchEvent(proto::ServerEvent event) {
       client_.startGame();
       break;
     case proto::gameStart: break;
-    case proto::levelWon: client_.showWinDialog(); break;
-    case proto::levelWonHost: client_.selectLevel(); break;
+    case proto::levelLost:
+      client_.showLoseAnimation();
+      break;
+    case proto::levelWon:
+      client_.showWinAnimation();
+      break;
+    case proto::selectLevel: client_.showWinDialog(); break;
+    case proto::selectLevelHost: client_.selectLevel(); break;
   }
 }
 
@@ -136,7 +144,7 @@ JsonMap& ServerProxy::getJsonMap() {
 
 
 Sender::Sender(Queue<proto::ClientEvent>& eventQueue,
-               ProtectedSocket& serverSock) :
+               zm::Socket& serverSock) :
                eventQueue_(eventQueue), serverSock_(serverSock) {
 }
 
@@ -151,7 +159,7 @@ void Sender::run() {
 }
 
 
-Receiver::Receiver(ServerProxy& sp, ProtectedSocket& serverSock)
+Receiver::Receiver(ServerProxy& sp, zm::Socket& serverSock)
     : sp_(sp), serverSock_(serverSock), receiveEvents(true), stop(false) {
 }
 
@@ -164,7 +172,6 @@ void Receiver::run() {
       if (receiveEvents) {
         proto::ServerEvent ev;
         try {
-          /* code */
           ev = proto::ServerEvent::deserialize(res);
         }
         catch(const std::invalid_argument& e) {

@@ -1,3 +1,6 @@
+#include <vector>
+
+#include "zm/config.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
@@ -42,16 +45,16 @@
 #define FIREMAN_LARGO     0.55
 #define FIREMAN_ALTO      0.7
 
-Boss::Boss(Physics& physics, float32 x, float32 y, 
+Boss::Boss(Physics& physics, float32 x, float32 y,
     int velocity, int jump, int shootFrecuency, int jumpFrecuency,
     int prefDistance, JsonMap jm, std::vector<Player*>& players,
     float32 largo, float32 alto) :
     Enemy(physics, x, y, largo, alto), velocity(velocity), jump(jump),
     shootFrecuency(shootFrecuency), jumpFrecuency(jumpFrecuency),
-    prefDistance(prefDistance), jm(jm), players(players){
+    prefDistance(prefDistance), jm(jm), players(players) {
       tics = 0;
       determinePositionsToGo();
-	  health = 30;
+	  health = zm::config::bossLife;
 }
 
 void Boss::determinePositionsToGo(){
@@ -141,10 +144,6 @@ Bullet* Boss::move(){
   choosePosition();
   vel.x = moveTowardsPosition();
 
-  // std::cout << "Posicion actual en x " << getPosition().x << std::endl;
-  // std::cout << "Posicion que quiero en x " << positionToGo << std::endl;
-  // std::cout << "Posicion player x " << players[0]->getPosition().x << std::endl;
-
   body->SetLinearVelocity(vel);
   return bullet;
 }
@@ -184,6 +183,10 @@ zm::proto::Enemy Boss::toBean(int xo, int yo){
   return protoEnemy;
 }
 
+int Boss::getGunNumber() {
+  return gun->getNumber();
+}
+
 Bombman::Bombman(Physics& physics, float32 x, float32 y,
   JsonMap jm, std::vector<Player*>& players) :
 Boss(physics, x, y+BOMBMAN_ALTO, BOMBMAN_VEL, BOMBMAN_JUMP,
@@ -193,6 +196,7 @@ Boss(physics, x, y+BOMBMAN_ALTO, BOMBMAN_VEL, BOMBMAN_JUMP,
 }
 
 Bombman::~Bombman(){}
+
 
 zm::proto::Enemy Bombman::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
@@ -211,6 +215,7 @@ Boss(physics, x, y+MAGNETMAN_ALTO, MAGNETMAN_VEL, MAGNETMAN_JUMP,
 
 Magnetman::~Magnetman(){}
 
+
 zm::proto::Enemy Magnetman::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Enemy::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Magnetman;
@@ -227,6 +232,7 @@ Boss(physics, x, y+SPARKMAN_ALTO, SPARKMAN_VEL, SPARKMAN_JUMP,
 }
 
 Sparkman::~Sparkman(){}
+
 
 zm::proto::Enemy Sparkman::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
@@ -245,6 +251,7 @@ Boss(physics, x, y+RINGMAN_ALTO, RINGMAN_VEL, RINGMAN_JUMP,
 
 Ringman::~Ringman(){}
 
+
 zm::proto::Enemy Ringman::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);
   protoEnemy.enemyType = zm::proto::EnemyType::Ringman;
@@ -261,6 +268,7 @@ Boss(physics, x, y+FIREMAN_ALTO, FIREMAN_VEL, FIREMAN_JUMP,
 }
 
 Fireman::~Fireman(){}
+
 
 zm::proto::Enemy Fireman::toBean(int xo, int yo){
   zm::proto::Enemy protoEnemy = Boss::toBean(xo, yo);

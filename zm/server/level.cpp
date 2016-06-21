@@ -12,6 +12,7 @@
 #include "zm/server/level.h"
 #include "zm/server/physics/boss.h"
 #include "zm/server/physics/players.h"
+#include "zm/server/physics/powerup.h"
 
 #define PLAYER "player"
 #define MET "met"
@@ -24,8 +25,6 @@
 #define SPARKMAN "sparkman"
 #define RINGMAN "ringman"
 
-#define XMAX 47
-#define XMIN 0
 
 Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
   : state(zm::proto::playing), players(connectedPlayers), jm(jsonMap),
@@ -49,27 +48,25 @@ Level::Level(std::vector<Player*> connectedPlayers, JsonMap& jsonMap)
       continue;
     }
 
-    Enemy* enemy;
     if ( type == BUMBY ) {
-      enemy = new Bumby(physics, x, y);
+      enemies.push_back(new Bumby(physics, x, y));
     } else if ( type == MET ) {
-      enemy = new Met(physics, x, y);
+      enemies.push_back(new Met(physics, x, y));
     } else if ( type == SNIPER ) {
-      enemy = new Sniper(physics, x, y);
+      enemies.push_back(new Sniper(physics, x, y));
     } else if ( type == JUMPINGSNIPER ) {
-      enemy = new JumpingSniper(physics, x, y);
+      enemies.push_back(new JumpingSniper(physics, x, y));
     } else if ( type == BOMBMAN ) {
-      enemy = new Bombman(physics, x, y, jm, players);
+      boss = new Bombman(physics, x, y, jm, players);
     } else if ( type == FIREMAN ) {
-      enemy = new Fireman(physics, x, y, jm, players);
+      boss = new Fireman(physics, x, y, jm, players);
     } else if ( type == MAGNETMAN ) {
-      enemy = new Magnetman(physics, x, y, jm, players);
+      boss = new Magnetman(physics, x, y, jm, players);
     } else if ( type == SPARKMAN ) {
-      enemy = new Sparkman(physics, x, y, jm, players);
+      boss = new Sparkman(physics, x, y, jm, players);
     } else if ( type == RINGMAN ) {
-      enemy = new Ringman(physics, x, y, jm, players);
+      boss = new Ringman(physics, x, y, jm, players);
     }
-    enemies.push_back(enemy);
   }
 }
 
@@ -84,6 +81,12 @@ void Level::step() {
       bullets.push_back(bullet);
     }
   }
+
+  Bullet* bullet = boss->move();
+  if ( bullet != NULL ) {
+    bullets.push_back(bullet);
+  }
+
   std::vector<Bullet*>::iterator j;
   for ( j = bullets.begin(); j != bullets.end(); ++j ) {
     (*j)->move();
@@ -108,6 +111,10 @@ void Level::clean() {
   std::vector<Enemy*>::iterator iEnemy;
   for (iEnemy = enemies.begin(); iEnemy != enemies.end();) {
     if ((*iEnemy)->isDestroyed()) {
+      PowerUp* powerUp = createPowerUp((*iEnemy)->getPosition());
+      if ( powerUp ) {
+        powerUps.push_back(powerUp);
+      }
       delete (*iEnemy);
       iEnemy = enemies.erase(iEnemy);
     } else {
@@ -119,6 +126,16 @@ void Level::clean() {
   for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
     if ( (*iPlayer)->body->isDestroyed() ) {
       delete (*iPlayer)->body;
+    }
+  }
+
+ std::vector<PowerUp*>::iterator iPowerUp;
+  for (iPowerUp = powerUps.begin(); iPowerUp != powerUps.end(); ) {
+    if ( (*iPowerUp)->isDestroyed() ) {
+      delete (*iPowerUp);
+      iPowerUp = powerUps.erase(iPowerUp);
+    } else {
+      ++iPowerUp;
     }
   }
 }
@@ -143,6 +160,13 @@ Level::~Level() {
     delete (*iBullet);
     iBullet = bullets.erase(iBullet);
   }
+  std::vector<PowerUp*>::iterator iPowerUp;
+  for ( iPowerUp = powerUps.begin(); iPowerUp != powerUps.end(); ) {
+    delete (*iPowerUp);
+    iPowerUp = powerUps.erase(iPowerUp);
+  }
+
+  delete boss;
 }
 
 zm::proto::Game Level::getState(){
@@ -163,9 +187,16 @@ zm::proto::Game Level::getState(){
     gs.enemies.push_back(enemy->toBean(xo, yo));
   }
 
+  gs.enemies.push_back(boss->toBean(xo, yo));
+
   for (auto&& bullet : bullets) {
     zm::proto::Proyectile pr = bullet->toBean(xo, yo);
     gs.proyectiles.push_back(pr);
+  }
+
+  for (auto&& powerUp : powerUps) {
+    zm::proto::PowerUp po = powerUp->toBean(xo, yo);
+    gs.powerUps.push_back(po);
   }
 
   if (checkLoseCondition()) {
@@ -180,19 +211,50 @@ zm::proto::Game Level::getState(){
 
 bool Level::checkLoseCondition() {
   bool lose = true;
-  std::vector<Player*>::iterator iPlayer;
-  for ( iPlayer = players.begin(); iPlayer != players.end(); ++iPlayer ) {
-    if ( !(*iPlayer)->body->isDestroyed() )
+
+  for (auto&& player : players) {
+    if (!player->body->isDestroyed()) {
       lose = false;
+    }
   }
 
   return lose;
 }
 
 bool Level::checkWinCondition() {
-  return !enemies.size();
+  return boss->isDestroyed();
 }
 
 void Level::addBullet(Bullet* bullet){
   bullets.push_back(bullet);
 }
+
+PowerUp* Level::createPowerUp(b2Vec2 pos){
+  //agregar logica de random
+  double val = (double) rand() / RAND_MAX;
+  // if ( val <= .05 ) {
+  //   return new LargeEnergy(physics, pos);
+  // } else if ( val <= .1 ) {
+  //   return new LargePlasma(physics, pos);
+  // } else if ( val <= .2 ) {
+  //   return new SmallEnergy(physics, pos);
+  // } else if ( val <= .3 ) {
+  //   return new SmallPlasma(physics, pos);
+  // } else if ( val <= .31 ) {
+  //   return new Life(physics, pos);
+  // }
+  if ( val <= .2 ) {
+    return new LargeEnergy(physics, pos);
+  } else if ( val <= .4 ) {
+    return new LargePlasma(physics, pos);
+  } else if ( val <= .6 ) {
+    return new SmallEnergy(physics, pos);
+  } else if ( val <= .8 ) {
+    return new SmallPlasma(physics, pos);
+  } else if ( val <= 1 ) {
+    return new Life(physics, pos);
+  }
+
+  return NULL;
+}
+

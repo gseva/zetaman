@@ -2,8 +2,10 @@
 #include <iostream>
 #include <map>
 #include <string>
-#include "zm/server/camera.h"
+#include <algorithm>
 
+#include "zm/config.h"
+#include "zm/server/camera.h"
 #include "zm/server/player.h"
 #include "zm/server/server.h"
 #include "zm/server/physics/players.h"
@@ -16,32 +18,46 @@ Player::Player(zm::Game& g, std::string n, bool host) : game(g), name(n),
   isHost(host), isAlive(false), isReady(false), orientation(zm::proto::right),
   action(LastAction::idle) {
   connected = true;
+  lifes = zm::config::lifes;
+  gunsWon.insert(zm::proto::Normal);
 }
 
 Player::~Player(){
   if ( body != NULL )
     delete body;
+
+  deleteGuns();
+}
+
+void Player::deleteGuns() {
+  for (auto&& pair : guns) {
+    delete pair.second;
+  }
 }
 
 void Player::createBody(Physics* physics, float32 x, float32 y){
-  body = new PlayerBody(*physics, x, y);
-  Gun* gun = new Normalgun(body, false, *physics);
-  addGun(gun);
-  gun = new Firegun(body, false, *physics);
-  addGun(gun);
-  gun = new Ringgun(body, false, *physics);
-  addGun(gun);
-  gun = new Sparkgun(body, false, *physics);
-  addGun(gun);
-  gun = new Magnetgun(body, false, *physics);
-  addGun(gun);
-  gun = new Bombgun(body, false, *physics);
-  addGun(gun);
+  deleteGuns();
+  isAlive = true;
+
+  body = new PlayerBody(*physics, x, y, this);
+
+  for (auto&& proyectileType : gunsWon) {
+    Gun* g;
+    switch (proyectileType) {
+      case zm::proto::Normal: g = new Normalgun(body, false, *physics); break;
+      case zm::proto::Fire: g = new Firegun(body, false, *physics); break;
+      case zm::proto::Ring: g = new Ringgun(body, false, *physics); break;
+      case zm::proto::Spark: g = new Sparkgun(body, false, *physics); break;
+      case zm::proto::Magnet: g = new Magnetgun(body, false, *physics); break;
+      case zm::proto::Bomb: g = new Bombgun(body, false, *physics); break;
+    }
+    addGun(g);
+  }
   selectedGun = zm::proto::Normal;
 }
 
 void Player::jump(){
-  if (!body->isDestroyed()) {
+  if (isAlive) {
     body->jump();
     action = LastAction::jump;
   }
@@ -66,7 +82,7 @@ void Player::setReady() {
 
 void Player::right(){
   orientation = zm::proto::right;
-  if ( camera->canMoveRight(this) && !body->isDestroyed() ) {
+  if ( isAlive && camera->canMoveRight(this) ) {
     body->right();
     action = LastAction::right;
   } else {
@@ -75,34 +91,38 @@ void Player::right(){
   }
 }
 
-void Player::left(){
+void Player::left() {
   orientation = zm::proto::left;
-  if ( camera->canMoveLeft(this) && !body->isDestroyed() ) {
+  if ( isAlive && camera->canMoveLeft(this) ) {
     body->left();
     action = LastAction::left;
-  } else {
+  } else if (isAlive) {
     this->stopHorizontalMove();
     action = LastAction::right;
   }
 }
 
 void Player::stopHorizontalMove(){
-  if (!body->isDestroyed() )
+  if (isAlive)
     body->stopHorizontalMove();
 }
 
 void Player::up(){
-  if (body->up() && !body->isDestroyed()) {
+  if ( isAlive &&  body->up() ) {
     action = LastAction::up;
   } else {
     action = LastAction::idle;
   }
 }
 
+Gun* Player::getCurrentGun() {
+  return guns[static_cast<int>(selectedGun)];
+}
+
 void Player::shoot(){
-  if (body->isDestroyed() )
+  if (!isAlive)
     return;
-  Gun* gun = guns[static_cast<int>(selectedGun)];
+  Gun* gun = getCurrentGun();
   Bullet* bullet = gun->shoot();
   std::cout << "Creo bala " << bullet << std::endl;
   if (bullet) {
@@ -111,16 +131,23 @@ void Player::shoot(){
   }
 }
 
+void Player::destroy() {
+  lifes--;
+  isAlive = false;
+  delete body;
+}
+
+
 b2Body* Player::getBody(){
   return body->getBody();
 }
 
-bool Player::collide(Bullet *bullet){
-  return body->collide(bullet);
-}
-
 void Player::disconnect(){
   connected = false;
+}
+
+void Player::addNewGun(int gun) {
+  gunsWon.insert(static_cast<zm::proto::ProyectileType>(gun));
 }
 
 void Player::addGun(Gun* gun){
@@ -138,6 +165,29 @@ void Player::tic(){
   for ( iGun = guns.begin(); iGun != guns.end(); ++iGun ) {
     (iGun->second)->tic();
   }
+}
+
+
+bool Player::addLife() {
+  if (lifes == zm::config::lifes) return false;
+  lifes++;
+  return true;
+}
+
+bool Player::addAmmo(int amount) {
+  Gun* gun = getCurrentGun();
+  int actualAmount = gun->getAmmunition();
+  if (actualAmount >= 100) return false;
+
+  gun->addAmmunitions(std::min(amount, 100 - actualAmount));
+  return true;
+}
+
+bool Player::addHealth(int amount) {
+  if (body->health >= zm::config::playerLife) return false;
+
+  body->addHealth(std::min(amount, zm::config::playerLife - body->health));
+  return true;
 }
 
 
@@ -162,9 +212,11 @@ zm::proto::Player Player::toBean(int xo, int yo) {
   }
   player.ps = state;
   player.id = body->getId();
+
   player.weapon = selectedGun;
   player.health = body->health;
   player.o = orientation;
+  player.ammo = getCurrentGun()->getAmmunition();
   player.pos.x = getPosition().x - xo;
   player.pos.y = getPosition().y;
   return player;

@@ -14,12 +14,14 @@ class Client;
 class StatusBar {
 Client& client_;
 public:
-  StatusBar(Client& c);
+  explicit StatusBar(Client& c);
   void draw(const Cairo::RefPtr<Cairo::Context>& context,
             ImageBuffer& buff, const proto::Player& player);
 private:
   void setImage(const Cairo::RefPtr<Cairo::Context>& context,
                 Glib::RefPtr<Gdk::Pixbuf> image, int width, int heigth);
+  void drawFilledCircle(const Cairo::RefPtr<Cairo::Context>& context,
+                int width, int height, float percentage, int radius);
 };
 
 } // zm

@@ -1,5 +1,5 @@
 
-#include "zm/server/config.h"
+#include "zm/config.h"
 #include "zm/server/server.h"
 #include <stdlib.h>
 #include <time.h>
@@ -10,13 +10,8 @@ int main(int argc, char *argv[])
 
     zm::config::loadConfigFile("build/config.json");
 
-    if (argc > 1) {
-      Server server(argv[1]);
-      server.run();
-    } else {
-      Server server("9090");
-      server.run();
-    }
+    Server server;
+    server.run();
 
     return 0;
 }

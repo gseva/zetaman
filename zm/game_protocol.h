@@ -36,6 +36,7 @@ struct Player : JsonSerializable {
   PlayerState ps;
   int health;
   int id;
+  int ammo;
   Orientation o;
   ProyectileType weapon;
 
@@ -71,11 +72,16 @@ struct Proyectile : JsonSerializable {
 };
 
 
-enum PowerUpType { Life, SmallEnergy, LargeEnergy, SmallPlasma, LargePlasma };
+enum PowerUpType { Life=0, SmallEnergy=1, LargeEnergy=2,
+  SmallPlasma=3, LargePlasma=4 };
 
 struct PowerUp {
   Position pos;
   PowerUpType type;
+  int id;
+
+  virtual json getJson();
+  static PowerUp deserialize(const json& j);
 };
 
 
@@ -128,7 +134,7 @@ struct ClientEvent {
 
 
 enum ServerEventType { connected, connectedAsHost, playerConnected,
-  mapSelected, gameStart, levelWon, levelWonHost };
+  mapSelected, gameStart, levelWon, levelLost, selectLevel, selectLevelHost };
 
 struct ServerEvent {
   ServerEventType state;

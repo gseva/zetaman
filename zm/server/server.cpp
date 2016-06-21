@@ -6,7 +6,7 @@
 #include <thread>
 #include <unistd.h>
 
-#include "zm/server/config.h"
+#include "zm/config.h"
 #include "zm/server/server.h"
 #include "zm/server/player.h"
 #include "zm/json/jsonserializer.h"
@@ -15,7 +15,7 @@
 #define GAME_STEP_FREQUENCY 1000/60
 
 
-Server::Server(const char* port) : accepter_(NULL), port_(port) {
+Server::Server() : accepter_(NULL) {
 }
 
 Server::~Server() {
@@ -25,7 +25,7 @@ Server::~Server() {
 
 void Server::run() {
   accepter_ = new zm::Socket();
-  accepter_->bindAndListen(port_);
+  accepter_->bindAndListen(zm::config::port.c_str());
 
   zm::Game game(*this);
 
@@ -187,14 +187,28 @@ void Game::gameLoop() {
   finishLevel();
 }
 
+
 void Game::finishLevel() {
   if (currentLevel->state == zm::proto::won) {
     std::cout << "Win!" << std::endl;
     for (auto&& pair : proxies) {
       pair.second->sendLevelWon();
     }
+    for (auto&& pair : players) {
+      pair.second->addNewGun(currentLevel->boss->getGunNumber());
+    }
   } else {
     std::cout << "Lose!" << std::endl;
+    for (auto&& pair : proxies) {
+      pair.second->sendLevelLost();
+    }
+  }
+
+  std::this_thread::sleep_for(
+       std::chrono::milliseconds(4000));
+
+  for (auto&& pair : proxies) {
+    pair.second->sendSelectLevel();
   }
 }
 

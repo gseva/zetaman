@@ -47,7 +47,8 @@ public:
   void showWaitingScreen();
   void showCanvas();
   void showWinDialog();
-
+  void showWinAnimation();
+  void showLoseAnimation();
 private:
   bool on_key_press_event(GdkEventKey* event) override;
   bool on_key_release_event(GdkEventKey* event) override;

@@ -46,18 +46,6 @@ void Bullet::move() {
   }
 }
 
-bool Bullet::collide(Enemy* enemy){
-  return !isEnemy;
-}
-
-bool Bullet::collide(PlayerBody* player){
-  return isEnemy;
-}
-
-bool Bullet::collide(Bullet* player){
-  return false;
-}
-
 void Bullet::impact(){
   markAsDestroyed();
 }

@@ -1,8 +1,16 @@
+#include "zm/game_protocol.h"
 #include "zm/server/physics/gun.h"
 #include "zm/server/physics/bullets.h"
 
+#define NORMAL_CONSUME_AMMUNITION 0
+#define BOMB_CONSUME_AMMUNITION   1
+#define SPARK_CONSUME_AMMUNITION  3
+#define RING_CONSUME_AMMUNITION   4
+#define MAGNET_CONSUME_AMMUNITION 3
+#define FIRE_CONSUME_AMMUNITION   5
 
-Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics,int ammunitions) :
+Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics,
+         int ammunitions) :
   ticsToCharge(ticsToCharge), physics(physics){
   tics = 0;
   used = false;
@@ -18,7 +26,7 @@ Bullet* Gun::shoot(){
     return NULL; // si ya se disparo y aun no se recargo
   if (!isEnemy && ammunitions <= 0)
     return NULL;
-  ammunitions--;
+  consumeAmmunition();
   return fire();
 }
 
@@ -27,7 +35,7 @@ Bullet* Gun::shoot(int direction){
     return NULL; // si ya se disparo y aun no se recargo
   if ( !isEnemy && ammunitions <= 0 )
     return NULL;
-  ammunitions--;
+  consumeAmmunition();
   return fire(direction);
 }
 
@@ -43,7 +51,11 @@ void Gun::addAmmunitions(int amount){
   ammunitions += amount;
 }
 
-Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) : 
+int Gun::getAmmunition() {
+  return ammunitions;
+}
+
+Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) :
   Gun(proprietor, isEnemy, 2, physics){}
 
 Normalgun::~Normalgun(){}
@@ -77,10 +89,14 @@ Bullet* Normalgun::fire(int direction){
 }
 
 int Normalgun::getNumber(){
-  return 0;
+  return static_cast<int>(zm::proto::Normal);
 }
 
-Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) : 
+void Normalgun::consumeAmmunition(){
+  ammunitions -= NORMAL_CONSUME_AMMUNITION;
+}
+
+Bombgun::Bombgun(Body* proprietor, bool isEnemy, Physics& physics) :
   Gun(proprietor, isEnemy, 10, physics){}
 
 Bombgun::~Bombgun(){}
@@ -102,7 +118,11 @@ Bullet* Bombgun::fire(int direction){
 }
 
 int Bombgun::getNumber(){
-  return 1;
+  return static_cast<int>(zm::proto::Bomb);
+}
+
+void Bombgun::consumeAmmunition(){
+  ammunitions -= BOMB_CONSUME_AMMUNITION;
 }
 
 Magnetgun::Magnetgun(Body* proprietor, bool isEnemy, Physics& physics) :
@@ -127,10 +147,15 @@ Bullet* Magnetgun::fire(int direction){
 }
 
 int Magnetgun::getNumber(){
-  return 2;
+  return static_cast<int>(zm::proto::Magnet);
 }
 
-Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) : 
+
+void Magnetgun::consumeAmmunition(){
+  ammunitions -= MAGNET_CONSUME_AMMUNITION;
+}
+
+Sparkgun::Sparkgun(Body* proprietor, bool isEnemy, Physics& physics) :
   Gun(proprietor, isEnemy, 10, physics){}
 
 Sparkgun::~Sparkgun(){}
@@ -152,10 +177,15 @@ Bullet* Sparkgun::fire(int direction){
 }
 
 int Sparkgun::getNumber(){
-  return 3;
+  return static_cast<int>(zm::proto::Spark);
 }
 
-Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) : 
+
+void Sparkgun::consumeAmmunition(){
+  ammunitions -= MAGNET_CONSUME_AMMUNITION;
+}
+
+Ringgun::Ringgun(Body* proprietor, bool isEnemy, Physics& physics) :
   Gun(proprietor, isEnemy, 10, physics){}
 
 Ringgun::~Ringgun(){}
@@ -177,10 +207,14 @@ Bullet* Ringgun::fire(int direction){
 }
 
 int Ringgun::getNumber(){
-  return 4;
+  return static_cast<int>(zm::proto::Ring);
 }
 
-Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) : 
+void Ringgun::consumeAmmunition(){
+  ammunitions -= RING_CONSUME_AMMUNITION;
+}
+
+Firegun::Firegun(Body* proprietor, bool isEnemy, Physics& physics) :
   Gun(proprietor, isEnemy, 10, physics){}
 
 Firegun::~Firegun(){}
@@ -202,6 +236,9 @@ Bullet* Firegun::fire(int direction){
 }
 
 int Firegun::getNumber(){
-  return 5;
+  return static_cast<int>(zm::proto::Fire);
 }
 
+void Firegun::consumeAmmunition(){
+  ammunitions -= FIRE_CONSUME_AMMUNITION;
+}

@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include <string>
 #include <map>
+#include <set>
 
 #include "zm/game_protocol.h"
 #include "zm/server/physics/world.h"
@@ -42,21 +43,34 @@ public:
   void up();
   void shoot();
 
+  void destroy();
+
   void disconnect();
   b2Vec2 getPosition();
   b2Body* getBody();
   bool collide(Bullet *bullet);
+
   PlayerBody *body;
   bool connected;
+
+  void deleteGuns();
+  void addNewGun(int gun);
   void addGun(Gun* gun);
   void changeGun(int numberOfGun);
+  Gun* getCurrentGun();
   void tic();
+
+  bool addHealth(int amount);
+  bool addAmmo(int amount);
+  bool addLife();
 
   zm::proto::Player toBean(int xo, int yo);
 
 private:
+  int lifes;
   Camera* camera;
   std::map<int, Gun*> guns;
+  std::set<zm::proto::ProyectileType> gunsWon;
   zm::proto::ProyectileType selectedGun;
   zm::proto::Orientation orientation;
   LastAction action;

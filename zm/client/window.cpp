@@ -66,6 +66,14 @@ void Window::showWinDialog() {
   dialog.run();
 }
 
+void Window::showWinAnimation() {
+  canvas_->setWinScreen();
+}
+
+void Window::showLoseAnimation() {
+  canvas_->setLoseScreen();
+}
+
 bool Window::on_key_press_event(GdkEventKey* event) {
   if (event->keyval == GDK_KEY_space) {
     c_->serverProxy.jump();

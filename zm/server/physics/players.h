@@ -10,7 +10,7 @@ class Player;
 
 class PlayerBody : public Body {
 public:
-  explicit PlayerBody(Physics& physics, float32 x, float32 y);
+  explicit PlayerBody(Physics& physics, float32 x, float32 y, Player* p);
   virtual ~PlayerBody();
   void jump();
   void right();
@@ -18,7 +18,6 @@ public:
   void stopHorizontalMove();
   bool up();
   Bullet* shoot();
-  virtual bool collide(Bullet* bullet);
   b2Body* getBody();
 
   virtual void toImpact(Bomb* bullet);
@@ -28,8 +27,11 @@ public:
   virtual void toImpact(Fire* bullet);
   virtual void toImpact(Bullet* bullet);
 
+  Player* getPlayer();
+  void addHealth(int amount);
   int health;
 private:
+  Player* player_;
   bool canGoUp();
   void damage(int hurt);
 };

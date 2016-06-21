@@ -1,5 +1,6 @@
 
 #include "zm/client/canvas.h"
+#include "zm/client/client.h"
 #include "zm/client/drawable.h"
 
 #include <glibmm/main.h>
@@ -73,10 +74,17 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawable->setState(proyectile);
     drawable->draw(cr, buff_);
   }
+
   for (auto&& powerUp : game_.powerUps) {
-    drawing::PowerUp drawable(c_);
-    drawable.setState(powerUp);
-    drawable.draw(cr, buff_);
+    drawing::PowerUp* drawable;
+    if (!powerUps_.count(powerUp.id)) {
+      drawable = new drawing::PowerUp(c_);
+      powerUps_.insert({powerUp.id, drawable});
+    } else {
+      drawable = powerUps_.at(powerUp.id);
+    }
+    drawable->setState(powerUp);
+    drawable->draw(cr, buff_);
   }
 
   for (auto&& player : game_.players) {
@@ -85,6 +93,15 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
       break;
     }
   }
+
+  if (winScreen_) {
+    cr->set_source_rgba(.5, 1.0, .5, 1.0 - (tics / 100.));
+    showScreenAnimation(cr);
+  } else if (loseScreen_) {
+    cr->set_source_rgba(1.0, .5, .5, 1.0 - (tics / 100.));
+    showScreenAnimation(cr);
+  }
+
 
   return true;
 }
@@ -114,6 +131,24 @@ drawing::Enemy* Canvas::newEnemy_(const proto::Enemy& e) {
   }
   enemies_.insert({e.id, enemy});
   return enemy;
+}
+
+
+void Canvas::setWinScreen() {
+  winScreen_ = true;
+  tics = 100;
+}
+
+void Canvas::setLoseScreen() {
+  loseScreen_ = true;
+  tics = 100;
+}
+
+void Canvas::showScreenAnimation(const Cairo::RefPtr<Cairo::Context>& cr) {
+  cr->rectangle(0, 0, c_.width, c_.height + c_.statusBarHeight);
+  cr->fill();
+  tics--;
+  if (tics < 0) tics = 1;
 }
 
 void Canvas::updateGameState(proto::Game game) {

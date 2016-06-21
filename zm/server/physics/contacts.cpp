@@ -2,6 +2,8 @@
 #include "zm/server/physics/contacts.h"
 #include "zm/server/physics/bullets.h"
 #include "zm/server/physics/enemies.h"
+#include "zm/server/physics/players.h"
+#include "zm/server/physics/powerup.h"
 
 namespace zm {
 
@@ -11,7 +13,8 @@ void ContactListener::BeginContact(b2Contact* contact) {
   void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
   if (bodyUserDataB &&
-      static_cast<Body*>(bodyUserDataB)->type == BodyType::Bullet) {
+      (static_cast<Body*>(bodyUserDataB)->type == BodyType::Bullet ||
+       static_cast<Body*>(bodyUserDataB)->type == BodyType::PowerUp)) {
     void* aux = bodyUserDataA;
     bodyUserDataA = bodyUserDataB;
     bodyUserDataB = aux;
@@ -33,6 +36,15 @@ void ContactListener::BeginContact(b2Contact* contact) {
       std::cout << "Deleteo player\n";
       static_cast<Bullet*>(bodyUserDataA)->impact(
         static_cast<PlayerBody*>(bodyUserDataB));
+    }
+  }
+
+  if (bodyUserDataA && bodyUserDataB &&
+      static_cast<Body*>(bodyUserDataA)->type == BodyType::PowerUp &&
+      static_cast<Body*>(bodyUserDataB)->type == BodyType::Player) {
+    if (static_cast<PowerUp*>(bodyUserDataA)->applyTo(
+          static_cast<PlayerBody*>(bodyUserDataB)->getPlayer())) {
+      static_cast<PowerUp*>(bodyUserDataA)->markAsDestroyed();
     }
   }
 }

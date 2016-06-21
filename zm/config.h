@@ -9,6 +9,14 @@ namespace zm {
 namespace config
 {
     extern int gamePeriod;
+    extern int bossLife;
+    extern int playerLife;
+    extern int lifes;
+
+    extern std::string port;
+    extern std::string host;
+
+    extern int screenWidth;
 
     void loadConfigFile(const std::string& file);
 } //config

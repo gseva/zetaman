@@ -44,15 +44,32 @@ void ClientProxy::sendLevelWon() {
   sender_->join();
   delete sender_;
 
+  zm::proto::ServerEvent event(zm::proto::levelWon);
+  std::cout << "Envio level won " << event.serialize() << std::endl;
+  clientSock_->write(event.serialize());
+}
+
+void ClientProxy::sendLevelLost() {
+  // Espero a que se le envie el último estado al jugador
+  sender_->join();
+  delete sender_;
+
+  zm::proto::ServerEvent event(zm::proto::levelLost);
+  std::cout << "Envio level lost " << event.serialize() << std::endl;
+  clientSock_->write(event.serialize());
+}
+
+void ClientProxy::sendSelectLevel() {
   zm::proto::ServerEvent event;
   if (player_->isHost) {
-    event.state = zm::proto::levelWonHost;
+    event.state = zm::proto::selectLevelHost;
   } else {
-    event.state = zm::proto::levelWon;
+    event.state = zm::proto::selectLevel;
   }
   std::cout << "Envio " << event.serialize() << std::endl;
   clientSock_->write(event.serialize());
 }
+
 
 void ClientProxy::dispatchEvent(proto::ClientEvent ce) {
   switch (ce.state) {

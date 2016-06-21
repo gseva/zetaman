@@ -11,7 +11,6 @@ public:
     float32 largo = 0.4f, float32 alto = 0.4f);
   virtual ~Enemy();
   virtual Bullet* move()=0;
-  virtual bool collide(Bullet* bullet);
   virtual zm::proto::Enemy toBean(int xo, int yo)=0;
   virtual void toImpact(Bomb* bullet);
   virtual void toImpact(Spark* bullet);

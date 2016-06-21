@@ -1,3 +1,9 @@
 {
-  "gamePeriod": 17
+  "gamePeriod": 17,
+  "bossLife": 30,
+  "playerLife": 50,
+  "lifes": 3,
+  "port": "9090",
+  "host": "localhost",
+  "screenWidth": 800
 }

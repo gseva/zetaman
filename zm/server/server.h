@@ -19,7 +19,7 @@ class Player;
 
 class Server{
 public:
-  explicit Server(const char* port);
+  Server();
   ~Server();
 
   void run();
@@ -31,7 +31,6 @@ public:
 
 private:
   zm::Socket* accepter_;
-  std::string port_;
 };
 
 

@@ -1,21 +1,18 @@
 #include <gtkmm/application.h>
 
+#include "zm/config.h"
 #include "zm/client/client.h"
 
 int main(int argc, char *argv[])
 {
+    zm::config::loadConfigFile("build/config.json");
+
     Glib::RefPtr<Gtk::Application> app =
-      Gtk::Application::create();
+      Gtk::Application::create(argc, argv);
     app->set_flags(Gio::APPLICATION_NON_UNIQUE);
 
-    std::cout << argc << " " << argv[1] << std::endl;
-    if (argc > 1) {
-      zm::Client client(argv[1]);
-      client.run(app);
-    } else {
-      zm::Client client("9090");
-      client.run(app);
-    }
+    zm::Client client;
+    client.run(app);
 
     return 0;
 }
