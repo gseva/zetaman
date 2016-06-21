@@ -78,6 +78,8 @@ enum PowerUpType { Life=0, SmallEnergy=1, LargeEnergy=2,
 struct PowerUp {
   Position pos;
   PowerUpType type;
+  int id;
+
   virtual json getJson();
   static PowerUp deserialize(const json& j);
 };

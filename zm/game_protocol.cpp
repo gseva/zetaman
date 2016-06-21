@@ -126,14 +126,17 @@ Proyectile Proyectile::deserialize(const json& j) {
 
 json PowerUp::getJson() {
   json j = pos.getJson();
+  j["i"] = id;
   j["t"] = static_cast<int>(type);
   return j;
-} 
+}
 
 PowerUp PowerUp::deserialize(const json& j) {
   PowerUp po;
   po.pos.x = j["x"];
   po.pos.y = j["y"];
+  po.id = j["i"];
+
   int type = j["t"];
   po.type = static_cast<PowerUpType>(type);
   return po;
@@ -197,6 +200,10 @@ Game Game::deserialize(const std::string& s) {
 
   for (const json &proyectileJson : j["pr"]) {
     game.proyectiles.push_back(Proyectile::deserialize(proyectileJson));
+  }
+
+  for (const json &powerUpJson : j["po"]) {
+    game.powerUps.push_back(PowerUp::deserialize(powerUpJson));
   }
 
   return game;

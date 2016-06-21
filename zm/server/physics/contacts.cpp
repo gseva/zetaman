@@ -11,7 +11,8 @@ void ContactListener::BeginContact(b2Contact* contact) {
   void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
   if (bodyUserDataB &&
-      static_cast<Body*>(bodyUserDataB)->type == BodyType::Bullet) {
+      (static_cast<Body*>(bodyUserDataB)->type == BodyType::Bullet ||
+       static_cast<Body*>(bodyUserDataB)->type == BodyType::PowerUp)) {
     void* aux = bodyUserDataA;
     bodyUserDataA = bodyUserDataB;
     bodyUserDataB = aux;

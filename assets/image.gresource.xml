@@ -195,10 +195,44 @@
     <file  preprocess="to-pixdata">images/proyectiles/spark_7.png</file>
     <file  preprocess="to-pixdata">images/proyectiles/spark_8.png</file>
 
-    <file  preprocess="to-pixdata">images/powerups/life.png</file>
-    <file  preprocess="to-pixdata">images/powerups/energy.png</file>
-    <file  preprocess="to-pixdata">images/powerups/bigplasma.png</file>
-    <file  preprocess="to-pixdata">images/powerups/plasma.png</file>
+    <!-- Ammo -->
+
+    <file  preprocess="to-pixdata">images/powerups/ammo_1.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_2.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_3.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_4.png</file>
+
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_1.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_2.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_3.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_4.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_5.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_6.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_7.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_8.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_9.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_10.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_11.png</file>
+    <file  preprocess="to-pixdata">images/powerups/ammo_big_12.png</file>
+
+    <file  preprocess="to-pixdata">images/powerups/big_health_1.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_2.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_3.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_4.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_5.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_6.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_7.png</file>
+    <file  preprocess="to-pixdata">images/powerups/big_health_8.png</file>
+
+    <file  preprocess="to-pixdata">images/powerups/health_1.png</file>
+    <file  preprocess="to-pixdata">images/powerups/health_2.png</file>
+    <file  preprocess="to-pixdata">images/powerups/health_3.png</file>
+    <file  preprocess="to-pixdata">images/powerups/health_4.png</file>
+
+    <file  preprocess="to-pixdata">images/powerups/life_1.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_2.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_3.png</file>
+    <file  preprocess="to-pixdata">images/powerups/life_4.png</file>
 
   </gresource>
 </gresources>

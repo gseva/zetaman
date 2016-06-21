@@ -29,6 +29,7 @@ Mutex m_;
 std::map<int, drawing::Player*> players_;
 std::map<int, drawing::Enemy*> enemies_;
 std::map<int, drawing::Proyectile*> proyectiles_;
+std::map<int, drawing::PowerUp*> powerUps_;
 
 public:
   explicit Canvas(Client& c);

@@ -74,10 +74,17 @@ bool Canvas::on_draw(const Cairo::RefPtr<Cairo::Context>& cr) {
     drawable->setState(proyectile);
     drawable->draw(cr, buff_);
   }
+
   for (auto&& powerUp : game_.powerUps) {
-    drawing::PowerUp drawable(c_);
-    drawable.setState(powerUp);
-    drawable.draw(cr, buff_);
+    drawing::PowerUp* drawable;
+    if (!powerUps_.count(powerUp.id)) {
+      drawable = new drawing::PowerUp(c_);
+      powerUps_.insert({powerUp.id, drawable});
+    } else {
+      drawable = powerUps_.at(powerUp.id);
+    }
+    drawable->setState(powerUp);
+    drawable->draw(cr, buff_);
   }
 
   for (auto&& player : game_.players) {
