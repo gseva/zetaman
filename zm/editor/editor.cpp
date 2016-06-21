@@ -87,8 +87,10 @@ bool Editor::on_eventbox_button_press(GdkEventButton* eventButton,
 }
 
 Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
-  std::string mapName): mapLen(len),app(appl),mapName(mapName) 
+  std::string mapName): mapLen(len),app(appl) 
 {
+  mapPath = "assets/maps/custom/" + mapName + ".json";
+
   Glib::RefPtr<Gtk::Builder> builder =
       Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
@@ -137,12 +139,10 @@ Editor::Editor(Glib::RefPtr<Gtk::Application> appl, unsigned int len,
 }
 
 Editor::Editor(Glib::RefPtr<Gtk::Application> appl,
- std::string path): app(appl) 
+ std::string path): app(appl), mapPath(path) 
 {
-  mapName = path.substr(0, path.size() - 5);
-
   Glib::RefPtr<Gtk::Builder> builder =
-      Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
+    Gtk::Builder::create_from_resource("/zm/editor/editor.glade");
 
   /* Elementos de la ventana del editor*/
   builder->get_widget("btnCrearJugador", pBtnCrearJugador);
@@ -374,7 +374,7 @@ void Editor::exportCreatedMap()
 
   jMap = createJsonMap();
 
-  s.exportMap("assets/maps/custom/" + mapName + ".json", jMap);
+  s.exportMap(mapPath, jMap);
 }
 
 std::string Editor::getName(std::string imageFullPath)
@@ -567,11 +567,22 @@ void EditorMenu::on_buttonCreateLevel_clicked()
   pWindowNewLevel->show();
 }
 
+void EditorMenu::on_btnFCCancelEdit_clicked()
+{
+
+}
+
+void EditorMenu::on_btnFCAcceptEdit_clicked()
+{
+  pFCLevelToEdit->hide();
+  auto appl = Gtk::Application::create("Editor.modificar.app");
+  Editor editor(appl, pFCLevelToEdit -> get_filename());
+  editor.runEditor();
+}
+
 void EditorMenu::on_buttonEditLevel_clicked()
 {
-  auto appl = Gtk::Application::create("Editor.modificar.app");
-  Editor editor(appl, "editar.json");
-  editor.runEditor();
+  pFCLevelToEdit->show();
 }
 
 EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
@@ -591,6 +602,11 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
   builder->get_widget("windowMenu", pWindowMenu);
   builder->get_widget("btnCreateLevel", pBtnCreateLevel);
   builder->get_widget("btnEditLevel", pBtnEditLevel);
+
+  /*File chooser para editar un nivel existente*/
+  builder->get_widget("fcEditLevel", pFCLevelToEdit);
+  builder->get_widget("btnAcceptEditFC", pBtnFCAcceptEdit);
+  builder->get_widget("btnCancelEditFC", pBtnFCCancelEdit);
 
   connectButtonsWithSignals();
 }
@@ -613,6 +629,18 @@ void EditorMenu::connectButtonsWithSignals()
   {
     pBtnEditLevel->signal_clicked().connect(
       sigc::mem_fun(this,&EditorMenu::on_buttonEditLevel_clicked));
+  }
+
+  if(pBtnFCAcceptEdit)
+  {
+    pBtnFCAcceptEdit->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_btnFCAcceptEdit_clicked));
+  }
+
+  if(pBtnFCCancelEdit)
+  {
+    pBtnFCCancelEdit->signal_clicked().connect(
+      sigc::mem_fun(this,&EditorMenu::on_btnFCCancelEdit_clicked));
   }
 }
 

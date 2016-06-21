@@ -10,6 +10,7 @@
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/filechooserdialog.h>
 #include <glibmm/refptr.h>
 #include <string>
 #include <iostream>
@@ -50,7 +51,7 @@ class Editor {
     std::map<std::string, std::string> nameToPhysics;
     std::map<std::string, std::string> ddlToName;
 
-    std::string mapName;
+    std::string mapPath;
     std::string selectedBoss;
 
   public:
@@ -96,6 +97,10 @@ class EditorMenu {
     Gtk::Button* pBtnCreateLevel;
     Gtk::Button* pBtnEditLevel;
 
+    Gtk::FileChooserDialog* pFCLevelToEdit;
+    Gtk::Button* pBtnFCAcceptEdit;
+    Gtk::Button* pBtnFCCancelEdit;
+
     std::string mapName;
 
   public:
@@ -105,4 +110,6 @@ class EditorMenu {
     explicit EditorMenu(Glib::RefPtr<Gtk::Application> appl);
     void connectButtonsWithSignals();
     void runEditorMenu();
+    void on_btnFCAcceptEdit_clicked();
+    void on_btnFCCancelEdit_clicked();
 };
