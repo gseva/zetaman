@@ -106,25 +106,3 @@ void JsonSerializer::exportMap(std::string path, const JsonMap& m)
 
   newFile.close();
 }
-
-std::map<std::string,int> JsonSerializer::importarEnte(std::string path)
-{
-  std::fstream fs;
-  fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
-
-  json j;
-
-  fs >> j;
-
-  fs.close();
-
-  std::map<std::string,int> caracteristicasEnte;
-
-  for (json::iterator it = j.begin(); it != j.end(); ++it)
-  {
-    caracteristicasEnte.insert(std::pair<std::string,int>(it.key(),
-                                                          it.value()));
-  }
-
-  return caracteristicasEnte;
-}
