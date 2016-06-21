@@ -545,10 +545,12 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
       for (unsigned int j = 0; j < ALTO; j++)
       {
-        int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
-        if(imageNumber >=0)
+        int imageNumber = 
+        jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
+        if (imageNumber >=0)
         {
-          imageMatrix[i][j].set_from_resource(TILE_PREFIX + jm.imageNames[imageNumber]);    
+          imageMatrix[i][j].set_from_resource(
+            TILE_PREFIX + jm.imageNames[imageNumber]);    
         } else {
           imageMatrix[i][j].set_from_resource(IMAGEN_BLANCO);
         }
@@ -572,14 +574,14 @@ void Editor::createGridFromJsonMap(JsonMap jm)
   {
     for (unsigned int j=0; j<ALTO; j++)
     {
-      int imageNumber = jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
-      if(imageNumber >= 0)
+      int imageNumber = 
+        jm.imageNumbers[(j+1)*ANCHO*mapLen-(ANCHO*mapLen-i)] - 1;
+      if (imageNumber >= 0)
       {
         imageNamesCurrent[i][j] = TILE_PREFIX + jm.imageNames[imageNumber];  
       } else {
         imageNamesCurrent[i][j] = IMAGEN_BLANCO;
       }
-      
     }
   }
 
@@ -592,11 +594,13 @@ void Editor::createGridFromJsonMap(JsonMap jm)
     row = ALTO - jm.spawnsData[i].row -1;
     if (col < ANCHO * (mapLen-1))
     {
-      imageMatrix[col][row].set_from_resource(SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png");
-      std::cout << SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png" << std::endl;
-      imageNamesCurrent[col][row] = SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png"; 
+      imageMatrix[col][row].set_from_resource(
+        SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png");
+      imageNamesCurrent[col][row] =
+       SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png"; 
     } else {
-      selectedBoss = SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png";
+      selectedBoss =
+       SPAWN_PREFIX + jm.spawnTypes[jm.spawnsData[i].type] + ".png";
       pSelectedBoss->set_from_resource(selectedBoss);
     }
   }
@@ -621,11 +625,6 @@ void EditorMenu::on_buttonAcceptExport_clicked()
 void EditorMenu::on_buttonCreateLevel_clicked()
 {
   pWindowNewLevel->show();
-}
-
-void EditorMenu::on_btnFCCancelEdit_clicked()
-{
-
 }
 
 void EditorMenu::on_btnFCAcceptEdit_clicked()
@@ -662,7 +661,6 @@ EditorMenu::EditorMenu(Glib::RefPtr<Gtk::Application> appl): app(appl)
   /*File chooser para editar un nivel existente*/
   builder->get_widget("fcEditLevel", pFCLevelToEdit);
   builder->get_widget("btnAcceptEditFC", pBtnFCAcceptEdit);
-  builder->get_widget("btnCancelEditFC", pBtnFCCancelEdit);
 
   connectButtonsWithSignals();
 }
@@ -687,16 +685,10 @@ void EditorMenu::connectButtonsWithSignals()
       sigc::mem_fun(this,&EditorMenu::on_buttonEditLevel_clicked));
   }
 
-  if(pBtnFCAcceptEdit)
+  if (pBtnFCAcceptEdit)
   {
     pBtnFCAcceptEdit->signal_clicked().connect(
       sigc::mem_fun(this,&EditorMenu::on_btnFCAcceptEdit_clicked));
-  }
-
-  if(pBtnFCCancelEdit)
-  {
-    pBtnFCCancelEdit->signal_clicked().connect(
-      sigc::mem_fun(this,&EditorMenu::on_btnFCCancelEdit_clicked));
   }
 }
 

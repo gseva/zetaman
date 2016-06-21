@@ -111,5 +111,4 @@ class EditorMenu {
     void connectButtonsWithSignals();
     void runEditorMenu();
     void on_btnFCAcceptEdit_clicked();
-    void on_btnFCCancelEdit_clicked();
 };
