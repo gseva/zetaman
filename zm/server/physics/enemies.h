@@ -7,7 +7,8 @@
 
 class Enemy : public Body {
 public:
-  explicit Enemy(Physics& physics, float32 x, float32 y);
+  explicit Enemy(Physics& physics, float32 x, float32 y,
+    float32 largo = 0.4f, float32 alto = 0.4f);
   virtual ~Enemy();
   virtual Bullet* move()=0;
   virtual bool collide(Bullet* bullet);

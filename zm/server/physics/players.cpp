@@ -10,7 +10,7 @@ PlayerBody::PlayerBody(Physics& physics, float32 x, float32 y)
   :  Body(physics, x, y, BodyType::Player) {
   body->SetUserData(this);
   b2PolygonShape shape;
-  shape.SetAsBox(0.4f, 0.4f);
+  shape.SetAsBox(0.35f, 0.2f);
   fixtureDef.shape = &shape;
   fixtureDef.density = 1.0f;
   fixtureDef.friction = 0.0f;

@@ -28,12 +28,16 @@ enum Orientation { left=1, right=2 };
 enum class PlayerState { moving=0, idle=1, shooting=2, jumping=3,
                          jumpingShooting=4, climbing=5 };
 
+enum ProyectileType { Normal=0, Bomb=1, Spark=2,
+  Magnet=3, Ring=4, Fire=5 };
+
 struct Player : JsonSerializable {
   Position pos;
   PlayerState ps;
   int health;
   int id;
   Orientation o;
+  ProyectileType weapon;
 
   virtual json getJson();
   static Player deserialize(const json& j);
@@ -57,10 +61,6 @@ struct Enemy : JsonSerializable {
   virtual json getJson();
   static Enemy deserialize(const json& j);
 };
-
-
-enum ProyectileType { Normal=0, Bomb=1, Spark=2,
-  Magnet=3, Ring=4, Fire=5 };
 
 struct Proyectile : JsonSerializable {
   Position pos;
@@ -92,6 +92,9 @@ struct Game {
   Position camPos;
 
   GameState state;
+
+  // Id del jugador al que se le envian los datos
+  int playerId;
 
   // la idea es en vez de cambiar x e y del GameState, cambiar los de cada
   // player

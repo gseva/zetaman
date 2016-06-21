@@ -13,7 +13,7 @@ namespace zm {
 Window::Window(Client* c) : c_(c), startButton_("Empezar!") {
   add(box_);
 
-  set_default_size(c_->width, c_->height);
+  set_default_size(c_->width, c_->height + c_->statusBarHeight);
   set_position(Gtk::WIN_POS_CENTER);
   // signal_key_press_event().connect(
   //   sigc::mem_fun(*this, &Window::keyReleased));

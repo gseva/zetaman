@@ -16,6 +16,7 @@ void ImageBuffer::loadImage(const std::string& key, bool flipped,
   std::string resource_name = "/zm/images/" + key;
 
   std::string key_ = key;
+  key_ += std::to_string(scaleX) + std::to_string(scaleX);
   auto image = Glib::wrap(gdk_pixbuf_new_from_resource(
                                resource_name.c_str(), 0));
 
@@ -35,6 +36,7 @@ void ImageBuffer::loadImage(const std::string& key, bool flipped,
 Glib::RefPtr<Gdk::Pixbuf> ImageBuffer::getImage(const std::string& key,
     bool flipped, float scaleY, float scaleX) {
   std::string key_ = key;
+  key_ += std::to_string(scaleX) + std::to_string(scaleX);
   if (flipped) {
     key_ += "_flipped";
   }

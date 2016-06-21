@@ -13,7 +13,8 @@
 namespace zm {
 
 Map::Map(Client& client) : client_(client),
-    jsonMap_(client_.serverProxy.getJsonMap()), hasBackground(false) {
+    jsonMap_(client_.serverProxy.getJsonMap()), hasBackground(false),
+    offset_(client_.statusBarHeight) {
   loadImages();
 }
 
@@ -62,9 +63,9 @@ void Map::draw(const Cairo::RefPtr<Cairo::Context>& context, int x, int y) {
       int imageNum = jsonMap_.imageNumbers[tilePos];
       if (imageNum == 0) continue;
       auto image = images_[imageNum - 1];
-      int width = image->get_width();
-      int height = image->get_height();
-      Gdk::Cairo::set_source_pixbuf(context, image, width * i, height * j);
+      int width = image->get_width() * i;
+      int height = offset_ + image->get_height() * j;
+      Gdk::Cairo::set_source_pixbuf(context, image, width, height);
       context->paint();
     }
   }

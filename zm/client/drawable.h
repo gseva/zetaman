@@ -20,6 +20,7 @@ class Drawable {
 Client& c_;
 bool flipped_;
 float scaleX, scaleY;
+int offset_;
 
 proto::Position pos_;
 std::string imageName_;

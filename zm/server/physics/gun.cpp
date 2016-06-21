@@ -2,12 +2,13 @@
 #include "zm/server/physics/bullets.h"
 
 
-Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics) :
+Gun::Gun(Body* proprietor, bool isEnemy, int ticsToCharge, Physics& physics,int ammunitions) :
   ticsToCharge(ticsToCharge), physics(physics){
   tics = 0;
   used = false;
   this->isEnemy = isEnemy;
   this->proprietor = proprietor;
+  this->ammunitions = ammunitions;
 }
 
 Gun::~Gun(){}
@@ -15,12 +16,18 @@ Gun::~Gun(){}
 Bullet* Gun::shoot(){
   if ( tics != 0 || used )
     return NULL; // si ya se disparo y aun no se recargo
+  if (!isEnemy && ammunitions <= 0)
+    return NULL;
+  ammunitions--;
   return fire();
 }
 
 Bullet* Gun::shoot(int direction){
   if ( tics != 0 || used )
     return NULL; // si ya se disparo y aun no se recargo
+  if ( !isEnemy && ammunitions <= 0 )
+    return NULL;
+  ammunitions--;
   return fire(direction);
 }
 
@@ -32,10 +39,26 @@ void Gun::tic(){
   }
 }
 
+void Gun::addAmmunitions(int amount){
+  ammunitions += amount;
+}
+
 Normalgun::Normalgun(Body* proprietor, bool isEnemy, Physics& physics) : 
   Gun(proprietor, isEnemy, 2, physics){}
 
 Normalgun::~Normalgun(){}
+
+Bullet* Normalgun::shoot(){
+  if ( tics != 0 || used )
+    return NULL; // si ya se disparo y aun no se recargo
+  return fire();
+}
+
+Bullet* Normalgun::shoot(int direction){
+  if ( tics != 0 || used )
+    return NULL; // si ya se disparo y aun no se recargo
+  return fire(direction);
+}
 
 Bullet* Normalgun::fire(){
   used = true;

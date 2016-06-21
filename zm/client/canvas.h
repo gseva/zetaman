@@ -12,6 +12,7 @@
 #include "zm/client/image_buffer.h"
 #include "zm/client/map.h"
 #include "zm/client/server_proxy.h"
+#include "zm/client/status_bar.h"
 
 
 namespace zm {
@@ -22,6 +23,7 @@ bool gameSet_;
 proto::Game game_;
 Map map_;
 ImageBuffer buff_;
+StatusBar statusBar_;
 Mutex m_;
 std::map<int, drawing::Player*> players_;
 std::map<int, drawing::Enemy*> enemies_;
